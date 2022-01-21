@@ -4,6 +4,16 @@ var styles = document.getElementById('styles');
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
 
+document.getElementById('submitButton').disabled = true;
+window.addEventListener('keyup', chkinput)
+function chkinput() {
+  if (document.getElementById("title").value.trim() === "" || document.getElementById("article").value.trim() === "") {
+      document.getElementById('submitButton').disabled = true;
+  } else {
+      document.getElementById('submitButton').disabled = false;
+  }
+}
+
 
 $('#submitButton').on('click', function (event) {
   loader();

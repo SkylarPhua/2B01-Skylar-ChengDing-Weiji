@@ -109,6 +109,15 @@ router.post('/grade/:id', verifyToken, verifyFn.verifyUserRole, app.postGrade);
 // PUT article grade [used by Admin] DOne[1]
 router.put('/grades/:id', verifyToken, verifyFn.verifyUserRole, app.putGrade);
 
+
+//------------------------------------
+// DueDate Routes
+//------------------------------------
+
+// GET the due date
+router.get('/dueDate', app.DueDate);
+
+
 //------------------------------------
 // exports
 //------------------------------------

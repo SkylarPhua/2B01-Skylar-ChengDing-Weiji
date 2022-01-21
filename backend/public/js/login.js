@@ -33,7 +33,6 @@ window.addEventListener('DOMContentLoaded', function () {
                         localStorage.setItem('token', token);
                         localStorage.setItem('user_id', id);
                         localStorage.setItem('role_name', usertype);
-                        alert("student login successfully")
                         window.location.replace('submission.html');
                         return;
                     }
@@ -41,7 +40,6 @@ window.addEventListener('DOMContentLoaded', function () {
                         localStorage.setItem('token', token);
                         localStorage.setItem('user_id', id);
                         localStorage.setItem('role_name', usertype);
-                        alert("admin login successfully")
                         window.location.replace('A_home.html');
                         return;
                     }

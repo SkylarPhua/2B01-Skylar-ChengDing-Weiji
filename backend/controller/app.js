@@ -32,17 +32,13 @@ exports.logUser = function (req, res) {
         console.log("&&APP.JS&" + JSON.stringify(result))
         if (!error && result !== "") {
 
-            var passowrdEX = JSON.stringify(result[0].password);
-            var wiPassword = passowrdEX;
-            wiPassword = wiPassword.slice(1, -1)
+            var passsword = result[0].password;
 
-            console.log(wiPassword);
             console.log("userid: " + result[0].userid);
             console.log("usertype: " + result[0].usertype);
 
-            if (bcrypt.compareSync(passwordGL, wiPassword) == true) {
+            if (bcrypt.compareSync(passwordGL, passsword) == true) {
                 console.log(passwordGL);
-                console.log(wiPassword);
                 var token = "";
                 token = jwt.sign({
                     userid: result[0].userid,
@@ -542,3 +538,30 @@ exports.putGrade = function (req, res) {
         res.status(403).send("Unauthorised Access, you are not registered as an Admin");
     }
 }
+
+
+exports.DueDate = function (req, res) {
+    article.getDueDate(function (error, result) {
+        if (!error && result == "") {
+            console.log("There are not results")
+            res.status(404).send("Cannot find any duedate");
+        } else if (!error && result !== "") {
+            var current = new Date();
+
+            console.log("ffffffffff"+result[0].duedate);
+
+            if(current<result[0].duedate){
+                res.status(200).send(result[0]);
+            } else if(current<result[1].duedate) {
+                res.status(200).send(result[1]);
+            } else if(current<result[2].duedate) {
+                res.status(200).send(result[2]);
+            }else {
+                res.status(200).send(result[3]);
+            }
+        }
+        else {
+            res.status(500).send("Unknown error");
+        }
+    })
+};

@@ -335,5 +335,18 @@ module.exports = {
                 return callback(error, null);
             })
     },
+    getDueDate: function (callback) {
+        const query =`SELECT dueDate,dueDateType FROM DeadLine order by deadlineid asc`
+        return database
+            .query(query)
+            .then(function (results) {
+                console.log("This is the result " + JSON.stringify(results.rows));
+                return callback(null, results.rows);
+            })
+            .catch(function (error) {
+                console.log("This is the error (getDueDate): " + error);
+                return callback(error, null);
+            })
+    },
 
 }

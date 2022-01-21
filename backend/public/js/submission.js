@@ -15,28 +15,28 @@ window.onload = () => {
         method: 'GET',
         url: baseUrl + '/competition/article/' + userid,
         dataType: "json",
-
     })
         .then(function (response) {
             const articles = response.data;
+            console.log(articles);
             if (articles != null) {
                 getdata.innerHTML = '';
                 articles.forEach((article) => {
                     var postHtml = `
                     <tr>
-                    <th>Title</th>
-                    <th>Article</th>
-                    <th>Submission Date</th>
-                    <th>Grade</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th style="font-size: 25px;font-weight:bold">Title</th>
+                    <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                    <th style="font-size: 25px;font-weight:bold">Grade</th>
+                    <th style="font-size: 25px;font-weight:bold">Edit</th>
+                    <th style="font-size: 25px;font-weight:bold">Delete</th>
                 </tr>  
-                    
+
                 <tr>
-                    <td>${article.title}</td>
-                    <td>${article.content}</td>
-                    <td>${article.submitted_at}</td>
-                    <td>${article.grade}</td>
+                <td style="font-size: 25px;">${article.title}</td>
+                <td style="font-size: 25px;">${article.content}</td>
+                <td style="font-size: 15px;">${article.submitted_at}</td>
+                <td style="font-size: 25px;">${article.grade}</td>
                     <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
@@ -51,7 +51,7 @@ window.onload = () => {
         .catch(function (error) {
             //Handle error
             if (error.response.status == 404) {
-                alert("You have not submitted any article")
+                printText();
                 btn();
             } else if (error.response.status == 403) {
                 alert(JSON.stringify(error.response.data));
@@ -61,8 +61,62 @@ window.onload = () => {
                 console.log(error)
             }
         });
+        getTheDue();
 }
 
+function getTheDue () {
+    axios({
+        method: 'GET',
+        url: baseUrl + '/competition/dueDate',
+        dataType: "json",
+    })
+        .then(function (response) {
+            const dateResult = response.data;
+            console.log(dateResult);
+            var dueDate = dateResult.duedate
+            countDown(dueDate)
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
+function printText(){
+    var txt=`Welcome to our Competition!!! Submit your article and win the Prizes`;
+    document.getElementById('printText').innerText = txt;
+}
+
+function countDown(dueDate) {
+    var countDate = new Date(dueDate).getTime();
+    setInterval(function(){
+        var now = new Date().getTime();
+        var gap = countDate - now;
+  
+        if (gap < 0) {
+          document.getElementById('day').innerText = "00";
+          document.getElementById('hour').innerText = "00";
+          document.getElementById('minute').innerText = "00";
+          document.getElementById('second').innerText = "00"; 
+          document.getElementById("expired").innerHTML = "Expired";
+        } else {
+          var d = Math.floor(gap / (1000 * 60 * 60 * 24));
+          var h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));;
+          var m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+          var s = Math.floor((gap % (1000 * 60)) / 1000);
+  
+          document.getElementById('day').innerText = d;
+          document.getElementById('hour').innerText = h;
+          document.getElementById('minute').innerText = m;
+          document.getElementById('second').innerText = s; 
+  
+        }
+  },1000)
+  }
 
 function btn() {
     event.preventDefault();
@@ -90,7 +144,7 @@ function articleDel(id) {
                 'authorization': 'Bearer ' + token
             },
             method: 'DELETE',
-            url: baseUrl + '/competition/articles/' + userId,
+            url: baseUrl + '/competition/articles/' + userid,
             dataType: "json",
         })
             .then(function (response) {
