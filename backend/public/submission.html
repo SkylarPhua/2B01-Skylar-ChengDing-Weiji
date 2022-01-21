@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>[W]riting[C]ompetition</title>
+    <!-- Font Awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap">
+    <!-- Bootstrap core CSS-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <!-- Noty CSS-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+    <!-- Noty CSS Map-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css.map" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+
+<body>
+    <!-- Navbar-->
+    <nav class="mb-1 navbar navbar-expand-lg navbar-dark primary-color">
+        <a class="navbar-brand" href="#">
+            <img src="images/logo.jpg" alt="Logo" style="width:40px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
+            aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active"><a class="nav-link active" href="submission.html">Home</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav item"><a class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a class="nav-link" id='logoutButton'>Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- /.Navbar-->
+
+    <div class="container pt-5">
+        <table class="table">
+            <thead class="thead-dark" id="field" hidden>
+
+            </thead>
+            <tbody id="getArticleData">
+
+            </tbody>
+
+        </table>
+    </div>
+
+
+
+
+    <!-- JQuery-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js">
+    </script>
+    <!-- Noty JS-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js">
+    </script>
+    <script src="./js/submission.js" type="text/javascript"></script>
+    <script src="./js/logout.js" type="text/javascript"></script>
+</body>
+
+</html>

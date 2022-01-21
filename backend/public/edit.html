@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>[W]riting[C]ompetition</title>
+    <!-- Font Awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap">
+    <!-- Bootstrap core CSS-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <!-- Noty CSS-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <nav class="mb-1 navbar navbar-expand-lg navbar-dark primary-color">
+        <a class="navbar-brand" href="#">
+            <img src="images/logo.jpg" alt="Logo" style="width:40px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
+            aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active"><a class="nav-link active" href="submission.html">Home</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav item"><a class="nav-link">My Profile</a></li>
+                <li class="nav-item"><a class="nav-link" id='logoutButton'>Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <br>
+        <br>
+        <form class="well form-horizontal" action="" method="put" id="article-form">
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Category</label>
+                    <div class="col-md-3 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
+                            <textarea id="cat" name="cat" placeholder="Category" class="form-control" type="text"
+                                disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Title</label>
+                    <div class="col-md-3 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                            <textarea id="title" name="Title" placeholder="Title" class="form-control"
+                                type="text"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <h2 class="col-md-9 control-label">Word Counter: <span id="count">0</span></h2>
+                    <br>
+                    <br>
+                    <br>
+
+                    <label class="col-md-4 control-label">Article</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                            <textarea id="article" name="Article" rows="20" placeholder="Article" class="form-control"
+                                type="text"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-4 "><br>
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit"
+                            id="submitButton" class="btn btn-success">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEdit <span
+                                class="glyphicon glyphicon-floppy-save"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
+                    </div>
+                </div>
+                <a href="submission.html" class="btn btn-danger">Back</a>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- JQuery-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <!-- Noty JS-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="./js/edit.js" type="text/javascript"></script>
+    <script src="./js/logout.js" type="text/javascript"></script>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "ca1-coding",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weiji0202/ADES_CA2.git"
+  },
+  "author": "KWOK WEI JI",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weiji0202/ADES_CA1/issues"
+  },
+  "homepage": "https://github.com/weiji0202/ADES_CA1#readme",
+  "dependencies": {
+    "async": "^3.2.2",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http-errors": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "lexrank": "^1.0.5",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.1",
+    "validator": "^13.7.0"
+  }
+}
