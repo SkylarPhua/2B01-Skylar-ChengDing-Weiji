@@ -38,51 +38,69 @@ module.exports = {
 
     // Endpoint 2:
     // addStudentToGroup: function (studentID, tournamentType, callback) {
-    //     const InsertQuery = `INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`
-    //     const SelectQuery = `SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`
-    //     const UpdateQuery = `UPDATE usertb SET grouptype = $1 WHERE userID = $2`
-
-    //     database.query(`BEGIN`)
-    //     database.query(InsertQuery, [studentID, tournamentType])
-    //         .then(function (result) {
-    //             if (result.rowCount == 0) {
-    //                 console.log("The studentID already exist in the group");
-    //                 database.query(`ROLLBACK`)
-    //                 return callback({ code: "studentExists" }, null);
-    //             } else {
-    //                 database.query(SelectQuery, [tournamentType])
-    //                     .then(function (result) {
-    //                         if (result.rows.length == 0) {
-    //                             database.query(`ROLLBACK`)
-    //                             return callback({ code: "noGroupType" }, null);
-    //                         } else {
-    //                             groupType = result.rows[0].group_type;
-    //                             console.log("groupType: " + groupType);
-    //                             database.query(UpdateQuery, [groupType, studentID])
-    //                                 .then(function (result) {
-    //                                     if (result.rowCount == 0) {
-    //                                         database.query(`ROLLBACK`)
-    //                                         return callback({ code: "noUpdate" }, null);
-    //                                     } else {
-    //                                         database.query(`COMMIT`)
-    //                                         return callback(null, result)
-    //                                     }
-    //                                 })
-    //                         }
-    //                     })
-    //             }
-    //         })
-    //         .catch(function (error) {
-    //             console.log("This is the error for addStudentToGroup in tournament.js " + error);
-    //             // database.query(`ROLLBACK`)
-    //             return callback(error, null);
-    //         })
+    //     async function addStudentToTournament(studentID, tournamentType) {
+    //         let result;
+    //         try {
+    //             result = await database.query(`INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`, [studentID, tournamentType])
+    //         } catch (error) {
+    //             throw { code: "database_error: " + error };
+    //         }
+    
+    //         if (result.rowCount == 0) {
+    //             throw { code: "studentExists" };
+    //         }
+    //     }
+    
+    //     async function getGroupTypeInTournamentType(tournamentType) {
+    //         let result;
+    //         try {
+    //             result = await database.query(`SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`, [tournamentType])
+    //             console.log("This is group Type: " + JSON.stringify(result));
+    //         } catch (error) {
+    //             throw { code: "database_error: " + error };
+    //         }
+    
+    //         if (result.rows.length == 0) {
+    //             throw { code: "noGroupType" };
+    //         }
+    //         return result.rows[0].group_type;
+    //     }
+    
+    //     async function updateUsersGroupType(groupType, studentID) {
+    //         let result;
+    //         try {
+    //             result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userID = $2`, [groupType, studentID])
+    //         } catch (error) {
+    //             throw { code: "database_error: " + error };
+    //         }
+    
+    //         if (result.rowCount == 0) {
+    //             throw { code: "noUpdate" };
+    //         }
+    //         return result;
+    //     }
+    
+    //     database.transaction(async () => {
+    //         await addStudentToTournament(studentID, tournamentType);
+    //         const groupType = await getGroupTypeInTournamentType(tournamentType);
+    //         console.log("Group Type: " + groupType);
+    //         let result = await updateUsersGroupType(groupType, studentID);
+    //         console.log("This is the result in tournament.js: " + JSON.stringify(result));
+    //         console.log("--------> " + result);
+    //         return result;
+    //     })
+    //     .then(function (result) {
+    //         return callback(null, result);
+    //     })
+    //     .catch(function (err) {
+    //         return callback({ code: err.code }, null);
+    //     })
     // },
     addStudentToGroup: function (studentID, tournamentType, callback) {
-        async function addStudentToTournament(studentID, tournamentType) {
+        async function addStudentToTournament(studentID, tournamentType, dbClient) {
             let result;
             try {
-                result = await database.query(`INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`, [studentID, tournamentType])
+                result = await dbClient.query(`INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`, [studentID, tournamentType])
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
@@ -92,10 +110,10 @@ module.exports = {
             }
         }
     
-        async function getGroupTypeInTournamentType(tournamentType) {
+        async function getGroupTypeInTournamentType(tournamentType, dbClient) {
             let result;
             try {
-                result = await database.query(`SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`, [tournamentType])
+                result = await dbClient.query(`SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`, [tournamentType])
                 console.log("This is group Type: " + JSON.stringify(result));
             } catch (error) {
                 throw { code: "database_error: " + error };
@@ -107,10 +125,10 @@ module.exports = {
             return result.rows[0].group_type;
         }
     
-        async function updateUsersGroupType(groupType, studentID) {
+        async function updateUsersGroupType(groupType, studentID, dbClient) {
             let result;
             try {
-                result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userID = $2`, [groupType, studentID])
+                result = await dbClient.query(`UPDATE usertb SET grouptype = $1 WHERE userID = $2`, [groupType, studentID])
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
@@ -121,11 +139,11 @@ module.exports = {
             return result;
         }
     
-        database.transaction(async () => {
-            await addStudentToTournament(studentID, tournamentType);
-            const groupType = await getGroupTypeInTournamentType(tournamentType);
+        database.transaction(async (dbClient) => {
+            await addStudentToTournament(studentID, tournamentType, dbClient);
+            const groupType = await getGroupTypeInTournamentType(tournamentType, dbClient);
             console.log("Group Type: " + groupType);
-            let result = await updateUsersGroupType(groupType, studentID);
+            let result = await updateUsersGroupType(groupType, studentID, dbClient);
             console.log("This is the result in tournament.js: " + JSON.stringify(result));
             console.log("--------> " + result);
             return result;
@@ -180,11 +198,70 @@ module.exports = {
     },
 
     // Endpoint 5: for admin to delete user from tournament and edit the usertb grouptype column to empty 
+    // deleteStudentEntry: function (studentID, tournamentID, callback) {
+    //     async function deleteStudentFromGroup(tournamentID) {
+    //         let result;
+    //         try {
+    //             result = await database.query(`DELETE FROM tournament WHERE tournamentID = $1`, [tournamentID])
+    //         } catch (error) {
+    //             throw { code: "database_error: " + error };
+    //         }
+
+    //         if (result.rowCount == 0) {
+    //             throw { code: "noSuchEntry" };
+    //         }
+    //     }
+
+    //     const DEFAULT_GROUP_TYPE = 'qualifying_round';
+    //     async function getLastestGroupTypeOrDefault(studentID) {
+    //         let result;
+    //         try {
+    //             const SelectLatestQuery = `SELECT tt.group_type FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 ORDER BY tournamentid DESC LIMIT 1`;
+    //             result = await database.query(SelectLatestQuery, [studentID])
+    //         } catch (error) {
+    //             throw {code: "database_error: " + error };
+    //         }
+
+    //         if (result.rows.length == 0) {
+    //             return DEFAULT_GROUP_TYPE;
+    //         }
+    //         return result.rows[0].group_type
+    //     }
+
+    //     async function updateGroup(studentID, groupType) {
+    //         let result;
+    //         try {
+    //             result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
+    //         } catch (error) {
+    //             throw { code: 'database_error:' + error };
+    //         }
+        
+    //         if (result.rowCount == 0) {
+    //             throw { code: 'noUpdate' };
+    //         }
+    //         return result;
+    //     }
+
+    //     database.transaction(async () => {
+    //         await deleteStudentFromGroup(tournamentID);
+    //         const groupType = await getLastestGroupTypeOrDefault(studentID);
+    //         let result = await updateGroup(studentID, groupType);
+    //         console.log("This is the result in tournament.js: " + JSON.stringify(result));
+    //         console.log("--------> " + result);
+    //         return result;
+    //     })
+    //     .then(function (result) {
+    //         return callback(null, result);
+    //     })
+    //     .catch(function (err) {
+    //         return callback({ code: err.code }, null);
+    //     })
+    // }
     deleteStudentEntry: function (studentID, tournamentID, callback) {
-        async function deleteStudentFromGroup(tournamentID) {
+        async function deleteStudentFromGroup(tournamentID, dbClient) {
             let result;
             try {
-                result = await database.query(`DELETE FROM tournament WHERE tournamentID = $1`, [tournamentID])
+                result = await dbClient.query(`DELETE FROM tournament WHERE tournamentID = $1`, [tournamentID])
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
@@ -195,11 +272,11 @@ module.exports = {
         }
 
         const DEFAULT_GROUP_TYPE = 'qualifying_round';
-        async function getLastestGroupTypeOrDefault(studentID) {
+        async function getLastestGroupTypeOrDefault(studentID, dbClient) {
             let result;
             try {
                 const SelectLatestQuery = `SELECT tt.group_type FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 ORDER BY tournamentid DESC LIMIT 1`;
-                result = await database.query(SelectLatestQuery, [studentID])
+                result = await dbClient.query(SelectLatestQuery, [studentID])
             } catch (error) {
                 throw {code: "database_error: " + error };
             }
@@ -210,10 +287,10 @@ module.exports = {
             return result.rows[0].group_type
         }
 
-        async function updateGroup(studentID, groupType) {
+        async function updateGroup(studentID, groupType, dbClient) {
             let result;
             try {
-                result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
+                result = await dbClient.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
             } catch (error) {
                 throw { code: 'database_error:' + error };
             }
@@ -224,10 +301,10 @@ module.exports = {
             return result;
         }
 
-        database.transaction(async () => {
-            await deleteStudentFromGroup(tournamentID);
-            const groupType = await getLastestGroupTypeOrDefault(studentID);
-            let result = await updateGroup(studentID, groupType);
+        database.transaction(async (dbClient) => {
+            await deleteStudentFromGroup(tournamentID, dbClient);
+            const groupType = await getLastestGroupTypeOrDefault(studentID, dbClient);
+            let result = await updateGroup(studentID, groupType, dbClient);
             console.log("This is the result in tournament.js: " + JSON.stringify(result));
             console.log("--------> " + result);
             return result;

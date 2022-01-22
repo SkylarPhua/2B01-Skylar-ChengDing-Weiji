@@ -23,47 +23,53 @@ exports.connect = function () {
     max: 5, // New things
   });
   return connection.connect().catch(function (error) {
-    connection = null;    
+    connection = null;
     throw error;
   });
 };
 
 exports.query = function (text, params) {
-    if (!connection) {
-      return Promise.reject(new Error('Not connected to database'));
-    }
-      return connection.query(text, params)
-  };
+  if (!connection) {
+    return Promise.reject(new Error('Not connected to database'));
+  }
+  return connection.query(text, params)
+};
+
+// lAST WORKING ONE
+// exports.transaction = async function (asyncFn) {
+//   if (!connection) {
+//     return Promise.reject(new Error('Not connected to database'));
+//   }
+//   await connection.query(`BEGIN`)
+//   try {
+//       const result = await asyncFn();
+//       await connection.query(`COMMIT`);
+//       console.log("This is database.js: " + result);
+//       return result;
+//   } catch (err)  {
+//       await connection.query(`ROLLBACK`);
+//       throw err;
+//   }
+// }
 
 exports.transaction = async function (asyncFn) {
   if (!connection) {
     return Promise.reject(new Error('Not connected to database'));
   }
-  await connection.query(`BEGIN`)
+  const dbClient = await connection.connect();
+
   try {
-      const result = await asyncFn();
-      await connection.query(`COMMIT`);
-      console.log("This is database.js: " + result);
+    await dbClient.query(`BEGIN`);
+    try {
+      const result = await asyncFn(dbClient);
+      await dbClient.query(`COMMIT`);
+      console.log("This is database.js: " + JSON.stringify(result));
       return result;
-  } catch (err)  {
-      await connection.query(`ROLLBACK`);
+    } catch (err) {
+      await dbClient.query(`ROLLBACK`);
       throw err;
+    }
+  } finally {
+    dbClient.release();
   }
 }
-
-// exports.transaction = async function (asyncFn) {
-//   const client = await pool.connect();
-//   if (!connection) {
-//     return Promise.reject(new Error('Not connected to database'));
-//   }
-//   await client.query(`BEGIN`)
-//   try {
-//       const result = await asyncFn(client);
-//       await client.query(`COMMIT`);
-//       console.log("This is database.js: " + result);
-//       return result;
-//   } catch (err)  {
-//       await client.query(`ROLLBACK`);
-//       throw err;
-//   }
-// }
