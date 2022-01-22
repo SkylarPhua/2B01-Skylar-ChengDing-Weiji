@@ -84,23 +84,42 @@ exports.getGroupByNumber = function (req, res) {
 }
 
 // Endpoint 2: postStudentToGroup
+// exports.postStudentToGroup = function (req, res) {
+//     const studentID = parseInt(req.body.userid);
+//     const tournamentType = req.body.tournamentType;
+
+//     tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
+//         if (!error && result !== "") {
+//             console.log("This is the result (app.js): " + JSON.stringify(result));
+//             res.status(201).send("Student has been added into Tournament");
+//         } else if (error.code == '23505') {
+//             console.log("This is the bad result: " + JSON.stringify(result));
+//             res.status(422).send("Student already exsist in the tournament");
+//         } else if (error.code == "noGroupType") {
+//             res.status(404).send("Cannot find such a student");
+//         } else if (error.code == "noUpdate") {
+//             res.status(404).send("Cannot find the requested student");
+//         } else {
+//             console.log("This is the error: " + error);
+//             res.status(500).send("Unknown error");
+//         }
+//     })
+// }
 exports.postStudentToGroup = function (req, res) {
     const studentID = parseInt(req.body.userid);
     const tournamentType = req.body.tournamentType;
 
     tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
         if (!error && result !== "") {
-            console.log("This is the result (app.js): " + JSON.stringify(result));
             res.status(201).send("Student has been added into Tournament");
-        } else if (error.code == '23505') {
-            console.log("This is the bad result: " + JSON.stringify(result));
+        } else if (error.code == "studentExists") {
             res.status(422).send("Student already exsist in the tournament");
         } else if (error.code == "noGroupType") {
-            res.status(404).send("Cannot find such a student");
+            res.status(404).send("No such group type");
         } else if (error.code == "noUpdate") {
             res.status(404).send("Cannot find the requested student");
         } else {
-            console.log("This is the error: " + error);
+            console.log("This is the error: " + JSON.stringify(error));
             res.status(500).send("Unknown error");
         }
     })

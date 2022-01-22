@@ -36,18 +36,34 @@ exports.query = function (text, params) {
   };
 
 exports.transaction = async function (asyncFn) {
-  const client = await pool.connect();
   if (!connection) {
     return Promise.reject(new Error('Not connected to database'));
   }
-  await client.query(`BEGIN`)
+  await connection.query(`BEGIN`)
   try {
-      const result = await asyncFn(client);
-      await client.query(`COMMIT`);
+      const result = await asyncFn();
+      await connection.query(`COMMIT`);
       console.log("This is database.js: " + result);
       return result;
   } catch (err)  {
-      await client.query(`ROLLBACK`);
+      await connection.query(`ROLLBACK`);
       throw err;
   }
 }
+
+// exports.transaction = async function (asyncFn) {
+//   const client = await pool.connect();
+//   if (!connection) {
+//     return Promise.reject(new Error('Not connected to database'));
+//   }
+//   await client.query(`BEGIN`)
+//   try {
+//       const result = await asyncFn(client);
+//       await client.query(`COMMIT`);
+//       console.log("This is database.js: " + result);
+//       return result;
+//   } catch (err)  {
+//       await client.query(`ROLLBACK`);
+//       throw err;
+//   }
+// }

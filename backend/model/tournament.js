@@ -37,46 +37,105 @@ module.exports = {
     },
 
     // Endpoint 2:
-    addStudentToGroup: function (studentID, tournamentType, callback) {
-        const InsertQuery = `INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`
-        const SelectQuery = `SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`
-        const UpdateQuery = `UPDATE usertb SET grouptype = $1 WHERE userID = $2`
+    // addStudentToGroup: function (studentID, tournamentType, callback) {
+    //     const InsertQuery = `INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`
+    //     const SelectQuery = `SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`
+    //     const UpdateQuery = `UPDATE usertb SET grouptype = $1 WHERE userID = $2`
 
-        database.query(`BEGIN`)
-        database.query(InsertQuery, [studentID, tournamentType])
-            .then(function (result) {
-                if (result.rowCount == 0) {
-                    console.log("The studentID already exist in the group");
-                    database.query(`ROLLBACK`)
-                    return callback({ code: "studentExists" }, null);
-                } else {
-                    database.query(SelectQuery, [tournamentType])
-                        .then(function (result) {
-                            if (result.rows.length == 0) {
-                                database.query(`ROLLBACK`)
-                                return callback({ code: "noGroupType" }, null);
-                            } else {
-                                groupType = result.rows[0].group_type;
-                                console.log("groupType: " + groupType);
-                                database.query(UpdateQuery, [groupType, studentID])
-                                    .then(function (result) {
-                                        if (result.rowCount == 0) {
-                                            database.query(`ROLLBACK`)
-                                            return callback({ code: "noUpdate" }, null);
-                                        } else {
-                                            database.query(`COMMIT`)
-                                            return callback(null, result)
-                                        }
-                                    })
-                            }
-                        })
-                }
-            })
-            .catch(function (error) {
-                console.log("This is the error for addStudentToGroup in tournament.js " + error);
-                // database.query(`ROLLBACK`)
-                return callback(error, null);
-            })
+    //     database.query(`BEGIN`)
+    //     database.query(InsertQuery, [studentID, tournamentType])
+    //         .then(function (result) {
+    //             if (result.rowCount == 0) {
+    //                 console.log("The studentID already exist in the group");
+    //                 database.query(`ROLLBACK`)
+    //                 return callback({ code: "studentExists" }, null);
+    //             } else {
+    //                 database.query(SelectQuery, [tournamentType])
+    //                     .then(function (result) {
+    //                         if (result.rows.length == 0) {
+    //                             database.query(`ROLLBACK`)
+    //                             return callback({ code: "noGroupType" }, null);
+    //                         } else {
+    //                             groupType = result.rows[0].group_type;
+    //                             console.log("groupType: " + groupType);
+    //                             database.query(UpdateQuery, [groupType, studentID])
+    //                                 .then(function (result) {
+    //                                     if (result.rowCount == 0) {
+    //                                         database.query(`ROLLBACK`)
+    //                                         return callback({ code: "noUpdate" }, null);
+    //                                     } else {
+    //                                         database.query(`COMMIT`)
+    //                                         return callback(null, result)
+    //                                     }
+    //                                 })
+    //                         }
+    //                     })
+    //             }
+    //         })
+    //         .catch(function (error) {
+    //             console.log("This is the error for addStudentToGroup in tournament.js " + error);
+    //             // database.query(`ROLLBACK`)
+    //             return callback(error, null);
+    //         })
+    // },
+    addStudentToGroup: function (studentID, tournamentType, callback) {
+        async function addStudentToTournament(studentID, tournamentType) {
+            let result;
+            try {
+                result = await database.query(`INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`, [studentID, tournamentType])
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+    
+            if (result.rowCount == 0) {
+                throw { code: "studentExists" };
+            }
+        }
+    
+        async function getGroupTypeInTournamentType(tournamentType) {
+            let result;
+            try {
+                result = await database.query(`SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`, [tournamentType])
+                console.log("This is group Type: " + JSON.stringify(result));
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+    
+            if (result.rows.length == 0) {
+                throw { code: "noGroupType" };
+            }
+            return result.rows[0].group_type;
+        }
+    
+        async function updateUsersGroupType(groupType, studentID) {
+            let result;
+            try {
+                result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userID = $2`, [groupType, studentID])
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+    
+            if (result.rowCount == 0) {
+                throw { code: "noUpdate" };
+            }
+            return result;
+        }
+    
+        database.transaction(async () => {
+            await addStudentToTournament(studentID, tournamentType);
+            const groupType = await getGroupTypeInTournamentType(tournamentType);
+            console.log("Group Type: " + groupType);
+            let result = await updateUsersGroupType(groupType, studentID);
+            console.log("This is the result in tournament.js: " + JSON.stringify(result));
+            console.log("--------> " + result);
+            return result;
+        })
+        .then(function (result) {
+            return callback(null, result);
+        })
+        .catch(function (err) {
+            return callback({ code: err.code }, null);
+        })
     },
 
     // Endpoint 3: (This is to post the article initially and also to edit the article)
@@ -136,11 +195,11 @@ module.exports = {
         }
 
         const DEFAULT_GROUP_TYPE = 'qualifying_round';
-        async function getLastestGroupTypeOrDefault(studentID, client) {
+        async function getLastestGroupTypeOrDefault(studentID) {
             let result;
             try {
                 const SelectLatestQuery = `SELECT tt.group_type FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 ORDER BY tournamentid DESC LIMIT 1`;
-                result = await client.query(SelectLatestQuery, [studentID])
+                result = await database.query(SelectLatestQuery, [studentID])
             } catch (error) {
                 throw {code: "database_error: " + error };
             }
@@ -165,9 +224,9 @@ module.exports = {
             return result;
         }
 
-        database.transaction(async (client) => {
+        database.transaction(async () => {
             await deleteStudentFromGroup(tournamentID);
-            const groupType = await getLastestGroupTypeOrDefault(studentID, client);
+            const groupType = await getLastestGroupTypeOrDefault(studentID);
             let result = await updateGroup(studentID, groupType);
             console.log("This is the result in tournament.js: " + JSON.stringify(result));
             console.log("--------> " + result);
