@@ -136,11 +136,11 @@ module.exports = {
         }
 
         const DEFAULT_GROUP_TYPE = 'qualifying_round';
-        async function getLastestGroupTypeOrDefault(studentID) {
+        async function getLastestGroupTypeOrDefault(studentID, client) {
             let result;
             try {
                 const SelectLatestQuery = `SELECT tt.group_type FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 ORDER BY tournamentid DESC LIMIT 1`;
-                result = await database.query(SelectLatestQuery, [studentID])
+                result = await client.query(SelectLatestQuery, [studentID])
             } catch (error) {
                 throw {code: "database_error: " + error };
             }
@@ -165,9 +165,9 @@ module.exports = {
             return result;
         }
 
-        database.transaction(async () => {
+        database.transaction(async (client) => {
             await deleteStudentFromGroup(tournamentID);
-            const groupType = await getLastestGroupTypeOrDefault(studentID);
+            const groupType = await getLastestGroupTypeOrDefault(studentID, client);
             let result = await updateGroup(studentID, groupType);
             console.log("This is the result in tournament.js: " + JSON.stringify(result));
             console.log("--------> " + result);

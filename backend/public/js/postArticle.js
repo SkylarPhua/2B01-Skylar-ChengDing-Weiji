@@ -16,7 +16,6 @@ function chkinput() {
 
 
 $('#submitButton').on('click', function (event) {
-  loader();
   event.preventDefault();
   const baseUrl = 'http://localhost:8000';
   let category = $('#cat').val();
