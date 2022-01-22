@@ -16,8 +16,8 @@ var jwt = require('jsonwebtoken');
 module.exports = {
 
     // Endpoint 1
-    loginUser: function (email, callback) {
-        const query = `SELECT userid, name, email, usertype, password FROM usertb WHERE email = $1`;
+    loginUser: function (email, callback) { 
+        const query = `SELECT userid, name, email, usertype, password, grouptype FROM usertb WHERE email = $1`;
 
         return database
             .query(query, [email])

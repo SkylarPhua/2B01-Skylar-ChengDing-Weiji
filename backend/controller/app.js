@@ -36,24 +36,26 @@ exports.logUser = function (req, res) {
 
             console.log("userid: " + result[0].userid);
             console.log("usertype: " + result[0].usertype);
+            console.log("grouptype: " + result[0].grouptype);
 
             if (bcrypt.compareSync(passwordGL, passsword) == true) {
                 console.log(passwordGL);
                 var token = "";
                 token = jwt.sign({
                     userid: result[0].userid,
-                    usertype: result[0].usertype
+                    usertype: result[0].usertype,
+                    groupType: result[0].grouptype
                 },
                     config.key, {
                     expiresIn: 6000
                 });
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({ success: true, data: result[0].userid, UserData: result[0].usertype, token: token, status: 'You are successfully login' });
+                res.json({ success: true, data: result[0].userid, UserData: result[0].usertype, groupType: result[0].grouptype, token: token, status: 'You are successfully login' });
                 console.log("Token is: " + token);
                 res.send();
             } else {
-                console.log("come on u put in wrong password idiot ")
+                console.log("You have the wrong password");
                 res.status(401).send("Incorrect email or password");
             }
         } else {
