@@ -84,27 +84,6 @@ exports.getGroupByNumber = function (req, res) {
 }
 
 // Endpoint 2: postStudentToGroup
-// exports.postStudentToGroup = function (req, res) {
-//     const studentID = parseInt(req.body.userid);
-//     const tournamentType = req.body.tournamentType;
-
-//     tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
-//         if (!error && result !== "") {
-//             console.log("This is the result (app.js): " + JSON.stringify(result));
-//             res.status(201).send("Student has been added into Tournament");
-//         } else if (error.code == '23505') {
-//             console.log("This is the bad result: " + JSON.stringify(result));
-//             res.status(422).send("Student already exsist in the tournament");
-//         } else if (error.code == "noGroupType") {
-//             res.status(404).send("Cannot find such a student");
-//         } else if (error.code == "noUpdate") {
-//             res.status(404).send("Cannot find the requested student");
-//         } else {
-//             console.log("This is the error: " + error);
-//             res.status(500).send("Unknown error");
-//         }
-//     })
-// }
 exports.postStudentToGroup = function (req, res) {
     const studentID = parseInt(req.body.userid);
     const tournamentType = req.body.tournamentType;
@@ -179,8 +158,8 @@ exports.deleteStudentFromGroup = function (req, res) {
 
 // Endpoint 6: For student and admin (Got word counter also)
 exports.getStudentArticleFromTournament = function (req, res) {
-    const studentID = req.body.userid;
-    const groupType = req.body.groupType;
+    const studentID = req.params.id;
+    const groupType = req.params.groupType;
 
     tournament.getStudentArticle(studentID, groupType, function (error, result) {
         if (!error && result !== "") {
@@ -188,7 +167,7 @@ exports.getStudentArticleFromTournament = function (req, res) {
         } else if (error.code == "noSuchArticle") {
             res.status(404).send("Cannot find any article done by user");
         } else {
-            console.log("This is the error (getStudentArticleFromTournament): " + error);
+            console.log("This is the error (getStudentArticleFromTournament): " + JSON.stringify(error));
             res.status(500).send("Unknown error");
         }
     })

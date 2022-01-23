@@ -37,65 +37,6 @@ module.exports = {
     },
 
     // Endpoint 2:
-    // addStudentToGroup: function (studentID, tournamentType, callback) {
-    //     async function addStudentToTournament(studentID, tournamentType) {
-    //         let result;
-    //         try {
-    //             result = await database.query(`INSERT INTO tournament (fk_userID, fk_tournament_type) VALUES ($1, $2)`, [studentID, tournamentType])
-    //         } catch (error) {
-    //             throw { code: "database_error: " + error };
-    //         }
-    
-    //         if (result.rowCount == 0) {
-    //             throw { code: "studentExists" };
-    //         }
-    //     }
-    
-    //     async function getGroupTypeInTournamentType(tournamentType) {
-    //         let result;
-    //         try {
-    //             result = await database.query(`SELECT group_type FROM tournament_type WHERE tournament_typeid = $1`, [tournamentType])
-    //             console.log("This is group Type: " + JSON.stringify(result));
-    //         } catch (error) {
-    //             throw { code: "database_error: " + error };
-    //         }
-    
-    //         if (result.rows.length == 0) {
-    //             throw { code: "noGroupType" };
-    //         }
-    //         return result.rows[0].group_type;
-    //     }
-    
-    //     async function updateUsersGroupType(groupType, studentID) {
-    //         let result;
-    //         try {
-    //             result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userID = $2`, [groupType, studentID])
-    //         } catch (error) {
-    //             throw { code: "database_error: " + error };
-    //         }
-    
-    //         if (result.rowCount == 0) {
-    //             throw { code: "noUpdate" };
-    //         }
-    //         return result;
-    //     }
-    
-    //     database.transaction(async () => {
-    //         await addStudentToTournament(studentID, tournamentType);
-    //         const groupType = await getGroupTypeInTournamentType(tournamentType);
-    //         console.log("Group Type: " + groupType);
-    //         let result = await updateUsersGroupType(groupType, studentID);
-    //         console.log("This is the result in tournament.js: " + JSON.stringify(result));
-    //         console.log("--------> " + result);
-    //         return result;
-    //     })
-    //     .then(function (result) {
-    //         return callback(null, result);
-    //     })
-    //     .catch(function (err) {
-    //         return callback({ code: err.code }, null);
-    //     })
-    // },
     addStudentToGroup: function (studentID, tournamentType, callback) {
         async function addStudentToTournament(studentID, tournamentType, dbClient) {
             let result;
@@ -198,65 +139,6 @@ module.exports = {
     },
 
     // Endpoint 5: for admin to delete user from tournament and edit the usertb grouptype column to empty 
-    // deleteStudentEntry: function (studentID, tournamentID, callback) {
-    //     async function deleteStudentFromGroup(tournamentID) {
-    //         let result;
-    //         try {
-    //             result = await database.query(`DELETE FROM tournament WHERE tournamentID = $1`, [tournamentID])
-    //         } catch (error) {
-    //             throw { code: "database_error: " + error };
-    //         }
-
-    //         if (result.rowCount == 0) {
-    //             throw { code: "noSuchEntry" };
-    //         }
-    //     }
-
-    //     const DEFAULT_GROUP_TYPE = 'qualifying_round';
-    //     async function getLastestGroupTypeOrDefault(studentID) {
-    //         let result;
-    //         try {
-    //             const SelectLatestQuery = `SELECT tt.group_type FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 ORDER BY tournamentid DESC LIMIT 1`;
-    //             result = await database.query(SelectLatestQuery, [studentID])
-    //         } catch (error) {
-    //             throw {code: "database_error: " + error };
-    //         }
-
-    //         if (result.rows.length == 0) {
-    //             return DEFAULT_GROUP_TYPE;
-    //         }
-    //         return result.rows[0].group_type
-    //     }
-
-    //     async function updateGroup(studentID, groupType) {
-    //         let result;
-    //         try {
-    //             result = await database.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
-    //         } catch (error) {
-    //             throw { code: 'database_error:' + error };
-    //         }
-        
-    //         if (result.rowCount == 0) {
-    //             throw { code: 'noUpdate' };
-    //         }
-    //         return result;
-    //     }
-
-    //     database.transaction(async () => {
-    //         await deleteStudentFromGroup(tournamentID);
-    //         const groupType = await getLastestGroupTypeOrDefault(studentID);
-    //         let result = await updateGroup(studentID, groupType);
-    //         console.log("This is the result in tournament.js: " + JSON.stringify(result));
-    //         console.log("--------> " + result);
-    //         return result;
-    //     })
-    //     .then(function (result) {
-    //         return callback(null, result);
-    //     })
-    //     .catch(function (err) {
-    //         return callback({ code: err.code }, null);
-    //     })
-    // }
     deleteStudentEntry: function (studentID, tournamentID, callback) {
         async function deleteStudentFromGroup(tournamentID, dbClient) {
             let result;
@@ -323,12 +205,12 @@ module.exports = {
         (SELECT tournamentID, UNNEST(STRING_TO_ARRAY(REGEXP_REPLACE(articlecontent,  '[^\\w\\s]', '', 'g'), ' ')) AS word, articlecontent FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE fk_userid = $1 AND tt.group_type = $2)
         SELECT u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, COUNT(count.word)
         FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid), count 
-        WHERE u.userid = $3
+        WHERE u.userid = $3 AND tt.group_type = $4
         GROUP BY u.name, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks
         `;
 
         return database
-            .query(query, [studentID, groupType, studentID])
+            .query(query, [studentID, groupType, studentID, groupType])
             .then(function(result) {
                 if (result.rows.length == 0) {
                     return callback({ code: "noSuchArticle"}, null);
@@ -342,5 +224,7 @@ module.exports = {
                 return callback(error, null)
             })
     },
+
+    // Endpoint 7: This is the article deletion for student (Just an PUT function)
     
 }
