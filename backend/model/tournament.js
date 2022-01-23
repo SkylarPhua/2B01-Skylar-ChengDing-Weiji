@@ -315,5 +315,32 @@ module.exports = {
         .catch(function (err) {
             return callback({ code: err.code }, null);
         })
-    }
+    },
+
+    // Endpoint 6: for student to get their article by their id and group type
+    getStudentArticle: function (studentID, groupType, callback) {
+        const query = `WITH count AS 
+        (SELECT tournamentID, UNNEST(STRING_TO_ARRAY(REGEXP_REPLACE(articlecontent,  '[^\\w\\s]', '', 'g'), ' ')) AS word, articlecontent FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE fk_userid = $1 AND tt.group_type = $2)
+        SELECT u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, COUNT(count.word)
+        FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid), count 
+        WHERE u.userid = $3
+        GROUP BY u.name, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks
+        `;
+
+        return database
+            .query(query, [studentID, groupType, studentID])
+            .then(function(result) {
+                if (result.rows.length == 0) {
+                    return callback({ code: "noSuchArticle"}, null);
+                } else if (result.rows.length == 1) {
+                    return callback(null, result.rows);
+                } else {
+                    return callback({ code: "unknownError" }, null);
+                }
+            })
+            .catch(function (error) {
+                return callback(error, null)
+            })
+    },
+    
 }

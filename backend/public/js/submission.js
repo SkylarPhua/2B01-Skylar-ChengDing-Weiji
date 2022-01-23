@@ -2,9 +2,11 @@
 const getdata = document.getElementById("getArticleData");
 let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
+let groupType = localStorage.getItem('group_type');
 const axios = window.axios;
 
 const baseUrl = 'http://localhost:8000';
+
 window.onload = () => {
     event.preventDefault();
     axios({
@@ -63,6 +65,19 @@ window.onload = () => {
         });
         getTheDue();
 }
+
+// if (groupType === "final") {
+//     axios({
+//         headers: {
+//             'user': userid,
+//             'authorization': 'Bearer ' + token
+//         },
+//         method: 'GET',
+//         url: baseUrl + '/competition/article/' + userid,
+//         dataType: "json",
+//     })
+// }
+
 
 function getTheDue () {
     axios({

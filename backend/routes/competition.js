@@ -24,12 +24,16 @@ router.get('/tournament/:groupNum/', app.getGroupByNumber);
 router.post('/tournament/', app.postStudentToGroup);
 
 // Post student's article into the article table for tournament
-router.post('/tournamentArticle/', app.postStudentArticleToGroup);
+router.put('/tournamentArticle/', app.postStudentArticleToGroup);
 
-// Endpoint 4: 
+// Edit student's article marks in tournament
+router.put('/tournamentMarks/', app.editTournamentArticleMark);
 
 // Delete student from tournament group and set his group type in usertb back to last group
 router.delete('/tournament/', app.deleteStudentFromGroup);
+
+// Get student's article from tournament group and userid (Can be used by admin and student)
+router.get('/tournamentArticle/', app.getStudentArticleFromTournament);
 
 //------------------------------------
 // Login Routes

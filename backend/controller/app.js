@@ -131,7 +131,7 @@ exports.postStudentArticleToGroup = function (req, res) {
     const title = req.body.title;
     const content = req.body.content;
 
-    tournament.postArticleToTournament(tournamentID, title, content, function (error, result) {
+    tournament.editArticleToTournament(tournamentID, title, content, function (error, result) {
         if (!error && result !== "") {
             res.status(201).send("Student article has been posted");
         } else if (error.code == '23505') {
@@ -143,6 +143,20 @@ exports.postStudentArticleToGroup = function (req, res) {
 }
 
 // Endpoint 4: 
+exports.editTournamentArticleMark = function (req, res) {
+    const marks = req.body.mark;
+    const tournamentID = req.body.tournamentid;
+
+    tournament.editArticleMarks(marks, tournamentID, function (error, result) {
+        if (!error && result !== "") {
+            res.sendStatus(204);
+        } else if (error.code == "noUpdate") {
+            res.status(404).send("There is no such article");
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    })
+}
 
 // Endpoint 5: 
 exports.deleteStudentFromGroup = function (req, res) {
@@ -163,6 +177,22 @@ exports.deleteStudentFromGroup = function (req, res) {
     })
 }
 
+// Endpoint 6: For student and admin (Got word counter also)
+exports.getStudentArticleFromTournament = function (req, res) {
+    const studentID = req.body.userid;
+    const groupType = req.body.groupType;
+
+    tournament.getStudentArticle(studentID, groupType, function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "noSuchArticle") {
+            res.status(404).send("Cannot find any article done by user");
+        } else {
+            console.log("This is the error (getStudentArticleFromTournament): " + error);
+            res.status(500).send("Unknown error");
+        }
+    })
+}
 
 //------------------------------------
 // Endpoints (Student)
