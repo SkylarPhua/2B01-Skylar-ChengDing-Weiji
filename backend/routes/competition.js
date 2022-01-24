@@ -35,6 +35,9 @@ router.delete('/tournament/', app.deleteStudentFromGroup);
 // Get student's article from tournament group and userid (Can be used by admin and student)
 router.get('/tournamentArticle/:id/:groupType', app.getStudentArticleFromTournament);
 
+// Delete student article done by the student
+router.delete('/tournamentArticle/:id', app.removeStudentArticle);
+
 //------------------------------------
 // Login Routes
 //------------------------------------

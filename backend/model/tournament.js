@@ -45,7 +45,7 @@ module.exports = {
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
-            
+
             if (result.rowCount == 0) {
                 throw { code: "studentExists" };
             }
@@ -104,7 +104,7 @@ module.exports = {
             try {
                 result = await dbClient.query(`SELECT t.tournamentid, t.fk_userid FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 AND tt.group_type = $2`, [studentID, groupType])
             } catch (error) {
-                throw { code: "database_error1: " + error};
+                throw { code: "database_error: " + error };
             }
 
             if (result.rows.length == 0) {
@@ -119,11 +119,11 @@ module.exports = {
                 console.log("tournamentID: " + tournamentID);
                 result = await dbClient.query(`UPDATE tournament SET title = $1, articleContent = $2 WHERE tournamentID = $3`, [title, content, tournamentID]);
             } catch (error) {
-                throw { code: 'database_error' + error };
+                throw { code: "database_error: " + error };
             }
 
             if (result.rowCount == 0) {
-                throw { code: 'noUpdate' };
+                throw { code: "noUpdate" };
             }
             return result;
         }
@@ -134,12 +134,12 @@ module.exports = {
             let result = await editArticle(tournamentID, title, content, dbClient);
             return result;
         })
-        .then(function (result) {
-            return callback(null, result);
-        })
-        .catch(function (err) {
-            return callback({ code: err.code }, null);
-        })
+            .then(function (result) {
+                return callback(null, result);
+            })
+            .catch(function (err) {
+                return callback({ code: err.code }, null);
+            })
     },
 
     // Endpoint 4: Admin to mark the article (its post and edit)
@@ -200,11 +200,11 @@ module.exports = {
                 result = await dbClient.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
             } catch (error) {
                 // throw { code: 'database_error', details: error };
-                throw { code: 'database_error' + error };
+                throw { code: "database_error: " + error };
             }
 
             if (result.rowCount == 0) {
-                throw { code: 'noUpdate' };
+                throw { code: "noUpdate" };
             }
             return result;
         }
@@ -252,6 +252,63 @@ module.exports = {
     },
 
     // Endpoint 7: This is the article deletion for student (Just an PUT function)
-    // deleteStudentArticle: function ()
+    deleteStudentArticle: function (studentID, tournamentID, callback) {
+        async function getTournamentTypeID(tournamentID, dbClient) {
+            let result;
+            try {
+                result = await dbClient.query(`SELECT fk_tournament_type FROM tournament WHERE tournamentid = $1`, [tournamentID]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rows.length == 0) {
+                throw { code: "noType" };
+            }
+            return result.rows[0].fk_tournament_type;
+        }
+
+        async function deleteStudentEntry(tournamentID, dbClient) {
+            let result;
+            try {
+                result = await dbClient.query(`DELETE FROM tournament WHERE tournamentid = $1`, [tournamentID]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: "noSuchEntry" };
+            }
+        }
+
+        async function createNewStudentEntry(tournamentID, studentID, tournamentTypeID, dbClient) {
+            let result;
+            try {
+                result = await dbClient.query(`INSERT INTO tournament (tournamentid, fk_userID, fk_tournament_type) VALUES ($1, $2, $3)`, [tournamentID, studentID, tournamentTypeID]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: "studentEntryExists" };
+            }
+            return result;
+        }
+
+        database.transaction(async (dbClient) => {
+            const tournamentTypeID = await getTournamentTypeID(tournamentID, dbClient);
+            console.log("tournamentTypeID: " + tournamentTypeID);
+            await deleteStudentEntry(tournamentID, dbClient);
+            let result = await createNewStudentEntry(tournamentID, studentID, tournamentTypeID, dbClient);
+            console.log("--------> " + JSON.stringify(result));
+            return result;
+        })
+        .then(function (result) {
+            return callback(null, result);
+        })
+        .catch(function (err) {
+            console.log("THIS IS THE ERROR: " + JSON.stringify(err));
+            return callback({ code: err.code }, null);
+        })   
+    },
 
 }
