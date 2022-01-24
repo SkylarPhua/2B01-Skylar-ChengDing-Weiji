@@ -1,4 +1,6 @@
 let $registerFormContainer = $('#registerFormContainer');
+
+
 if ($registerFormContainer.length != 0) {
     $('#submitButton').on('click', function (event) {
         event.preventDefault();
@@ -46,4 +48,10 @@ if ($registerFormContainer.length != 0) {
             });
     });
 
+}
+
+function recaptcha_callback() {
+    var submitButton = document.querySelector('#submitButton')
+    submitButton.removeAttribute('disabled')
+    submitButton.style.cursoe = 'pointer';
 }

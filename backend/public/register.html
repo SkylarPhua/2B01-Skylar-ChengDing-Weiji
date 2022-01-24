@@ -18,6 +18,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link href="styles/register.css" rel="stylesheet">
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -77,8 +81,16 @@
                                       <select id="userType">
                                         <option value="student" default>student</option>
                                       </select>
+
+                                      <div class="form-group">
+                                        <div class="g-recaptcha" data-sitekey="6Lc26zMeAAAAABQGJVOFGkErBsGzU34rqTXY9JXa" 
+                                        data-callback="recaptcha_callback"></div>
+                                      </div>
+
+                                    
+
                                 </div>
-                                <div class="text-center"><button class="btn btn-primary" id="submitButton">
+                                <div class="text-center"><button class="btn btn-primary" id="submitButton" disabled>
                                         Submit</button></div>
                             </form>
                         </div>
@@ -92,6 +104,14 @@
             </div>
     </div>
     </main>
+<!-- 
+    <script>
+        function recaptcha_callback() {
+            var submitButton = document.querySelector('#submitButton')
+            submitButton.removeAttribute('disabled')
+            submitButton.style.cursoe = 'pointer';
+        }
+    </script> -->
 
 
 
