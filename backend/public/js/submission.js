@@ -30,6 +30,7 @@ window.onload = () => {
                 <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
@@ -38,9 +39,10 @@ window.onload = () => {
                 <tr>
                     <td style="font-size: 25px;">${article.title}</td>
                     <td style="font-size: 25px;">${article.articlecontent}</td>
+                    <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
+                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                    <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
                         getdata.innerHTML += postHtml;
@@ -91,6 +93,7 @@ window.onload = () => {
                 <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
@@ -99,9 +102,10 @@ window.onload = () => {
                 <tr>
                     <td style="font-size: 25px;">${article.title}</td>
                     <td style="font-size: 25px;">${article.articlecontent}</td>
+                    <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
+                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                    <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
                         getdata.innerHTML += postHtml;
@@ -152,6 +156,7 @@ window.onload = () => {
                 <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
@@ -160,11 +165,13 @@ window.onload = () => {
                 <tr>
                     <td style="font-size: 25px;">${article.title}</td>
                     <td style="font-size: 25px;">${article.articlecontent}</td>
+                    <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
+                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                    <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
+                        localStorage.setItem('tournamentID', article.tournamentid);
                         getdata.innerHTML += postHtml;
                     })
                 } else {
@@ -265,7 +272,7 @@ window.onload = () => {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/'+ dueDateType,
+        url: baseUrl + '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -332,6 +339,42 @@ function editBtn() {
     window.location = "edit.html";
 }
 
+function editBtnTournamentEdition() {
+    window.location = "postArticleTournament.html";
+}
+
+function articleDeleteTournament(id) {
+    let tournamentID = localStorage.getItem('tournamentID');
+    var txt = confirm("Are you sure you want to delete your article?");
+    if (txt == true) {
+        console.log("Process of deleting");
+        const requestBody = {
+            tournamentid: tournamentID
+        }
+        axios({
+            headers: {
+                'user': userid,
+                'authorization': 'Bearer ' + token
+            },
+            method: 'DELETE',
+            url: baseUrl + '/competition/tournamentArticle/' + userid,
+            data: requestBody,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        })
+            .then(function (response) {
+                console.log("The article has been deleted");
+                window.alert("The article has been deleted");
+                location.reload();
+            })
+            .catch(function (error) {
+                console.log("Error: " + error);
+            })
+    } else {
+        console.log("Cancel button detected");
+    }
+}
+
 function articleDel(id) {
     event.preventDefault();
     var txt = confirm("Are you sure want to delete your article?");
@@ -348,16 +391,18 @@ function articleDel(id) {
         })
             .then(function (response) {
                 window.alert("You have deleted your aticle ")
-                btn();
+                // btn();
+                localtion.reload();
             })
             .catch(function (error) {
-                if (error.response.status = 404) {
-                    console.log("This is the error" + error);
-                    window.alert("Error, Unable to Delete Student : " + id + " " + error)
-                } else if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                };
+                // if (error.response.status = 404) {
+                //     console.log("This is the error" + error);
+                //     window.alert("Error, Unable to Delete Student : " + id + " " + error)
+                // } else if (error.response.status == 403) {
+                //     alert(JSON.stringify(error.response.data));
+                //     window.location = "login.html";
+                // };
+                console.log("There was an error: " + JSON.stringify(error));
             });
     } else {
         console.log("Cancel button detected");

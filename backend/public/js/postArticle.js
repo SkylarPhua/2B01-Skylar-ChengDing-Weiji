@@ -54,18 +54,40 @@ $('#submitButton').on('click', function (event) {
     });
 });
 
+// article.addEventListener('keyup', function (e) {
+//   wordCounter(e.target.value);
+// });
 
-article.addEventListener('keyup', function (e) {
-  wordCounter(e.target.value);
-});
+// function wordCounter(text) {
+//   var text = article.value;
+//   var wordCount = 0;
+//   for (var i = 0; i <= text.length; i++) {
+//     if (text.charAt(i) == ' ') {
+//       wordCount++;
+//     }
+//   }
+//   count.innerHTML = wordCount;
+// }
 
-function wordCounter(text) {
-  var text = article.value;
-  var wordCount = 0;
-  for (var i = 0; i <= text.length; i++) {
-    if (text.charAt(i) == ' ') {
-      wordCount++;
+// var globalWordCount = 0;
+// var wordLimit = 500;
+
+function countWord() {
+    let text = article.value;
+    text = text.trim();
+    const words = text.split(" ");
+    if (words[0] === "") {
+        count.innerText = 0;
+    } else {
+        count.innerText = words.length;
+        // globalWordCount = words.length;
+        // console.log("Words: " + globalWordCount);
     }
-  }
-  count.innerHTML = wordCount;
 }
+
+// article.addEventListener('keydown', function(e) {
+//     if (globalWordCount > wordLimit && e.code !== "Backspace") {
+//       e.preventDefault();
+//       return;
+//     }
+//   });

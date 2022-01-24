@@ -176,6 +176,27 @@ exports.getStudentArticleFromTournament = function (req, res) {
     })
 }
 
+// Endpoint 7: For student to delete and redo their article
+exports.removeStudentArticle = function (req, res) {
+    const studentID = req.params.id;
+    const tournamentID = req.body.tournamentid;
+    
+    tournament.deleteStudentArticle(studentID, tournamentID, function (error, result) {
+        if (!error && result !== "") {
+            res.status(204).send("Article has been deleted");
+        } else if (error.code == "noType") {
+            res.status(404).send("Cannot find tournament entry");
+        } else if (error.code == "noSuchEntry") {
+            res.status(404).send("Cannot find requested entry");
+        } else if (error.code == "studentEntryExists") {
+            res.status(422).send("Student entry already exists");
+        } else {
+            console.log("This is the errorrrr: " + JSON.stringify(error));
+            console.log(error);
+            res.status(500).send("Unknown error");
+        }
+    })
+}
 
 //------------------------------------
 // Endpoints (Student)
