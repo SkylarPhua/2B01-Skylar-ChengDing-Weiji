@@ -45,12 +45,12 @@ module.exports = {
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
-    
+            
             if (result.rowCount == 0) {
                 throw { code: "studentExists" };
             }
         }
-    
+
         async function getGroupTypeInTournamentType(tournamentType, dbClient) {
             let result;
             try {
@@ -59,13 +59,13 @@ module.exports = {
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
-    
+
             if (result.rows.length == 0) {
                 throw { code: "noGroupType" };
             }
             return result.rows[0].group_type;
         }
-    
+
         async function updateUsersGroupType(groupType, studentID, dbClient) {
             let result;
             try {
@@ -73,13 +73,13 @@ module.exports = {
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
-    
+
             if (result.rowCount == 0) {
                 throw { code: "noUpdate" };
             }
             return result;
         }
-    
+
         database.transaction(async (dbClient) => {
             await addStudentToTournament(studentID, tournamentType, dbClient);
             const groupType = await getGroupTypeInTournamentType(tournamentType, dbClient);
@@ -89,32 +89,57 @@ module.exports = {
             console.log("--------> " + result);
             return result;
         })
+            .then(function (result) {
+                return callback(null, result);
+            })
+            .catch(function (err) {
+                return callback({ code: err.code }, null);
+            })
+    },
+
+    // Endpoint 3: (This is to post the article initially and also to edit the article)
+    editArticleToTournament: function (studentID, groupType, title, content, callback) {
+        async function getTournamentID(studentID, groupType, dbClient) {
+            let result;
+            try {
+                result = await dbClient.query(`SELECT t.tournamentid, t.fk_userid FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 AND tt.group_type = $2`, [studentID, groupType])
+            } catch (error) {
+                throw { code: "database_error1: " + error};
+            }
+
+            if (result.rows.length == 0) {
+                throw { code: "noSuchEntry" };
+            }
+            return result.rows[0].tournamentid;
+        }
+
+        async function editArticle(tournamentID, title, content, dbClient) {
+            let result;
+            try {
+                console.log("tournamentID: " + tournamentID);
+                result = await dbClient.query(`UPDATE tournament SET title = $1, articleContent = $2 WHERE tournamentID = $3`, [title, content, tournamentID]);
+            } catch (error) {
+                throw { code: 'database_error' + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: 'noUpdate' };
+            }
+            return result;
+        }
+
+        database.transaction(async (dbClient) => {
+            const tournamentID = await getTournamentID(studentID, groupType, dbClient);
+            console.log(tournamentID);
+            let result = await editArticle(tournamentID, title, content, dbClient);
+            return result;
+        })
         .then(function (result) {
             return callback(null, result);
         })
         .catch(function (err) {
             return callback({ code: err.code }, null);
         })
-    },
-
-    // Endpoint 3: (This is to post the article initially and also to edit the article)
-    editArticleToTournament: function (tournamentID, title, content, callback) {
-        const query = `UPDATE tournament SET title = $1, articleContent = $2 WHERE tournamentID = $3`;
-
-        return database
-            .query(query, [title, content, tournamentID])
-            .then(function (result) {
-                if (result.rowCount == 0) {
-                    return callback({ code: "noUpdate" }, null);
-                } else if (result.rowCount == 1) {
-                    return callback(null, result);
-                } else {
-                    return callback({ code: "unknownError" }, null);
-                }
-            })
-            .catch(function (error) {
-                return callback(error, null);
-            })
     },
 
     // Endpoint 4: Admin to mark the article (its post and edit)
@@ -160,7 +185,7 @@ module.exports = {
                 const SelectLatestQuery = `SELECT tt.group_type FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.fk_userid = $1 ORDER BY tournamentid DESC LIMIT 1`;
                 result = await dbClient.query(SelectLatestQuery, [studentID])
             } catch (error) {
-                throw {code: "database_error: " + error };
+                throw { code: "database_error: " + error };
             }
 
             if (result.rows.length == 0) {
@@ -174,9 +199,10 @@ module.exports = {
             try {
                 result = await dbClient.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
             } catch (error) {
-                throw { code: 'database_error:' + error };
+                // throw { code: 'database_error', details: error };
+                throw { code: 'database_error' + error };
             }
-        
+
             if (result.rowCount == 0) {
                 throw { code: 'noUpdate' };
             }
@@ -191,12 +217,12 @@ module.exports = {
             console.log("--------> " + result);
             return result;
         })
-        .then(function (result) {
-            return callback(null, result);
-        })
-        .catch(function (err) {
-            return callback({ code: err.code }, null);
-        })
+            .then(function (result) {
+                return callback(null, result);
+            })
+            .catch(function (err) {
+                return callback({ code: err.code }, null);
+            })
     },
 
     // Endpoint 6: for student to get their article by their id and group type
@@ -211,9 +237,9 @@ module.exports = {
 
         return database
             .query(query, [studentID, groupType, studentID, groupType])
-            .then(function(result) {
+            .then(function (result) {
                 if (result.rows.length == 0) {
-                    return callback({ code: "noSuchArticle"}, null);
+                    return callback({ code: "noSuchArticle" }, null);
                 } else if (result.rows.length == 1) {
                     return callback(null, result.rows);
                 } else {
@@ -226,5 +252,5 @@ module.exports = {
     },
 
     // Endpoint 7: This is the article deletion for student (Just an PUT function)
-    
+
 }

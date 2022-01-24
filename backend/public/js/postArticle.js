@@ -8,9 +8,9 @@ document.getElementById('submitButton').disabled = true;
 window.addEventListener('keyup', chkinput)
 function chkinput() {
   if (document.getElementById("title").value.trim() === "" || document.getElementById("article").value.trim() === "") {
-      document.getElementById('submitButton').disabled = true;
+    document.getElementById('submitButton').disabled = true;
   } else {
-      document.getElementById('submitButton').disabled = false;
+    document.getElementById('submitButton').disabled = false;
   }
 }
 
@@ -69,4 +69,3 @@ function wordCounter(text) {
   }
   count.innerHTML = wordCount;
 }
-

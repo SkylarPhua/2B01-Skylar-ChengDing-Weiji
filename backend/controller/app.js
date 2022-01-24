@@ -91,7 +91,7 @@ exports.postStudentToGroup = function (req, res) {
     tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
         if (!error && result !== "") {
             res.status(201).send("Student has been added into Tournament");
-        }  else if (error.code == "studentExists") {
+        } else if (error.code == "studentExists") {
             res.status(422).send("Student already exsist in the tournament");
         } else if (error.code == "noGroupType") {
             res.status(404).send("No such group type")
@@ -106,15 +106,18 @@ exports.postStudentToGroup = function (req, res) {
 
 // Endpoint 3: postStudentArticleToGroup
 exports.postStudentArticleToGroup = function (req, res) {
-    const tournamentID = req.body.tournamentid;
+    const studentID = req.body.userid;
+    const groupType = req.body.groupType;
     const title = req.body.title;
     const content = req.body.content;
 
-    tournament.editArticleToTournament(tournamentID, title, content, function (error, result) {
+    tournament.editArticleToTournament(studentID, groupType, title, content, function (error, result) {
         if (!error && result !== "") {
             res.status(201).send("Student article has been posted");
-        } else if (error.code == '23505') {
-            res.status(422).send("Student already submitted an article");
+        } else if (error.code == "noSuchEntry") {
+            res.status(404).send("Cannot find such an entry");
+        } else if (error.code == "noUpdate") {
+            res.status(404).send("Cannot find requested entry");
         } else {
             res.status(500).send("Unknown error");
         }
@@ -506,7 +509,7 @@ exports.getSummariseArticleWithStudentID = function (req, res) {
             console.log("Cannot find any article from this student")
             res.status(404).send("Cannot find any article from this student");
         } else if (!error && result !== "") {
-            console.log(result)  
+            console.log(result)
             res.status(200).send(result);
         } else {
             console.log("This is the error message " + error.status)
@@ -603,13 +606,13 @@ exports.DueDate = function (req, res) {
 
             console.log(result[0].duedate);
 
-            if(current<result[0].duedate){
+            if (current < result[0].duedate) {
                 res.status(200).send(result[0]);
-            } else if(current<result[1].duedate) {
+            } else if (current < result[1].duedate) {
                 res.status(200).send(result[1]);
-            } else if(current<result[2].duedate) {
+            } else if (current < result[2].duedate) {
                 res.status(200).send(result[2]);
-            }else {
+            } else {
                 res.status(200).send(result[3]);
             }
         }
@@ -642,15 +645,15 @@ exports.editDueDateByGroup = function (req, res) {
     console.log(groupEdit);
     console.log(dateEdit);
 
-        article.editDueDateByGroup(dateEdit, groupEdit, function (error, result) {
-            if (!error && result !== "") {
-                res.sendStatus(204)
-            } else if (error.code == "no_update") {
-                res.status(404).send("no update made");
-            } else {
-                console.log("This is the error: " + error);
-                console.log("/////////////////dddddddddddddd////////////");
-                res.status(500).send("Unknown error");
-            }
-        })
+    article.editDueDateByGroup(dateEdit, groupEdit, function (error, result) {
+        if (!error && result !== "") {
+            res.sendStatus(204)
+        } else if (error.code == "no_update") {
+            res.status(404).send("no update made");
+        } else {
+            console.log("This is the error: " + error);
+            console.log("/////////////////dddddddddddddd////////////");
+            res.status(500).send("Unknown error");
+        }
+    })
 }
