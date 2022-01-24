@@ -46,14 +46,31 @@
                     <div class="card">
                         <div class="card-body">
                             <!--Form register-->
-                            <form id="loginFormContainer">
+                            <form id="loginFormContainer" class="needs-validation" novalidate>
                                 <h2 class="text-center font-up font-bold blue-text py-4">Login</h2>
-                                <div class="md-form"><i class="fa fa-envelope prefix grey-text"></i><input
-                                        class="form-control" type="text" id="emailInput"><label for="emailInput">Your
-                                        email</label></div>
-                                <div class="md-form"><i class="fa fa-key prefix grey-text"></i><input
-                                        class="form-control" type="password" id="passwordInput"><label
-                                        for="passwordInput">Your password</label></div>
+                                <div class="md-form">
+                                    <i class="fa fa-envelope prefix grey-text"></i>
+                                    <input class="form-control" type="text" id="emailInput" required>
+                                    <label for="emailInput">Your email</label>
+                                    <div class="invalid-feedback">
+                                        Please choose a unique email.
+                                    </div>
+                                    <div class="text-danger" id="one" style="display:none;">
+                                        You cannot leave this field empty
+                                    </div>
+
+                                </div>
+                                <div class="md-form">
+                                    <i class="fa fa-key prefix grey-text"></i>
+                                    <input class="form-control" type="password" id="passwordInput" required>
+                                    <label for="passwordInput">Your password</label>
+                                    <div class="invalid-feedback">
+                                        Please enter a password
+                                    </div>
+                                    <div class="text-danger" id="two" style="display:none;">
+                                        You cannot leave this field empty
+                                    </div>
+                                </div>
                                 <div class="text-center"><button class="btn btn-primary" id="submitButton">
                                         Submit</button></div>
                             </form>

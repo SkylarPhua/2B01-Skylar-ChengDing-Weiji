@@ -57,10 +57,10 @@ module.exports = {
                            AS word, content
           FROM article WHERE fk_userid = $1
         )  
-        SELECT usertb.name AS username, usertb.email, category.name, article.title, article.content, article.submitted_at, grade.grade, grade.marked_at, COUNT(c.word)
+        SELECT usertb.name AS username, usertb.email, usertb.edu_lvl, category.name, article.title, article.content, article.submitted_at, grade.grade, grade.marked_at, COUNT(c.word)
         FROM (((usertb INNER JOIN article ON usertb.userid = article.fk_userid) FULL OUTER JOIN grade ON article.articleid = grade.fk_articleid) INNER JOIN category ON article.fk_categoryid = category.catid), count as c
         WHERE usertb.userid = $2
-        GROUP BY usertb.name, usertb.email, category.name, article.title, article.content, article.submitted_at, grade.grade, grade.marked_at
+        GROUP BY usertb.name, usertb.email, usertb.edu_lvl, category.name, article.title, article.content, article.submitted_at, grade.grade, grade.marked_at
 `;
 
         return database

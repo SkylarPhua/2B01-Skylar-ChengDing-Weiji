@@ -196,6 +196,24 @@ exports.getStudents = function (req, res) {
     })
 };
 
+//Get student by id
+exports.getStudentByID = function (req, res) {
+    const userid = parseInt(req.params.id);
+    student.getStudentByid(userid, function (error, result) {
+        if (!error && result == "") {
+            console.log("This is running error")
+            res.status(404).send("Cannot find any records");
+        } else if (!error && result !== "") {
+            console.log("This is running")
+            res.status(200).send(result);
+        } else {
+            console.log("This is the error message " + error.status)
+            console.log("This is the error: " + JSON.stringify(error));
+            res.status(500).send("Unknown error");
+        }
+    })
+};
+
 // Endpoint 2: postStudent
 // POST student
 exports.postStudent = function (req, res, next) {

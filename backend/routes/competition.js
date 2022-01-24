@@ -49,6 +49,9 @@ router.post('/login/', validateFN.validateEmail, app.logUser);
 // GET students
 router.get('/students/', app.getStudents);
 
+// GET student by id [use by student maybe?]
+router.get('/students/:id/', verifyToken,verifyFn.verifyUserRole, app.getStudentByID);
+
 // POST student [used by Student to register]
 router.post('/student/', app.postStudent);
 
