@@ -20,7 +20,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<body>
+<body">
 
     <nav class="mb-1 navbar navbar-expand-lg navbar-dark primary-color">
         <a class="navbar-brand" href="#">
@@ -41,7 +41,7 @@
         </div>
     </nav>
 
-    <div class="showDueDate" style="padding-left: 30px;">
+    <div class="showDueDate" style="padding-left: 30px;font-size: 30px;font-weight: 400;">
         <p id="dateText">The submission date was due on : </p>&nbsp&nbsp&nbsp&nbsp&nbsp
           <div class="datetime">
             <div class="date">
@@ -58,37 +58,43 @@
     </div>
 
     <div class="selectDueDate">
-        <div class="mt-3" style="padding:30px 30px">
+        <div class="mt-3" style="padding:30px 30px;font-size: 30px;font-weight: 400;">
             Select Which Due Date you want view :
             <select id="groupInput">
-                <option value="1">qualifying_round</option>
-                <option value="2">group</option>
-                <option value="3">Semi-final</option>
-                <option value="4">final</option>
+                <option value="qualifying_round">qualifying_round</option>
+                <option value="group_one">group</option>
+                <option value="Semi_final">Semi-final</option>
+                <option value="final">final</option>
             </select><br>
-            <button>View</button>
+            <button id="submitView">View</button>
         </div>
     </div>
 
-    <form>
-        <label>Enter your birthday:
-          <input type="date" name="bday" required pattern="\d{4}-\d{2}-\d{2}">
-          <span class="validity"></span>
-        </label>
-        <p>
-          <button>Submit</button>
-        </p>
-      </form>
+    <div class="selectDueDate">
+        <div class="mt-3" style="padding:30px 30px;font-size: 30px;font-weight: 400;">
+            Select Which Due Date you want EDIT :
+            <select id="groupEditInput">
+                <option value="qualifying_round">qualifying_round</option>
+                <option value="group">group</option>
+                <option value="Semi_final">Semi-final</option>
+                <option value="final">final</option>
+            </select><br>
+            <form>
+                <label>Enter the date here:
+                  <input id="dateEditInput" type="datetime-local" name="bday" required pattern="\d{4}-\d{2}-\d{2}">
+                  <span class="validity"></span>
+                </label>
+                <p> 
+                  <button id="editButton">Edit</button>
+                </p>
+                <p id="printText"></p>
+              </form>
+        </div>
+    </div>
 
 
 
 
-
-    <!-- <div class="editDate">
-        <p>Do you want to edit the date ?</p>
-        <input type="date" id="birthday" name="birthday">
-        <input type="submit">
-    </div> -->
 
 
 

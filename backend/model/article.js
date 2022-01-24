@@ -349,4 +349,50 @@ module.exports = {
             })
     },
 
+    ViewDueDateByGroup: function(dueDateType, callback) {
+        console.log("appppppp.js check here " + dueDateType);
+        const query = `SELECT dueDate From Deadline where duedatetype ILIKE  $1 `
+        return database
+        .query(query,[dueDateType+"%"])
+        .then(function (results) {
+            if(results.rows.length == 0) {
+                return callback({code: "no this dueDateType"},null);
+            }else if  (results.rows.length == 1 ){
+                return callback(null,results.rows)
+            } else {
+                console.log({code:"viewduedatebygroup unknown_error"}, null);
+            }
+        })
+        .catch(function(error){
+            return callback(error,null);
+        })
+    },
+
+    editDueDateByGroup: function (dateEdit, groupEdit, callback) {
+        console.log("sssssssssssss"+dateEdit);
+        console.log(groupEdit);
+        console.log("/////////////////////////////");
+        const query = `UPDATE deadline SET duedate = $1 WHERE duedatetype ILIKE $2`;
+        return database
+            // .query(query, [dateEdit, `ILIKE '`+groupEdit+`%'`])
+            // .query(query, [dateEdit, `ILIKE`+groupEdit+"%"])
+            .query(query, [dateEdit,groupEdit+'%'])
+            .then(function (result) {
+                if (result.rowCount == 0) {
+                    console.log("No update made");
+                    return callback({code:"no_update"}, null);
+                } else if (result.rowCount == 1||result.rowCount == 4) {
+                    console.log("This is the result: " + result.rowCount);
+                    return callback(null, result);
+                } else {
+                    console.log("The error is unknown");
+                    return callback({ code: "unknown_error" }, null);
+                }
+            })
+            .catch(function (error) {
+                console.log("This is the error: " + error);
+                return callback(error, null);
+            })
+    },
+
 }

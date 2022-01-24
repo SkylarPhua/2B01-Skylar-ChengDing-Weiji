@@ -91,10 +91,10 @@ exports.postStudentToGroup = function (req, res) {
     tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
         if (!error && result !== "") {
             res.status(201).send("Student has been added into Tournament");
-        } else if (error.code == "studentExists") {
+        }  else if (error.code == "studentExists") {
             res.status(422).send("Student already exsist in the tournament");
         } else if (error.code == "noGroupType") {
-            res.status(404).send("No such group type");
+            res.status(404).send("No such group type")
         } else if (error.code == "noUpdate") {
             res.status(404).send("Cannot find the requested student");
         } else {
@@ -158,8 +158,8 @@ exports.deleteStudentFromGroup = function (req, res) {
 
 // Endpoint 6: For student and admin (Got word counter also)
 exports.getStudentArticleFromTournament = function (req, res) {
-    const studentID = req.params.id;
-    const groupType = req.params.groupType;
+    const studentID = req.body.userid;
+    const groupType = req.body.groupType;
 
     tournament.getStudentArticle(studentID, groupType, function (error, result) {
         if (!error && result !== "") {
@@ -167,11 +167,12 @@ exports.getStudentArticleFromTournament = function (req, res) {
         } else if (error.code == "noSuchArticle") {
             res.status(404).send("Cannot find any article done by user");
         } else {
-            console.log("This is the error (getStudentArticleFromTournament): " + JSON.stringify(error));
+            console.log("This is the error (getStudentArticleFromTournament): " + error);
             res.status(500).send("Unknown error");
         }
     })
 }
+
 
 //------------------------------------
 // Endpoints (Student)
@@ -578,7 +579,7 @@ exports.DueDate = function (req, res) {
         } else if (!error && result !== "") {
             var current = new Date();
 
-            console.log("ffffffffff"+result[0].duedate);
+            console.log(result[0].duedate);
 
             if(current<result[0].duedate){
                 res.status(200).send(result[0]);
@@ -594,4 +595,40 @@ exports.DueDate = function (req, res) {
             res.status(500).send("Unknown error");
         }
     })
-};
+}
+
+exports.viewDueDateByGroup = function (req, res) {
+    var dueDateType = req.params.dueDateType;
+    console.log("This is the dueDateType " + dueDateType);
+    article.ViewDueDateByGroup(dueDateType, function (error, result) {
+        var result = JSON.stringify(result)
+        if (!error && result !== "") {
+            console.log("This is the result(app.js (viewDueDateByGroup)): " + result);
+            res.status(200).send(result);
+        } else if (error.code == "no this duedatetype") {
+            res.status(404).send("Cannot find this duedatetype");
+        } else {
+            console.log("This is the error: " + error);
+            res.status(500).send("Unknown error");
+        }
+    })
+}
+
+exports.editDueDateByGroup = function (req, res) {
+    var groupEdit = req.body.groupEdit
+    var dateEdit = req.body.dateEdit;
+    console.log(groupEdit);
+    console.log(dateEdit);
+
+        article.editDueDateByGroup(dateEdit, groupEdit, function (error, result) {
+            if (!error && result !== "") {
+                res.sendStatus(204)
+            } else if (error.code == "no_update") {
+                res.status(404).send("no update made");
+            } else {
+                console.log("This is the error: " + error);
+                console.log("/////////////////dddddddddddddd////////////");
+                res.status(500).send("Unknown error");
+            }
+        })
+}

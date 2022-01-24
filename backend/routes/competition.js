@@ -33,7 +33,8 @@ router.put('/tournamentMarks/', app.editTournamentArticleMark);
 router.delete('/tournament/', app.deleteStudentFromGroup);
 
 // Get student's article from tournament group and userid (Can be used by admin and student)
-router.get('/tournamentArticle/:id/:groupType', app.getStudentArticleFromTournament);
+router.get('/tournamentArticle/', app.getStudentArticleFromTournament);
+
 
 //------------------------------------
 // Login Routes
@@ -119,7 +120,11 @@ router.put('/grades/:id', verifyToken, verifyFn.verifyUserRole, app.putGrade);
 //------------------------------------
 
 // GET the due date
-router.get('/dueDate', app.DueDate);
+router.get('/dueDate',verifyToken, verifyFn.verifyUserRole, app.DueDate);
+
+router.get('/dueDate/:dueDateType',verifyToken, verifyFn.verifyUserRole, app.viewDueDateByGroup)
+
+router.put('/dueDate', verifyToken, verifyFn.verifyUserRole,app.editDueDateByGroup)
 
 
 //------------------------------------
