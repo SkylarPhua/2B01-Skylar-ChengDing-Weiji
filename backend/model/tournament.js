@@ -252,5 +252,6 @@ module.exports = {
     },
 
     // Endpoint 7: This is the article deletion for student (Just an PUT function)
+    // deleteStudentArticle: function ()
 
 }

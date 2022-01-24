@@ -1,6 +1,6 @@
 var count = document.getElementById('count');
+var titleArticle = document.getElementById('title');
 var article = document.getElementById('article');
-var styles = document.getElementById('styles');
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
 let groupType = localStorage.getItem('group_type');
@@ -13,6 +13,43 @@ function chkinput() {
     } else {
         document.getElementById('submitButton').disabled = false;
     }
+}
+
+window.onload = () => {
+    const baseUrl = 'http://localhost:8000';
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            titleArticle.innerText = '';
+            article.innerText = '';
+
+            const details = response.data[0];
+            var posttitle = details.title;
+            var postarticle = details.articlecontent;
+            var postcount = details.count;
+
+            titleArticle.innerText += posttitle;
+            article.innerText += postarticle;
+            count.innerText += postcount;
+
+        })
+        .catch(function (error) {
+            // if (error.response.status == 403) {
+            //     alert("You are not logged in")
+            //     window.location = "login.html";
+            // } else {
+            //     window.alert(error);
+            // }
+            console.log("The is the ERROR: " + error);
+        });
+
 }
 
 $('#submitButton').on('click', function (event) {
@@ -53,17 +90,25 @@ $('#submitButton').on('click', function (event) {
         });
 });
 
-article.addEventListener('keyup', function (e) {
-    wordCounter(e.target.value);
-});
+var globalWordCount = 0;
+var wordLimit = 500;
 
-function wordCounter(text) {
-    var text = article.value;
-    var wordCount = 0;
-    for (var i = 0; i <= text.length; i++) {
-        if (text.charAt(i) == ' ') {
-            wordCount++;
-        }
+function countWord() {
+    let text = article.value;
+    text = text.trim();
+    const words = text.split(" ");
+    if (words[0] === "") {
+        count.innerText = 0;
+    } else {
+        count.innerText = words.length;
+        globalWordCount = words.length;
+        console.log("Words: " + globalWordCount);
     }
-    count.innerHTML = wordCount;
 }
+
+article.addEventListener('keydown', function(e) {
+    if (globalWordCount > wordLimit && e.code !== "Backspace") {
+      e.preventDefault();
+      return;
+    }
+  });

@@ -30,6 +30,7 @@ window.onload = () => {
                 <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
@@ -38,8 +39,9 @@ window.onload = () => {
                 <tr>
                     <td style="font-size: 25px;">${article.title}</td>
                     <td style="font-size: 25px;">${article.articlecontent}</td>
+                    <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
@@ -91,6 +93,7 @@ window.onload = () => {
                 <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
@@ -99,8 +102,9 @@ window.onload = () => {
                 <tr>
                     <td style="font-size: 25px;">${article.title}</td>
                     <td style="font-size: 25px;">${article.articlecontent}</td>
+                    <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
@@ -152,6 +156,7 @@ window.onload = () => {
                 <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
+                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
@@ -160,11 +165,13 @@ window.onload = () => {
                 <tr>
                     <td style="font-size: 25px;">${article.title}</td>
                     <td style="font-size: 25px;">${article.articlecontent}</td>
+                    <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
+                        localStorage.setItem('tournamentID', article.tournamentid);
                         getdata.innerHTML += postHtml;
                     })
                 } else {
@@ -265,7 +272,7 @@ window.onload = () => {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/'+ dueDateType,
+        url: baseUrl + '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -330,6 +337,10 @@ function countDown(dueDate) {
 function editBtn() {
     event.preventDefault();
     window.location = "edit.html";
+}
+
+function editBtnTournamentEdition() {
+    window.location = "postArticleTournament.html";
 }
 
 function articleDel(id) {
