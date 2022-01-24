@@ -387,7 +387,6 @@ exports.deleteArticleByID = function (req, res) {
     console.log("This is the userid: " + userid);
 
     article.removeArticleByID(userid, function (error, result) {
-        console.log("sssssssssss"+result[0].rowCount);
 
         console.log(result);
         if (userid == null) {
@@ -395,7 +394,7 @@ exports.deleteArticleByID = function (req, res) {
         } else if (error.code == "no_article") {
             res.status(404).send("There is no such article");
             console.log("///////////////////");
-        } else if (result.rowCount !== "") {
+        } else if (error.code == "deleted") {
             res.sendStatus(204);
         }
         else {
