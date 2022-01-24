@@ -79,7 +79,9 @@ router.post('/studentArticles/', verifyToken, verifyFn.verifyUserRole, app.postA
 router.put('/studentArticle/:id', verifyToken, verifyFn.verifyUserRole, app.putArticle);
 
 // DELETE article by userid [used by Both] DOne[1]
+// router.delete('/articles/:id', verifyToken, verifyFn.verifyUserLoggedIn, app.deleteArticleByID);
 router.delete('/articles/:id', verifyToken, verifyFn.verifyUserLoggedIn, app.deleteArticleByID);
+
 
 // GET article by edu
 router.get('/articles/:edu', app.getArticleByEdu);
@@ -121,7 +123,7 @@ router.put('/grades/:id', verifyToken, verifyFn.verifyUserRole, app.putGrade);
 // GET the due date
 router.get('/dueDate', app.DueDate);
 
-router.get('/dueDate/:dueDateType',verifyToken, verifyFn.verifyUserRole, app.viewDueDateByGroup)
+router.get('/dueDate/:dueDateType', app.viewDueDateByGroup)
 
 router.put('/dueDate', verifyToken, verifyFn.verifyUserRole,app.editDueDateByGroup)
 

@@ -144,7 +144,8 @@ module.exports = {
                     return callback({ code: "no_article" }, null);
                 } else if (result.rowCount == 1) {
                     console.log("The article is deleted (removeArticleByID)");
-                    return callback(null, result);
+                    // return callback(null, result);
+                    return callback({ code: "deleted" }, null);
                 } else {
                     console.log("The error is unknown");
                     return callback({ code: "unknown_error" }, null);
@@ -371,7 +372,6 @@ module.exports = {
     editDueDateByGroup: function (dateEdit, groupEdit, callback) {
         console.log("sssssssssssss"+dateEdit);
         console.log(groupEdit);
-        console.log("/////////////////////////////");
         const query = `UPDATE deadline SET duedate = $1 WHERE duedatetype ILIKE $2`;
         return database
             // .query(query, [dateEdit, `ILIKE '`+groupEdit+`%'`])
