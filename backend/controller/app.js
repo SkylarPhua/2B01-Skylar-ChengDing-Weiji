@@ -158,8 +158,8 @@ exports.deleteStudentFromGroup = function (req, res) {
 
 // Endpoint 6: For student and admin (Got word counter also)
 exports.getStudentArticleFromTournament = function (req, res) {
-    const studentID = req.body.userid;
-    const groupType = req.body.groupType;
+    const studentID = req.params.id;
+    const groupType = req.params.groupType;
 
     tournament.getStudentArticle(studentID, groupType, function (error, result) {
         if (!error && result !== "") {

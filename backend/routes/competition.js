@@ -33,8 +33,7 @@ router.put('/tournamentMarks/', app.editTournamentArticleMark);
 router.delete('/tournament/', app.deleteStudentFromGroup);
 
 // Get student's article from tournament group and userid (Can be used by admin and student)
-router.get('/tournamentArticle/', app.getStudentArticleFromTournament);
-
+router.get('/tournamentArticle/:id/:groupType', app.getStudentArticleFromTournament);
 
 //------------------------------------
 // Login Routes
