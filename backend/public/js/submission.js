@@ -2,7 +2,6 @@ const getdata = document.getElementById("getArticleData");
 let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
 let groupType = localStorage.getItem('group_type');
-let dueDateType = localStorage.getItem('group_type');
 const axios = window.axios;
 
 const baseUrl = 'http://localhost:8000';
@@ -62,7 +61,16 @@ window.onload = () => {
                     console.log(error)
                 }
             });
-        getTheDue();
+        getTheDue(groupType);
+
+        function btn() {
+            event.preventDefault();
+            getdata.innerHTML = '';
+            var postHtml = `
+                <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
+                `;
+            getdata.innerHTML += postHtml;
+        }
     } else if (groupType === "semi_final_one" || groupType === "semi_final_two") {
         console.log("Im in SEMI FINAL");
         axios({
@@ -114,7 +122,16 @@ window.onload = () => {
                     console.log(error)
                 }
             });
-        getTheDue();
+        getTheDue(groupType);
+
+        function btn() {
+            event.preventDefault();
+            getdata.innerHTML = '';
+            var postHtml = `
+                <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
+                `;
+            getdata.innerHTML += postHtml;
+        }
     } else if (groupType === "group_one" || groupType === "group_two" || groupType === "group_three" || groupType === "group_four") {
         console.log("Im in GROUP");
         axios({
@@ -166,7 +183,16 @@ window.onload = () => {
                     console.log(error)
                 }
             });
-        getTheDue();
+        getTheDue(groupType);
+
+        function btn() {
+            event.preventDefault();
+            getdata.innerHTML = '';
+            var postHtml = `
+                <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
+                `;
+            getdata.innerHTML += postHtml;
+        }
     } else {
         console.log("IM in the ELSE");
         axios({
@@ -223,7 +249,16 @@ window.onload = () => {
                     console.log(error)
                 }
             });
-        getTheDue(dueDateType);
+        getTheDue(groupType);
+
+        function btn() {
+            event.preventDefault();
+            getdata.innerHTML = '';
+            var postHtml = `
+                <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
+                `;
+            getdata.innerHTML += postHtml;
+        }
     }
 }
 
@@ -282,14 +317,14 @@ function countDown(dueDate) {
     }, 1000)
 }
 
-function btn() {
-    event.preventDefault();
-    getdata.innerHTML = '';
-    var postHtml = `
-        <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
-        `;
-    getdata.innerHTML += postHtml;
-}
+// function btn() {
+//     event.preventDefault();
+//     getdata.innerHTML = '';
+//     var postHtml = `
+//         <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
+//         `;
+//     getdata.innerHTML += postHtml;
+// }
 
 
 function editBtn() {
