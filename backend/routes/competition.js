@@ -119,7 +119,7 @@ router.put('/grades/:id', verifyToken, verifyFn.verifyUserRole, app.putGrade);
 //------------------------------------
 
 // GET the due date
-router.get('/dueDate',verifyToken, verifyFn.verifyUserRole, app.DueDate);
+router.get('/dueDate', app.DueDate);
 
 router.get('/dueDate/:dueDateType',verifyToken, verifyFn.verifyUserRole, app.viewDueDateByGroup)
 
