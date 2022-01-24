@@ -371,7 +371,6 @@ module.exports = {
     editDueDateByGroup: function (dateEdit, groupEdit, callback) {
         console.log("sssssssssssss"+dateEdit);
         console.log(groupEdit);
-        console.log("/////////////////////////////");
         const query = `UPDATE deadline SET duedate = $1 WHERE duedatetype ILIKE $2`;
         return database
             // .query(query, [dateEdit, `ILIKE '`+groupEdit+`%'`])

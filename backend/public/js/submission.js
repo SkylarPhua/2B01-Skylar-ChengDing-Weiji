@@ -2,6 +2,7 @@ const getdata = document.getElementById("getArticleData");
 let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
 let groupType = localStorage.getItem('group_type');
+let dueDateType = localStorage.getItem('group_type');
 const axios = window.axios;
 
 const baseUrl = 'http://localhost:8000';
@@ -223,20 +224,21 @@ window.onload = () => {
                     console.log(error)
                 }
             });
-        getTheDue();
+        getTheDue(dueDateType);
     }
 }
 
-function getTheDue() {
+function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate',
+        url: baseUrl + '/competition/dueDate/'+ dueDateType,
         dataType: "json",
     })
         .then(function (response) {
             const dateResult = response.data;
             console.log(dateResult);
-            var dueDate = dateResult.duedate
+            var dueDate = dateResult[0].duedate
+            console.log(dueDate);
             countDown(dueDate)
         })
         .catch(function (error) {

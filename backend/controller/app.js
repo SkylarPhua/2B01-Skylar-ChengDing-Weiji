@@ -385,12 +385,17 @@ exports.deleteArticleByID = function (req, res) {
     const userid = req.params.id;
 
     console.log("This is the userid: " + userid);
+
     article.removeArticleByID(userid, function (error, result) {
+        console.log("sssssssssss"+result[0].rowCount);
+
+        console.log(result);
         if (userid == null) {
             res.status(403).send("Unauthorised Access, you are not Logged in / registered");
         } else if (error.code == "no_article") {
             res.status(404).send("There is no such article");
-        } else if (!error && result !== "") {
+            console.log("///////////////////");
+        } else if (result.rowCount !== "") {
             res.sendStatus(204);
         }
         else {
