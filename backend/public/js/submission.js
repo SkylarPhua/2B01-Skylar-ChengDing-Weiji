@@ -148,7 +148,6 @@ window.onload = () => {
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
-                        localStorage.setItem('tournament_id', article.tournamentid);
                         getdata.innerHTML += postHtml;
                     })
                 } else {
