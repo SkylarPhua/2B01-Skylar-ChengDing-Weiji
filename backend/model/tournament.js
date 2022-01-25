@@ -113,11 +113,11 @@ module.exports = {
             return result.rows[0].tournamentid;
         }
 
-        async function editArticle(tournamentID, title, content, dbClient) {
+        async function editArticle(tournamentID, title, content, datetime, dbClient) {
             let result;
             try {
                 console.log("tournamentID: " + tournamentID);
-                result = await dbClient.query(`UPDATE tournament SET title = $1, articleContent = $2 WHERE tournamentID = $3`, [title, content, tournamentID]);
+                result = await dbClient.query(`UPDATE tournament SET title = $1, articleContent = $2, submitted_at = $3 WHERE tournamentID = $4`, [title, content, datetime, tournamentID]);
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
@@ -129,9 +129,18 @@ module.exports = {
         }
 
         database.transaction(async (dbClient) => {
+            var currentdate = new Date();
+            var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
+                + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
+                + currentdate.getFullYear() + " "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+
+            console.log("This is the datetime: " + datetime);
             const tournamentID = await getTournamentID(studentID, groupType, dbClient);
             console.log(tournamentID);
-            let result = await editArticle(tournamentID, title, content, dbClient);
+            let result = await editArticle(tournamentID, title, content, datetime, dbClient);
             return result;
         })
             .then(function (result) {
@@ -229,10 +238,10 @@ module.exports = {
     getStudentArticle: function (studentID, groupType, callback) {
         const query = `WITH count AS 
         (SELECT tournamentID, UNNEST(STRING_TO_ARRAY(REGEXP_REPLACE(articlecontent,  '[^\\w\\s]', '', 'g'), ' ')) AS word, articlecontent FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE fk_userid = $1 AND tt.group_type = $2)
-        SELECT u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, COUNT(count.word)
+        SELECT u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.graded_at, COUNT(count.word)
         FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid), count 
         WHERE u.userid = $3 AND tt.group_type = $4
-        GROUP BY u.name, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks
+        GROUP BY u.name, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.graded_at
         `;
 
         return database
@@ -302,13 +311,13 @@ module.exports = {
             console.log("--------> " + JSON.stringify(result));
             return result;
         })
-        .then(function (result) {
-            return callback(null, result);
-        })
-        .catch(function (err) {
-            console.log("THIS IS THE ERROR: " + JSON.stringify(err));
-            return callback({ code: err.code }, null);
-        })   
+            .then(function (result) {
+                return callback(null, result);
+            })
+            .catch(function (err) {
+                console.log("THIS IS THE ERROR: " + JSON.stringify(err));
+                return callback({ code: err.code }, null);
+            })
     },
 
 }
