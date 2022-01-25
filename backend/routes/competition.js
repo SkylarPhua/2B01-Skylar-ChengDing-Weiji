@@ -56,7 +56,7 @@ router.get('/students/', app.getStudents);
 router.get('/students/:id/', verifyToken,verifyFn.verifyUserRole, app.getStudentByID);
 
 // POST student [used by Student to register]
-router.post('/student/', app.postStudent);
+router.post('/student/',validateFN.validateRegistration, app.postStudent);
 
 // PUT student
 router.put('/student/:id/', app.putStudent);
