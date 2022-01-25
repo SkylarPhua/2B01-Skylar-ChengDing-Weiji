@@ -69,17 +69,13 @@
                 <label class="col-md-4 control-label ">Grade</label>
                 <div class="col-md-3 inputGroupContainer">
                     <div class="input-group pt-2">
-                        <select id="Grade">
-                            <option disabled selected value hidden></option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                        </select>
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                        <textarea id="Marks" name="Marks" placeholder="Enter marks" class="form-control"
+                            type="text"></textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <h2 class="col-md-9 control-label" >Word Counter: <span id="count">0</span></h2>
+                    <h2 class="col-md-9 control-label">Word Counter: <span id="count">0</span></h2>
                     <br>
                     <br>
                     <br>
@@ -89,7 +85,7 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
                             <textarea id="article" name="Article" rows="20" placeholder="Article" class="form-control"
-                                type="text" readonly = 'true'></textarea>
+                                type="text" readonly='true'></textarea>
                         </div>
                     </div>
                 </div>
@@ -101,13 +97,12 @@
                             ARTICLE <span
                                 class="glyphicon glyphicon-floppy-save"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
                     </div>
-                
+
                     <label class="col-md-4 control-label"></label>
                     <div class="col-md-4 "><br>
                         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit"
                             id="summariseButton" class="btn btn-success">&nbsp&nbsp&nbspSumamarise
-                            ARTICLE <span
-                                class="glyphicon glyphicon-floppy-save"></span>&nbsp&nbsp&nbsp&nbsp</button>
+                            ARTICLE <span class="glyphicon glyphicon-floppy-save"></span>&nbsp&nbsp&nbsp&nbsp</button>
                     </div>
                 </div>
                 <a href="A_home.html" class="btn btn-danger">Back</a>
@@ -131,4 +126,3 @@
     <script src="./js/amark.js" type="text/javascript"></script>
     <script src="./js/logout.js" type="text/javascript"></script>
 </body>
-
