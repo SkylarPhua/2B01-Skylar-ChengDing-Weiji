@@ -1,9 +1,14 @@
 const getdata = document.getElementById("back");
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
+let role = localStorage.getItem('role_name');
 const baseUrl = 'http://localhost:8000';
 
 window.onload = () => {
+    if (role != "student") {
+        alert("Unauthorised, You are not a Student")
+        window.location.replace("login.html");
+    }
     getProfile();
 }
 
@@ -43,5 +48,5 @@ function getProfile() {
 }
 
 function getArticles() {
-    
+
 }

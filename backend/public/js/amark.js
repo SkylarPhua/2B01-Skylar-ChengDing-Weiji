@@ -2,6 +2,7 @@ const baseUrl = 'http://localhost:8000';
 const axios = window.axios;
 let userid = localStorage.getItem('userid');
 let articleid = localStorage.getItem('articleid');
+let role = localStorage.getItem('role_name');
 const catInput = document.getElementById("cat");
 const titleInput = document.getElementById("title");
 const articleInput = document.getElementById("article");
@@ -12,6 +13,11 @@ let token = localStorage.getItem('token');
 
 
 window.onload = () => {
+    if (role != "admin") {
+        alert("Unauthorised, You are not an admin")
+        window.location.replace("login.html");
+    }
+
     axios({
         headers: {
             'user': userid,

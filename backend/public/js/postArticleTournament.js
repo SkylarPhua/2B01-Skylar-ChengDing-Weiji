@@ -4,6 +4,14 @@ var article = document.getElementById('article');
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
 let groupType = localStorage.getItem('group_type');
+let role = localStorage.getItem('role_name');
+
+window.onload = () => {
+    if (role != "student") {
+        alert("Unauthorised, You are not a Student")
+        window.location.replace("login.html");
+    }
+}
 
 document.getElementById('submitButton').disabled = true;
 window.addEventListener('keyup', chkinput)

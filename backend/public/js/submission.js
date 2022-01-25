@@ -1,12 +1,18 @@
 const getdata = document.getElementById("getArticleData");
 let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
+let role = localStorage.getItem('role_name');
 let groupType = localStorage.getItem('group_type');
 const axios = window.axios;
 
 const baseUrl = 'http://localhost:8000';
 
 window.onload = () => {
+    if (role != "student") {
+        alert("Unauthorised, You are not a Student")
+        window.location.replace("login.html");
+    }
+
     console.log("This is the group type: " + groupType);
     event.preventDefault();
 
