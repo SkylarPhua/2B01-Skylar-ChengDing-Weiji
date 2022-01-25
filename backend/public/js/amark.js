@@ -6,7 +6,7 @@ const catInput = document.getElementById("cat");
 const titleInput = document.getElementById("title");
 const articleInput = document.getElementById("article");
 const count = document.getElementById("count");
-const gradE = document.getElementById("Grade");
+const gradE = document.getElementById("Marks");
 var initialgrade;
 let token = localStorage.getItem('token');
 
@@ -34,7 +34,7 @@ window.onload = () => {
             var postarticle = details.content;
             var postcount = details.count;
             initialgrade = details.grade;
-            var postgrade = `<option disabled selected value=${initialgrade} hidden>${initialgrade}</option>`;
+            // var postgrade = `<option disabled selected value=${initialgrade} hidden>${initialgrade}</option>`;
 
             catInput.innerHTML += postcat;
             titleInput.innerHTML += posttitle;
@@ -42,7 +42,7 @@ window.onload = () => {
             count.innerHTML += postcount;
 
             if (initialgrade != null) {
-                gradE.innerHTML += postgrade;
+                gradE.innerHTML += initialgrade;
             }
         })
         .catch(function (error) {
@@ -56,7 +56,7 @@ window.onload = () => {
 }
 
 $('#submitButton').on('click', function () {
-    let grade = $('#Grade').val();
+    let grade = $('#Marks').val();
     console.log("grade : " + grade);
     console.log("initial :" + initialgrade);
 
@@ -69,8 +69,8 @@ $('#submitButton').on('click', function () {
     } else {
         window.alert("Please enter a grade before proceeding");
     }
-
 })
+
 $('#summariseButton').on('click', function () {
     event.preventDefault();
     axios({
@@ -179,4 +179,4 @@ function putgrade(grade) {
 
 $('#backBtn').on('click', function () {
     window.location.href("A_home.html")
-}) 
+})

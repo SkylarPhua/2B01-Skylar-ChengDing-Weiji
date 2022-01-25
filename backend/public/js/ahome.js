@@ -1,4 +1,3 @@
-
 const getdata = document.getElementById("getData");
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
@@ -64,6 +63,9 @@ function getAllArticle() {
         });
 }
 
+$('#resetButton').on('click', function () {
+    getAllArticle();
+})
 
 
 function articleSelect(id, ID) {
@@ -163,5 +165,3 @@ $('#submitButton').on('click', function () {
 
     });
 })
-
-

@@ -13,11 +13,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
     <!-- Noty CSS-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" rel="stylesheet">
-    <!-- Noty CSS Map-->
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css.map" rel="stylesheet"> -->
-    <!-- App Site CSS-->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         th,
         td {
@@ -49,11 +50,12 @@
                 <li class="nav-item active"><a class="nav-link active" href="A_DueDate.html">Edit Due Date</a></li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav item"><a class="nav-link" >My Profile</a></li>
+                <li class="nav item"><a class="nav-link">My Profile</a></li>
                 <li class="nav-item"><a class="nav-link" id='logoutButton'>Logout</a></li>
             </ul>
         </div>
     </nav>
+
     <!-- /.Navbar-->
     <div class="row pt-3">
         <div class="card offset-sm-3 col-sm-6">
@@ -103,7 +105,11 @@
                         <div class="col-sm-4 mt-4">
                             <div class="text-left"><button class="btn btn-primary btn-sm" id="submitButton">
                                     Search</button></div>
+                            <button class="btn btn-default btn-sm" id="resetButton">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                Reset</button>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -129,11 +135,22 @@
             <tbody id="getData">
 
             </tbody>
-
-        </table>
     </div>
-    
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js">
+    </script>
+    <!-- Noty JS-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js">
+    </script>
+
     <script src="./js/ahome.js" type="text/javascript"></script>
     <script src="./js/logout.js" type="text/javascript"></script>
 </body>
-
