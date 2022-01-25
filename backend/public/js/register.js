@@ -44,6 +44,7 @@ if ($registerFormContainer.length != 0) {
                     layout: 'topCenter',
                     theme: 'sunset',
                     text: 'Unable to register.',
+                    killer: true, // New Not tested
                 }).show();
             });
     });
