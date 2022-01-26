@@ -151,7 +151,7 @@ module.exports = {
             })
     },
 
-    // Endpoint 4: Admin to mark the article (its post and edit)
+    // Endpoint 4: Admin to mark the article (its post and edit) (TO BE CHANGED FOR HISTORY (TRANSACTION))
     editArticleMarks: function (marks, tournamentID, callback) {
         const query = `UPDATE tournament SET marks = $1 WHERE tournamentID = $2`
 
@@ -319,5 +319,8 @@ module.exports = {
                 return callback({ code: err.code }, null);
             })
     },
+
+    // Endpoint 8: This is to get all tournament aritcles by everyone and every stage
+    
 
 }
