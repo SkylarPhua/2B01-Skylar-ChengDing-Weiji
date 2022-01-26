@@ -38,6 +38,9 @@ router.get('/tournamentArticle/:id/:groupType', app.getStudentArticleFromTournam
 // Delete student article done by the student
 router.delete('/tournamentArticle/:id', app.removeStudentArticle);
 
+// Gets all the articles by everyone in every tournament group
+router.get('/tournamentArticles/', app.getAllArticlesFromTournament);
+
 //------------------------------------
 // Login Routes
 //------------------------------------

@@ -326,7 +326,31 @@ module.exports = {
             })
     },
 
-    // Endpoint 8: This is to get all tournament aritcles by everyone and every stage
-    
+    // Endpoint 8: This is to get all tournament aritcles by everyone and every stage (Admin A_tournament.html)
+    getAllArticlesInTournament: function (callback) {
+        const query = `SELECT t.tournamentID, u.name AS username, u.email, u.edu_lvl, t.title, c.name AS catName, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, t.fk_tournament_type
+    FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userID) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryID = c.catid)
+    WHERE t.tournamentID IS NOT NULL
+    GROUP BY t.tournamentID, u.name, u.email, u.edu_lvl, t.title, c.name, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, t.fk_tournament_type
+    ORDER BY fk_tournament_type ASC`;
+
+        return database
+            .query(query)
+            .then(function (result) {
+                console.log("This is the result: " + JSON.stringify(result));
+                if (result.rows.length == 0) {
+                    return callback({ code: "no_articles" }, null);
+                } else if (result.rows.length >= 1) {
+                    return callback(null, result.rows);
+                } else {
+                    return callback({ code: "unknownError" }, null);
+                }
+            })
+            .catch(function (error) {
+                console.log("This is the error" + error);
+                return callback(error, null);
+            })
+    },
+
 
 }

@@ -198,6 +198,20 @@ exports.removeStudentArticle = function (req, res) {
     })
 }
 
+// Endpoint 8: For admin to get all articles in the tournament (Acts as the home page for A_tournament)
+exports.getAllArticlesFromTournament = function (req, res) {
+    tournament.getAllArticlesInTournament(function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "no_articles") {
+            res.status(404).send("Unable to find any students in the tournament");
+        } else {
+            console.log("This is the error: " + JSON.stringify(error));
+            res.status(500).send("Unknown error");
+        }
+    })
+}
+
 //------------------------------------
 // Endpoints (Student)
 //------------------------------------
