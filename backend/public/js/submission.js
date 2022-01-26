@@ -215,8 +215,12 @@ window.onload = () => {
                 const articles = response.data;
                 console.log(articles);
                 if (articles != null) {
+                    
                     getdata.innerHTML = '';
                     articles.forEach((article) => {
+                        console.log("ssssss"+articles[0].title);
+                        
+                        // console.log("/////////"+JSON.stringify(article[0].title));
                         var postHtml = `
                     <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
@@ -228,12 +232,12 @@ window.onload = () => {
                 </tr>  
 
                 <tr>
-                <td style="font-size: 25px;">${article.title}</td>
+                <td style="font-size: 25px;">${articles.title}</td>
                 <td style="font-size: 25px;">${article.content}</td>
                 <td style="font-size: 15px;">${article.submitted_at}</td>
                 <td style="font-size: 25px;">${article.grade}</td>
-                    <td><a onclick="editBtn('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
+                    <td ><button onclick="editBtn('${articles.userid}')" class = "btn btn-info" disabled>Edit</button></td>
+                    <td><button onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis" disabled>Delete</button></td>
                 </tr>
               `;
                         getdata.innerHTML += postHtml;
@@ -268,6 +272,11 @@ window.onload = () => {
         }
     }
 }
+
+// function myFunction() {
+//     var element = document.getElementById("demo");
+//     element.parentNode.removeChild(element);
+//   }
 
 function getTheDue(dueDateType) {
     axios({

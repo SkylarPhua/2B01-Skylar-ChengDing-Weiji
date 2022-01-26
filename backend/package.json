@@ -22,9 +22,11 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "format.js": "^0.0.0",
     "http-errors": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "lexrank": "^1.0.5",
+    "moment": "^2.29.1",
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
     "validator": "^13.7.0"

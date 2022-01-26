@@ -5,8 +5,54 @@ var catInput = document.getElementById("cat");
 var titleInput = document.getElementById("title");
 var articleInput = document.getElementById("article");
 let token = localStorage.getItem('token');
+let dueDateType = localStorage.getItem('group_type');
 
 window.onload = () => {
+    var today = new Date();
+    // if(today<dueDateType)
+    getTheDue(dueDateType)
+    
+
+
+}
+
+function getTheDue(dueDateType) {
+    axios({
+        method: 'GET',
+        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const dateResult = response.data;
+            console.log(dateResult);
+            var dueDate = dateResult[0].duedate
+            console.log(dueDate);
+            var dueDate = new Date(dueDate)
+            var today = new Date()
+
+            if(dueDate < today) {
+                alert("Competition was end. You cannot edit")
+                window.location = "submission.html"
+            } else if (today < dueDate) {
+                getArticleData()
+            } else {
+                alert("bug found")
+            }
+
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
+
+
+function getArticleData() {
     axios({
         headers: {
             'user': userid,
