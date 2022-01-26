@@ -130,12 +130,18 @@ module.exports = {
 
         database.transaction(async (dbClient) => {
             var currentdate = new Date();
+            // var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
+            //     + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
+            //     + currentdate.getFullYear() + " "
+            //     + currentdate.getHours() + ":"
+            //     + currentdate.getMinutes() + ":"
+            //     + currentdate.getSeconds();
             var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
                 + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
                 + currentdate.getFullYear() + " "
-                + currentdate.getHours() + ":"
-                + currentdate.getMinutes() + ":"
-                + currentdate.getSeconds();
+                + ("0" + currentdate.getHours()).slice(-2) + ":"
+                + ("0" + currentdate.getMinutes()).slice(-2) + ":"
+                + ("0" + currentdate.getSeconds()).slice(-2);
 
             console.log("This is the datetime: " + datetime);
             const tournamentID = await getTournamentID(studentID, groupType, dbClient);

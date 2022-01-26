@@ -16,27 +16,83 @@ window.onload = () => {
     event.preventDefault();
     if (groupType === "final") {
         console.log("Im in FINAL");
-        showContent()
+        showTournamentContent()
         getTheDue(groupType);
     } else if (groupType === "semi_final_one" || groupType === "semi_final_two") {
         console.log("Im in SEMI FINAL");
-        showContent()
+        showTournamentContent()
         getTheDue(groupType);
     } else if (groupType === "group_one" || groupType === "group_two" || groupType === "group_three" || groupType === "group_four") {
         console.log("Im in GROUP");
-        showContent()
+        showTournamentContent()
         getTheDue(groupType);
     } else {
         console.log("IM in the ELSE");
-        showContent()
+        showQualifyingContent()
         getTheDue(groupType);
-        
     }
 }
 
+function showTournamentContent() {
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const articles = response.data;
+            if (articles != null) {
+                getdata.innerHTML = '';
+                articles.forEach((article) => {
+                    var postHtml = `
+                    <div align="center" class="container pt-7">
+                    <div class="card" style="width: 2rems">
+                        <div class="class-body" id="getArticleData">
+                            <h1 class="card-title"><b>Title:</b> ${article.title}</h1>
+                            <hr>
+                            <h2 class="card-subtitle"><b>Word Count:</b> ${article.count} word(s)</h3>
+                                <br>
+                                <h2 class="card-subtitle"><b>Marks:</b> ${article.marks}</h2>
+                                <br>
+                                <h2 class="card-subtitle"><b>Submission Date:</b> ${article.submitted_at}</h2>
+                                <br>
+                                <h2 class="card-subtitle"><b>Graded Date:</b> ${article.graded_at}</h2>
+                                <hr>
+                                <h2 class="card-subtitle"><b>Article:</b></h2>
+                                <article class="card-text" style="font-size:25px">${article.articlecontent}</article>
+                                <hr>
+                                <a onclick="editBtnTournamentEdition('${article.userid}')" class="btn btn-info">Edit</a>
+                                <a onclick="articleDeleteTournament('${article.userid}')" class="btn btn-danger" id="dis">Delete</a>
+                        </div>
+                    </div>
+                </div>
+        `;
+                    localStorage.setItem('tournamentID', article.tournamentid);
+                    getdata.innerHTML += postHtml;
+                })
+            } else {
+                console.log("There is an issue");
+            }
+        })
+        .catch(function (error) {
+            if (error.response.status == 404) {
+                printText();
+                btn();
+            } else if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
 
-
-function showContent() {
+function showQualifyingContent() {
     axios({
         headers: {
             'user': userid,
@@ -50,29 +106,35 @@ function showContent() {
             const articles = response.data;
             console.log(articles);
             if (articles != null) {
-                
                 getdata.innerHTML = '';
                 articles.forEach((article) => {
-                    console.log("ssssss"+articles[0].title);
-                    
+                    console.log("ssssss" + articles[0].title);
                     var postHtml = `
-            <tr>
-                <th style="font-size: 25px;font-weight:bold">Title</th>
-                <th style="font-size: 25px;font-weight:bold">Article</th>
-                <th style="font-size: 25px;font-weight:bold">Submission Date</th>
-                <th style="font-size: 25px;font-weight:bold">Grade</th>
-                <th style="font-size: 25px;font-weight:bold">Edit</th>
-                <th style="font-size: 25px;font-weight:bold">Delete</th>
-            </tr>  
+                <div class="container pt-5">
+                    <table class="table">
+                        <thead class="thead-dark" id="field" hidden
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th style="font-size: 25px;font-weight:bold">Title</th>
+                                <th style="font-size: 25px;font-weight:bold">Article</th>
+                                <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                                <th style="font-size: 25px;font-weight:bold">Grade</th>
+                                <th style="font-size: 25px;font-weight:bold">Edit</th>
+                                <th style="font-size: 25px;font-weight:bold">Delete</th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 25px;">${article.title}</td>
+                                <td style="font-size: 25px;">${article.content}</td>
+                                <td style="font-size: 15px;">${article.submitted_at}</td>
+                            <td style="font-size: 25px;">${article.grade}</td>
+                                <td ><button onclick="editBtn('${article.userid}')" class = "btn btn-info" >Edit</button></td>
+                                <td><button onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis" >Delete</button></td>
+                            </tr>
+                        </tbody>
 
-            <tr>
-            <td style="font-size: 25px;">${articles.title}</td>
-            <td style="font-size: 25px;">${article.content}</td>
-            <td style="font-size: 15px;">${article.submitted_at}</td>
-            <td style="font-size: 25px;">${article.grade}</td>
-                <td ><button onclick="editBtn('${articles.userid}')" class = "btn btn-info" >Edit</button></td>
-                <td><button onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis" >Delete</button></td>
-            </tr>
+                    </table>
+                </div>
           `;
                     getdata.innerHTML += postHtml;
                 })
@@ -100,9 +162,22 @@ function showContent() {
 function btn() {
     event.preventDefault();
     getdata.innerHTML = '';
-    var postHtml = `
-        <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
+    var postHtml;
+    if (groupType === "qualifying_round") {
+        console.log("Hello Im 1");
+        postHtml = `
+        <div align="center">
+            <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
+        </div>   
         `;
+    } else {
+        console.log("Hello Im 2");
+        postHtml = `
+        <div align="center">
+        <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
+        </div>   
+        `;
+    }
     getdata.innerHTML += postHtml;
 }
 
@@ -165,16 +240,6 @@ function countDown(dueDate) {
         }
     }, 1000)
 }
-
-// function btn() {
-//     event.preventDefault();
-//     getdata.innerHTML = '';
-//     var postHtml = `
-//         <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
-//         `;
-//     getdata.innerHTML += postHtml;
-// }
-
 
 function editBtn() {
     event.preventDefault();
