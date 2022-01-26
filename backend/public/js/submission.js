@@ -12,285 +12,98 @@ window.onload = () => {
         alert("Unauthorised, You are not a Student")
         window.location.replace("login.html");
     }
-
     console.log("This is the group type: " + groupType);
     event.preventDefault();
-
     if (groupType === "final") {
         console.log("Im in FINAL");
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'GET',
-            url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
-            dataType: "json",
-        })
-            .then(function (response) {
-                const articles = response.data;
-                if (articles != null) {
-                    getdata.innerHTML = '';
-                    articles.forEach((article) => {
-                        var postHtml = `
-                <tr>
-                    <th style="font-size: 25px;font-weight:bold">Title</th>
-                    <th style="font-size: 25px;font-weight:bold">Article</th>
-                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
-                    <th style="font-size: 25px;font-weight:bold">Marks</th>
-                    <th style="font-size: 25px;font-weight:bold">Submission Date</th>
-                    <th style="font-size: 25px;font-weight:bold">Graded Date</th>
-                    <th style="font-size: 25px;font-weight:bold">Edit</th>
-                    <th style="font-size: 25px;font-weight:bold">Delete</th>
-                </tr>
-
-                <tr>
-                    <td style="font-size: 25px;">${article.title}</td>
-                    <td style="font-size: 25px;">${article.articlecontent}</td>
-                    <td style="font-size: 25px;">${article.count} words</td>
-                    <td style="font-size: 25px;">${article.marks}</td>
-                    <td style="font-size: 25px;">${article.submitted_at}</td>
-                    <td style="font-size: 25px;">${article.graded_at}</td>
-                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
-                </tr>
-                `;
-                        localStorage.setItem('tournamentID', article.tournamentid);
-                        getdata.innerHTML += postHtml;
-                    })
-                } else {
-                    console.log("There is an issue");
-                }
-            })
-            .catch(function (error) {
-                if (error.response.status == 404) {
-                    printText();
-                    btn();
-                } else if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                } else {
-                    alert("There is an unknown error")
-                    console.log(error)
-                }
-            });
+        showContent()
         getTheDue(groupType);
-
-        function btn() {
-            event.preventDefault();
-            getdata.innerHTML = '';
-            var postHtml = `
-                <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
-                `;
-            getdata.innerHTML += postHtml;
-        }
     } else if (groupType === "semi_final_one" || groupType === "semi_final_two") {
         console.log("Im in SEMI FINAL");
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'GET',
-            url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
-            dataType: "json",
-        })
-            .then(function (response) {
-                const articles = response.data;
-                if (articles != null) {
-                    getdata.innerHTML = '';
-                    articles.forEach((article) => {
-                        var postHtml = `
-                    <tr>
-                        <th style="font-size: 25px;font-weight:bold">Title</th>
-                        <th style="font-size: 25px;font-weight:bold">Article</th>
-                        <th style="font-size: 25px;font-weight:bold">Word Count</th>
-                        <th style="font-size: 25px;font-weight:bold">Marks</th>
-                        <th style="font-size: 25px;font-weight:bold">Submission Date</th>
-                        <th style="font-size: 25px;font-weight:bold">Graded Date</th>
-                        <th style="font-size: 25px;font-weight:bold">Edit</th>
-                        <th style="font-size: 25px;font-weight:bold">Delete</th>
-                    </tr>
-    
-                    <tr>
-                        <td style="font-size: 25px;">${article.title}</td>
-                        <td style="font-size: 25px;">${article.articlecontent}</td>
-                        <td style="font-size: 25px;">${article.count} words</td>
-                        <td style="font-size: 25px;">${article.marks}</td>
-                        <td style="font-size: 25px;">${article.submitted_at}</td>
-                        <td style="font-size: 25px;">${article.graded_at}</td>
-                        <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                        <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
-                    </tr>
-                `;
-                        localStorage.setItem('tournamentID', article.tournamentid);
-                        getdata.innerHTML += postHtml;
-                    })
-                } else {
-                    console.log("There is an issue");
-                }
-            })
-            .catch(function (error) {
-                if (error.response.status == 404) {
-                    printText();
-                    btn();
-                } else if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                } else {
-                    alert("There is an unknown error")
-                    console.log(error)
-                }
-            });
+        showContent()
         getTheDue(groupType);
-
-        function btn() {
-            event.preventDefault();
-            getdata.innerHTML = '';
-            var postHtml = `
-                <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
-                `;
-            getdata.innerHTML += postHtml;
-        }
     } else if (groupType === "group_one" || groupType === "group_two" || groupType === "group_three" || groupType === "group_four") {
         console.log("Im in GROUP");
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'GET',
-            url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
-            dataType: "json",
-        })
-            .then(function (response) {
-                const articles = response.data;
-                if (articles != null) {
-                    getdata.innerHTML = '';
-                    articles.forEach((article) => {
-                        var postHtml = `
-                    <tr>
-                        <th style="font-size: 25px;font-weight:bold">Title</th>
-                        <th style="font-size: 25px;font-weight:bold">Article</th>
-                        <th style="font-size: 25px;font-weight:bold">Word Count</th>
-                        <th style="font-size: 25px;font-weight:bold">Marks</th>
-                        <th style="font-size: 25px;font-weight:bold">Submission Date</th>
-                        <th style="font-size: 25px;font-weight:bold">Graded Date</th>
-                        <th style="font-size: 25px;font-weight:bold">Edit</th>
-                        <th style="font-size: 25px;font-weight:bold">Delete</th>
-                    </tr>
-    
-                    <tr>
-                        <td style="font-size: 25px;">${article.title}</td>
-                        <td style="font-size: 25px;">${article.articlecontent}</td>
-                        <td style="font-size: 25px;">${article.count} words</td>
-                        <td style="font-size: 25px;">${article.marks}</td>
-                        <td style="font-size: 25px;">${article.submitted_at}</td>
-                        <td style="font-size: 25px;">${article.graded_at}</td>
-                        <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                        <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
-                    </tr>
-                `;
-                        localStorage.setItem('tournamentID', article.tournamentid);
-                        getdata.innerHTML += postHtml;
-                    })
-                } else {
-                    console.log("There is an issue");
-                }
-            })
-            .catch(function (error) {
-                if (error.response.status == 404) {
-                    printText();
-                    btn();
-                } else if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                } else {
-                    alert("There is an unknown error")
-                    console.log(error)
-                }
-            });
+        showContent()
         getTheDue(groupType);
-
-        function btn() {
-            event.preventDefault();
-            getdata.innerHTML = '';
-            var postHtml = `
-                <a onclick= 'href="postArticleTournament.html"' class = "btn btn-danger">Submit Your Article</a>
-                `;
-            getdata.innerHTML += postHtml;
-        }
     } else {
         console.log("IM in the ELSE");
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'GET',
-            url: baseUrl + '/competition/article/' + userid,
-            dataType: "json",
-        })
-            .then(function (response) {
-                const articles = response.data;
-                console.log(articles);
-                if (articles != null) {
-                    
-                    getdata.innerHTML = '';
-                    articles.forEach((article) => {
-                        console.log("ssssss"+articles[0].title);
-                        
-                        // console.log("/////////"+JSON.stringify(article[0].title));
-                        var postHtml = `
-                <tr>
-                    <th style="font-size: 25px;font-weight:bold">Title</th>
-                    <th style="font-size: 25px;font-weight:bold">Article</th>
-                    <th style="font-size: 25px;font-weight:bold">Submission Date</th>
-                    <th style="font-size: 25px;font-weight:bold">Grade</th>
-                    <th style="font-size: 25px;font-weight:bold">Edit</th>
-                    <th style="font-size: 25px;font-weight:bold">Delete</th>
-                </tr>  
-
-                <tr>
-                <td style="font-size: 25px;">${articles.title}</td>
-                <td style="font-size: 25px;">${article.content}</td>
-                <td style="font-size: 15px;">${article.submitted_at}</td>
-                <td style="font-size: 25px;">${article.grade}</td>
-                    <td ><button onclick="editBtn('${articles.userid}')" class = "btn btn-info" disabled>Edit</button></td>
-                    <td><button onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis" disabled>Delete</button></td>
-                </tr>
-              `;
-                        getdata.innerHTML += postHtml;
-                    })
-                } else {
-                    console.log("Issue in retrieving...");
-                }
-
-            })
-            .catch(function (error) {
-                //Handle error
-                if (error.response.status == 404) {
-                    printText();
-                    btn();
-                } else if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                } else {
-                    alert("There is an unknown error")
-                    console.log(error)
-                }
-            });
+        showContent()
         getTheDue(groupType);
-
-        function btn() {
-            event.preventDefault();
-            getdata.innerHTML = '';
-            var postHtml = `
-                <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
-                `;
-            getdata.innerHTML += postHtml;
-        }
+        
     }
+}
+
+
+
+function showContent() {
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/article/' + userid,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const articles = response.data;
+            console.log(articles);
+            if (articles != null) {
+                
+                getdata.innerHTML = '';
+                articles.forEach((article) => {
+                    console.log("ssssss"+articles[0].title);
+                    
+                    var postHtml = `
+            <tr>
+                <th style="font-size: 25px;font-weight:bold">Title</th>
+                <th style="font-size: 25px;font-weight:bold">Article</th>
+                <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                <th style="font-size: 25px;font-weight:bold">Grade</th>
+                <th style="font-size: 25px;font-weight:bold">Edit</th>
+                <th style="font-size: 25px;font-weight:bold">Delete</th>
+            </tr>  
+
+            <tr>
+            <td style="font-size: 25px;">${articles.title}</td>
+            <td style="font-size: 25px;">${article.content}</td>
+            <td style="font-size: 15px;">${article.submitted_at}</td>
+            <td style="font-size: 25px;">${article.grade}</td>
+                <td ><button onclick="editBtn('${articles.userid}')" class = "btn btn-info" >Edit</button></td>
+                <td><button onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis" >Delete</button></td>
+            </tr>
+          `;
+                    getdata.innerHTML += postHtml;
+                })
+            } else {
+                console.log("Issue in retrieving...");
+            }
+
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+                printText();
+                btn();
+            } else if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+
+}
+
+function btn() {
+    event.preventDefault();
+    getdata.innerHTML = '';
+    var postHtml = `
+        <a onclick= 'href="postArticle.html"' class = "btn btn-danger">Submit Your Article</a>
+        `;
+    getdata.innerHTML += postHtml;
 }
 
 // function myFunction() {
