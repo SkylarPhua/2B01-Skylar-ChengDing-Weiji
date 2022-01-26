@@ -1,12 +1,18 @@
 const getdata = document.getElementById("getArticleData");
 let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
+let role = localStorage.getItem('role_name');
 let groupType = localStorage.getItem('group_type');
 const axios = window.axios;
 
 const baseUrl = 'http://localhost:8000';
 
 window.onload = () => {
+    if (role != "student") {
+        alert("Unauthorised, You are not a Student")
+        window.location.replace("login.html");
+    }
+
     console.log("This is the group type: " + groupType);
     event.preventDefault();
 
@@ -32,6 +38,8 @@ window.onload = () => {
                     <th style="font-size: 25px;font-weight:bold">Article</th>
                     <th style="font-size: 25px;font-weight:bold">Word Count</th>
                     <th style="font-size: 25px;font-weight:bold">Marks</th>
+                    <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                    <th style="font-size: 25px;font-weight:bold">Graded Date</th>
                     <th style="font-size: 25px;font-weight:bold">Edit</th>
                     <th style="font-size: 25px;font-weight:bold">Delete</th>
                 </tr>
@@ -41,10 +49,13 @@ window.onload = () => {
                     <td style="font-size: 25px;">${article.articlecontent}</td>
                     <td style="font-size: 25px;">${article.count} words</td>
                     <td style="font-size: 25px;">${article.marks}</td>
+                    <td style="font-size: 25px;">${article.submitted_at}</td>
+                    <td style="font-size: 25px;">${article.graded_at}</td>
                     <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
                     <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
                 </tr>
                 `;
+                        localStorage.setItem('tournamentID', article.tournamentid);
                         getdata.innerHTML += postHtml;
                     })
                 } else {
@@ -90,24 +101,29 @@ window.onload = () => {
                     getdata.innerHTML = '';
                     articles.forEach((article) => {
                         var postHtml = `
-                <tr>
-                    <th style="font-size: 25px;font-weight:bold">Title</th>
-                    <th style="font-size: 25px;font-weight:bold">Article</th>
-                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
-                    <th style="font-size: 25px;font-weight:bold">Marks</th>
-                    <th style="font-size: 25px;font-weight:bold">Edit</th>
-                    <th style="font-size: 25px;font-weight:bold">Delete</th>
-                </tr>
-
-                <tr>
-                    <td style="font-size: 25px;">${article.title}</td>
-                    <td style="font-size: 25px;">${article.articlecontent}</td>
-                    <td style="font-size: 25px;">${article.count} words</td>
-                    <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
-                </tr>
+                    <tr>
+                        <th style="font-size: 25px;font-weight:bold">Title</th>
+                        <th style="font-size: 25px;font-weight:bold">Article</th>
+                        <th style="font-size: 25px;font-weight:bold">Word Count</th>
+                        <th style="font-size: 25px;font-weight:bold">Marks</th>
+                        <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                        <th style="font-size: 25px;font-weight:bold">Graded Date</th>
+                        <th style="font-size: 25px;font-weight:bold">Edit</th>
+                        <th style="font-size: 25px;font-weight:bold">Delete</th>
+                    </tr>
+    
+                    <tr>
+                        <td style="font-size: 25px;">${article.title}</td>
+                        <td style="font-size: 25px;">${article.articlecontent}</td>
+                        <td style="font-size: 25px;">${article.count} words</td>
+                        <td style="font-size: 25px;">${article.marks}</td>
+                        <td style="font-size: 25px;">${article.submitted_at}</td>
+                        <td style="font-size: 25px;">${article.graded_at}</td>
+                        <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                        <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
+                    </tr>
                 `;
+                        localStorage.setItem('tournamentID', article.tournamentid);
                         getdata.innerHTML += postHtml;
                     })
                 } else {
@@ -153,23 +169,27 @@ window.onload = () => {
                     getdata.innerHTML = '';
                     articles.forEach((article) => {
                         var postHtml = `
-                <tr>
-                    <th style="font-size: 25px;font-weight:bold">Title</th>
-                    <th style="font-size: 25px;font-weight:bold">Article</th>
-                    <th style="font-size: 25px;font-weight:bold">Word Count</th>
-                    <th style="font-size: 25px;font-weight:bold">Marks</th>
-                    <th style="font-size: 25px;font-weight:bold">Edit</th>
-                    <th style="font-size: 25px;font-weight:bold">Delete</th>
-                </tr>
-
-                <tr>
-                    <td style="font-size: 25px;">${article.title}</td>
-                    <td style="font-size: 25px;">${article.articlecontent}</td>
-                    <td style="font-size: 25px;">${article.count} words</td>
-                    <td style="font-size: 25px;">${article.marks}</td>
-                    <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
-                    <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
-                </tr>
+                    <tr>
+                        <th style="font-size: 25px;font-weight:bold">Title</th>
+                        <th style="font-size: 25px;font-weight:bold">Article</th>
+                        <th style="font-size: 25px;font-weight:bold">Word Count</th>
+                        <th style="font-size: 25px;font-weight:bold">Marks</th>
+                        <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                        <th style="font-size: 25px;font-weight:bold">Graded Date</th>
+                        <th style="font-size: 25px;font-weight:bold">Edit</th>
+                        <th style="font-size: 25px;font-weight:bold">Delete</th>
+                    </tr>
+    
+                    <tr>
+                        <td style="font-size: 25px;">${article.title}</td>
+                        <td style="font-size: 25px;">${article.articlecontent}</td>
+                        <td style="font-size: 25px;">${article.count} words</td>
+                        <td style="font-size: 25px;">${article.marks}</td>
+                        <td style="font-size: 25px;">${article.submitted_at}</td>
+                        <td style="font-size: 25px;">${article.graded_at}</td>
+                        <td><a onclick="editBtnTournamentEdition('${article.userid}')" class = "btn btn-info">Edit</a></td>
+                        <td><a onclick="articleDeleteTournament('${article.userid}')" class = "btn btn-danger" id="dis">Delete</a></td>
+                    </tr>
                 `;
                         localStorage.setItem('tournamentID', article.tournamentid);
                         getdata.innerHTML += postHtml;
@@ -222,7 +242,7 @@ window.onload = () => {
                         
                         // console.log("/////////"+JSON.stringify(article[0].title));
                         var postHtml = `
-                    <tr>
+                <tr>
                     <th style="font-size: 25px;font-weight:bold">Title</th>
                     <th style="font-size: 25px;font-weight:bold">Article</th>
                     <th style="font-size: 25px;font-weight:bold">Submission Date</th>
@@ -372,8 +392,7 @@ function articleDeleteTournament(id) {
             dataType: "json",
         })
             .then(function (response) {
-                console.log("The article has been deleted");
-                window.alert("The article has been deleted");
+                window.alert("You have deleted the article");
                 location.reload();
             })
             .catch(function (error) {
@@ -399,9 +418,15 @@ function articleDel(id) {
             dataType: "json",
         })
             .then(function (response) {
-                window.alert("You have deleted your aticle ")
-                // btn();
-                localtion.reload();
+                // new Noty({
+                //     type: 'success',
+                //     timeout: '6000',
+                //     layout: 'topCenter',
+                //     theme: 'bootstrap-v4',
+                //     text: 'You have deleted your article',
+                // }).show();
+                window.alert("You have deleted the article");
+                location.reload();
             })
             .catch(function (error) {
                 // if (error.response.status = 404) {

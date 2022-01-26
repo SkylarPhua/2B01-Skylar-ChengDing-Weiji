@@ -4,6 +4,14 @@ var article = document.getElementById('article');
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
 let groupType = localStorage.getItem('group_type');
+let role = localStorage.getItem('role_name');
+
+window.onload = () => {
+    if (role != "student") {
+        alert("Unauthorised, You are not a Student")
+        window.location.replace("login.html");
+    }
+}
 
 document.getElementById('submitButton').disabled = true;
 window.addEventListener('keyup', chkinput)
@@ -106,9 +114,17 @@ function countWord() {
     }
 }
 
-article.addEventListener('keydown', function(e) {
+article.addEventListener('keydown', function (e) {
     if (globalWordCount > wordLimit && e.code !== "Backspace") {
-      e.preventDefault();
-      return;
+        new Noty({
+            type: 'error',
+            layout: 'topCenter',
+            theme: 'sunset',
+            timeout: '1000',
+            text: 'You exceeded the word limit, please delete some words',
+            killer: true
+        }).show();
+        e.preventDefault();
+        return;
     }
-  });
+});

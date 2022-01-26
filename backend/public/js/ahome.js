@@ -1,11 +1,15 @@
-
 const getdata = document.getElementById("getData");
 let token = localStorage.getItem('token');
+let role = localStorage.getItem('role_name');
 let userid = localStorage.getItem('user_id');
 const baseUrl = 'http://localhost:8000';
 const axios = window.axios;
 
 window.onload = () => {
+    if (role != "admin") {
+        alert("Unauthorised, You are not an admin")
+        window.location.replace("login.html");
+    }
     searchparameters();
 }
 
@@ -64,6 +68,9 @@ function getAllArticle() {
         });
 }
 
+$('#resetButton').on('click', function () {
+    getAllArticle();
+})
 
 
 function articleSelect(id, ID) {
@@ -163,5 +170,3 @@ $('#submitButton').on('click', function () {
 
     });
 })
-
-

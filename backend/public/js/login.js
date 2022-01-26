@@ -59,6 +59,7 @@ window.addEventListener('DOMContentLoaded', function () {
                             theme: 'sunset',
                             timeout: '6000',
                             text: 'Unable to login. Check your email and password',
+                            killer: true   
                         }).show();
                         overlayLoading.style.display = "none";
                     });

@@ -54,21 +54,45 @@
                     <div class="card">
                         <div class="card-body">
                             <!--Form register-->
-                            <form id="registerFormContainer">
+                            <form id="registerFormContainer" class="needs-validation" novalidate>
                                 <h2 class="text-center font-up font-bold blue-text py-4">Sign up</h2>
-                                <div class="md-form"><i class="fa fa-user prefix grey-text"></i><input
-                                        class="form-control" type="text" id="fullNameInput"><label
-                                        for="fullNameInput">Your name</label></div>
-                                <div class="md-form"><i class="fa fa-envelope prefix grey-text"></i><input
-                                        class="form-control" type="text" id="emailInput"><label for="emailInput">Your
-                                        email</label></div>
-                                <div class="md-form"><i class="fa fa-key prefix grey-text"></i><input
-                                        class="form-control" type="password" id="passwordInput"><label
-                                        for="passwordInput">Your password</label></div>
                                 <div class="md-form">
+                                    <i class="fa fa-user prefix grey-text"></i>
+                                    <input class="form-control" type="text" id="fullNameInput" required>
+                                    <label for="fullNameInput">Your name</label>
+                                    <div class="invalid-feedback">
+                                        Please state your name
+                                    </div>
+                                    <div class="text-danger" id="one" style="display:none;">
+                                        You cannot leave this field empty
+                                    </div>
+                                </div>
+                                <div class="md-form">
+                                    <i class="fa fa-envelope prefix grey-text"></i>
+                                    <input class="form-control" type="text" id="emailInput" required>
+                                    <label for="emailInput">Your email</label>
+                                    <div class="invalid-feedback">
+                                        Please choose a unique email.
+                                    </div>
+                                    <div class="text-danger" id="two" style="display:none;">
+                                        You cannot leave this field empty
+                                    </div>
+                                </div>
+                                <div class="md-form">
+                                    <i class="fa fa-key prefix grey-text"></i>
+                                    <input class="form-control" type="password" id="passwordInput" required>
+                                    <label for="passwordInput">Your password</label>
+                                    <div class="invalid-feedback">
+                                        Please enter your password.
+                                    </div>
+                                    <div class="text-danger" id="three" style="display:none;">
+                                        You cannot leave this field empty
+                                    </div>
+                                </div>
+                                <div class="md-form p-3">
                                     <div class="font-bold">
                                         <p>
-                                            Choose your Education level : 
+                                            Choose your Education level :
                                         </p>
                                     </div>
                                     <select id="edulvl">
@@ -77,20 +101,26 @@
                                         <option value="3">Secondary 3</option>
                                         <option value="4">Secondary 4</option>
                                         <option value="5">Secondary 5</option>
-                                      </select>
-                                      <select id="userType">
+                                    </select>
+                                    <select id="userType">
                                         <option value="student" default>student</option>
-                                      </select>
+                                    </select>
 
-                                      <div class="form-group">
-                                        <div class="g-recaptcha" data-sitekey="6Lc26zMeAAAAABQGJVOFGkErBsGzU34rqTXY9JXa" 
-                                        data-callback="recaptcha_callback"></div>
-                                      </div>
+                                    <div class="form-group" id="t-recaptcha">
+                                        <div class="g-recaptcha" id="g-recaptcha" data-callback="capcha_filled"
+                                            data-expired-callback="capcha_expired"
+                                            data-sitekey="6Lc26zMeAAAAABQGJVOFGkErBsGzU34rqTXY9JXa">
+                                            <!-- data-callback="recaptcha_callback"> -->
+                                        </div>
+                                        <div class="text-danger" id="four" style="display:none;">
+                                            Please complete the captcha
+                                        </div>
+                                    </div>
 
-                                    
+
 
                                 </div>
-                                <div class="text-center"><button class="btn btn-primary" id="submitButton" disabled>
+                                <div class="text-center"><button class="btn btn-primary" id="submitButton">
                                         Submit</button></div>
                             </form>
                         </div>
@@ -104,7 +134,7 @@
             </div>
     </div>
     </main>
-<!-- 
+    <!-- 
     <script>
         function recaptcha_callback() {
             var submitButton = document.querySelector('#submitButton')

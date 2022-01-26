@@ -6,15 +6,18 @@ var titleInput = document.getElementById("title");
 var articleInput = document.getElementById("article");
 let token = localStorage.getItem('token');
 let dueDateType = localStorage.getItem('group_type');
+let role = localStorage.getItem('role_name');
 
 window.onload = () => {
-    var today = new Date();
-    // if(today<dueDateType)
-    getTheDue(dueDateType)
-    
-
-
+        if (role != "student"){
+            alert("Unauthorised, You are not a Student")
+            window.location.replace("login.html");
+        } else {
+            getTheDue(dueDateType)
+        }
 }
+
+
 
 function getTheDue(dueDateType) {
     axios({
