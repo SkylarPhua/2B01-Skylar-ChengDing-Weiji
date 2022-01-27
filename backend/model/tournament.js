@@ -5,10 +5,11 @@
 //------------------------------------
 // imports
 //------------------------------------
-const { query } = require('express');
-const { json } = require('express/lib/response');
-const { mutateExecOptions } = require('nodemon/lib/config/load');
+// const { query } = require('express');
+// const { json } = require('express/lib/response');
+// const { mutateExecOptions } = require('nodemon/lib/config/load');
 const database = require('../database/database')
+var lexrank = require('lexrank');
 
 //------------------------------------
 // functions/exports
@@ -159,10 +160,17 @@ module.exports = {
 
     // Endpoint 4: Admin to mark the article (its post and edit) (TO BE CHANGED FOR HISTORY (TRANSACTION))
     editArticleMarks: function (marks, tournamentID, callback) {
-        const query = `UPDATE tournament SET marks = $1 WHERE tournamentID = $2`
+        const query = `UPDATE tournament SET marks = $1, graded_at = $2 WHERE tournamentID = $3`
+        var currentdate = new Date();
+        var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
+            + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
+            + currentdate.getFullYear() + " "
+            + ("0" + currentdate.getHours()).slice(-2) + ":"
+            + ("0" + currentdate.getMinutes()).slice(-2) + ":"
+            + ("0" + currentdate.getSeconds()).slice(-2);
 
         return database
-            .query(query, [marks, tournamentID])
+            .query(query, [marks, datetime, tournamentID])
             .then(function (result) {
                 if (result.rowCount == 0) {
                     return callback({ code: "noUpdate" }, null);
@@ -262,7 +270,7 @@ module.exports = {
                 }
             })
             .catch(function (error) {
-                return callback(error, null)
+                return callback(error, null);
             })
     },
 
@@ -328,10 +336,10 @@ module.exports = {
 
     // Endpoint 8: This is to get all tournament aritcles by everyone and every stage (Admin A_tournament.html)
     getAllArticlesInTournament: function (callback) {
-        const query = `SELECT t.tournamentID, u.name AS username, u.email, u.edu_lvl, t.title, c.name AS catName, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, t.fk_tournament_type
+        const query = `SELECT userid, t.tournamentID, u.name AS username, u.email, u.edu_lvl, t.title, c.name AS catName, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, t.fk_tournament_type
     FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userID) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryID = c.catid)
     WHERE t.tournamentID IS NOT NULL
-    GROUP BY t.tournamentID, u.name, u.email, u.edu_lvl, t.title, c.name, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, t.fk_tournament_type
+    GROUP BY userid, t.tournamentID, u.name, u.email, u.edu_lvl, t.title, c.name, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, t.fk_tournament_type
     ORDER BY fk_tournament_type ASC`;
 
         return database
@@ -352,5 +360,66 @@ module.exports = {
             })
     },
 
+    // Endpoint 9: Get specific articles using tournamentID, used by admin
+    getArticleByTournamentID: function (tournamentID, callback) {
+        const query = `WITH count AS 
+        (SELECT tournamentID, UNNEST(STRING_TO_ARRAY(REGEXP_REPLACE(articlecontent,  '[^\\w\\s]', '', 'g'), ' ')) AS word, articlecontent FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.tournamentid = $1)
+        SELECT u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, COUNT(count.word)
+        FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid), count 
+        WHERE t.tournamentid = $2
+        GROUP BY u.name, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.graded_at, tt.group_type_display`;
+
+        return database
+            .query(query, [tournamentID, tournamentID])
+            .then(function (result) {
+                if (result.rows.length == 0) {
+                    return callback({ code: "noSuchArticle" }, null);
+                } else if (result.rows.length == 1) {
+                    return callback(null, result.rows);
+                } else {
+                    return callback({ code: "unknownError" }, null);
+                }
+            })
+            .catch(function (error) {
+                return callback(error, null);
+            })
+    },
+
+    // Endpoint 10: Get summarized version of an article in the tournament using tournamentID
+    getSummarisedTournamentArticle: function (tournamentID, callback) {
+        var summary;
+        var info = "";
+        var results;
+        var length;
+        const query = `WITH count AS 
+        (SELECT tournamentID, UNNEST(STRING_TO_ARRAY(REGEXP_REPLACE(articlecontent,  '[^\\w\\s]', '', 'g'), ' ')) AS word, articlecontent FROM tournament AS t FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid WHERE t.tournamentid = $1)
+        SELECT u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.graded_at, tt.group_type_display, COUNT(count.word)
+        FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) FULL OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid), count 
+        WHERE t.tournamentid = $2
+        GROUP BY u.name, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.graded_at, tt.group_type_display`;
+
+        return database
+            .query(query, [tournamentID, tournamentID])
+            .then(function (result) {
+                summary = result.rows[0].articlecontent;
+
+                var Summarised = lexrank.summarize(summary, 5, function (err, summarised, summary) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        for (var i = 0; i < summarised.length; i++) {
+                            info += summarised[i].text;
+                        }
+                    }
+                });
+                results = result.rows.push({ information: info });
+                console.log("this is the results######: " + JSON.stringify(results));
+                length = result.rows.push({ length: info.length });
+                return callback(null, result.rows);
+            })
+            .catch(function (error) {
+                return callback(error, null);
+            })
+    }
 
 }

@@ -79,36 +79,75 @@ function articleSelect(id, ID) {
     window.location = "A_mark.html";
 }
 
-function articleDel(id) {
-    var txt = confirm("Are you sure?");
-    if (txt == true) {
-        console.log("here");
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'DELETE',
-            url: baseUrl + '/competition/articles/' + id,
-            dataType: "json",
-        })
-            .then(function (response) {
-                window.alert("You have Disaqualified Student : " + id)
-                getAllArticle();
-            })
-            .catch(function (error) {
-                if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                } else {
-                    console.log("This is the error" + error);
-                    window.alert("Error, Unable to Delete Student : " + id + " " + error)
-                }
+// function articleDel(id) {
+//     var txt = confirm("Are you sure?");
+//     if (txt == true) {
+//         console.log("here");
+//         axios({
+//             headers: {
+//                 'user': userid,
+//                 'authorization': 'Bearer ' + token
+//             },
+//             method: 'DELETE',
+//             url: baseUrl + '/competition/articles/' + id,
+//             dataType: "json",
+//         })
+//             .then(function (response) {
+//                 window.alert("You have Disaqualified Student : " + id)
+//                 getAllArticle();
+//             })
+//             .catch(function (error) {
+//                 if (error.response.status == 403) {
+//                     alert(JSON.stringify(error.response.data));
+//                     window.location = "login.html";
+//                 } else {
+//                     console.log("This is the error" + error);
+//                     window.alert("Error, Unable to Delete Student : " + id + " " + error)
+//                 }
 
-            });
-    } else {
-        console.log("her");
-    }
+//             });
+//     } else {
+//         console.log("her");
+//     }
+// }
+
+function articleDel(id) {
+    var n = new Noty({
+        text: "Do you want to disqualify Student ID: " + id,
+        buttons: [
+            Noty.button('YES', 'btn btn-success', function () {
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'DELETE',
+                    url: baseUrl + '/competition/articles/' + id,
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        n.close();
+                        getAllArticle();
+                    })
+                    .catch(function (error) {
+                        if (error.response.status == 403) {
+                            alert(JSON.stringify(error.response.data));
+                            window.location = "login.html";
+                        } else {
+                            console.log("This is the error" + error);
+                            window.alert("Error, Unable to Delete Student : " + id + " " + error)
+                        }
+
+                    });
+            }, { id: 'button1', 'data-status': 'ok' }),
+            Noty.button('NO', 'btn btn-error', function () {
+                console.log('button 2 clicked');
+                n.close();
+            })
+        ],
+        killer: true,
+    });
+    n.show(); 
 }
 
 $('#submitButton').on('click', function () {
