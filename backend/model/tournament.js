@@ -152,6 +152,7 @@ module.exports = {
             const tournamentID = await getTournamentID(studentID, groupType, dbClient);
             console.log(tournamentID);
             let result = await editArticle(tournamentID, title, content, datetime, dbClient);
+            
             return result;
         })
             .then(function (result) {

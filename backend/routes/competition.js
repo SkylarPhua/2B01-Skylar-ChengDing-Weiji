@@ -14,6 +14,13 @@ var verifyFn = require('../auth/verifyFn.js');
 var app = require('../controller/app');
 
 //------------------------------------
+// History Routes (New for CA2)
+//------------------------------------
+
+// GET all history articles by specific user
+router.get('/history/:id', app.getHistoryArticle);
+
+//------------------------------------
 // Tournament Routes (New for CA2)
 //------------------------------------
 

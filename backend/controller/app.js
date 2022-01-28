@@ -11,6 +11,7 @@ var article = require('../model/article');
 var category = require('../model/category');
 var grading = require('../model/grade');
 var tournament = require('../model/tournament')
+var history = require('../model/history')
 
 const bcrypt = require('bcrypt');
 var async = require('async');
@@ -727,3 +728,21 @@ exports.editDueDateByGroup = function (req, res) {
         }
     })
 }
+
+exports.getHistoryArticle = function (req, res) {
+    const userid = parseInt(req.params.id);
+    console.log(userid)
+    history.getArticleByUserID(userid, function (error, result) {
+
+        if (!error && result == "") {
+            console.log("Cannot find any article from this student")
+            res.status(404).send("Cannot find any article from this student");
+        } else if (!error && result !== "") {
+            console.log(result)
+            res.status(200).send(result);
+        } else {
+            console.log("This is the error: " + JSON.stringify(error));
+            res.status(500).send("Unknown student error");
+        }
+    })
+};
