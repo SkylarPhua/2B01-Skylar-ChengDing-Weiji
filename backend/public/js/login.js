@@ -62,6 +62,8 @@ window.addEventListener('DOMContentLoaded', function () {
                             killer: true   
                         }).show();
                         overlayLoading.style.display = "none";
+                        $("#incorrect1").show();
+                        $("#incorrect2").show();
                     });
             }
         });

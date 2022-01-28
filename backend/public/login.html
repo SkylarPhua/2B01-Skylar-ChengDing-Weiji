@@ -53,10 +53,13 @@
                                     <input class="form-control" type="text" id="emailInput" required>
                                     <label for="emailInput">Your email</label>
                                     <div class="invalid-feedback">
-                                        Please choose a unique email.
+                                        Please enter a unique email.
                                     </div>
                                     <div class="text-danger" id="one" style="display:none;">
                                         You cannot leave this field empty
+                                    </div>
+                                    <div class="text-danger" id="incorrect1" style="display:none;">
+                                        Please enter an existing email
                                     </div>
 
                                 </div>
@@ -69,6 +72,9 @@
                                     </div>
                                     <div class="text-danger" id="two" style="display:none;">
                                         You cannot leave this field empty
+                                    </div>
+                                    <div class="text-danger" id="incorrect2" style="display:none;">
+                                        Incorrect Pasword, password should not consist of illegal characters
                                     </div>
                                 </div>
                                 <div class="text-center"><button class="btn btn-primary" id="submitButton">
