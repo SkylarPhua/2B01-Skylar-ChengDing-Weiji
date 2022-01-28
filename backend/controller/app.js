@@ -70,14 +70,16 @@ exports.logUser = function (req, res) {
 
 // Endpoint 1: getGroupByNumber
 exports.getGroupByNumber = function (req, res) {
-    const tournamentType = req.body.tournamentType;
+    const groupType = req.params.groupType;
+    console.log("groupType: " + groupType);
 
-    tournament.getGroupByNum(tournamentType, function (error, result) {
+    tournament.getGroupByType(groupType, function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
         } else if (error.code == "emptyGroup") {
             res.status(404).send("Cannot find student in tournament group")
         } else {
+            console.log("This is the error: " + JSON.stringify(error));
             res.status(500).send("Unknown error");
         }
     })
@@ -129,6 +131,7 @@ exports.editTournamentArticleMark = function (req, res) {
     const marks = req.body.mark;
     const tournamentID = req.body.tournamentid;
 
+    console.log("Marks: " + marks);
     tournament.editArticleMarks(marks, tournamentID, function (error, result) {
         if (!error && result !== "") {
             res.sendStatus(204);
@@ -161,7 +164,7 @@ exports.deleteStudentFromGroup = function (req, res) {
 
 // Endpoint 6: For student and admin (Got word counter also)
 exports.getStudentArticleFromTournament = function (req, res) {
-    const studentID = req.params.id;
+    const studentID = req.params.userid;
     const groupType = req.params.groupType;
 
     tournament.getStudentArticle(studentID, groupType, function (error, result) {
@@ -178,9 +181,9 @@ exports.getStudentArticleFromTournament = function (req, res) {
 
 // Endpoint 7: For student to delete and redo their article
 exports.removeStudentArticle = function (req, res) {
-    const studentID = req.params.id;
+    const studentID = req.params.userid;
     const tournamentID = req.body.tournamentid;
-    
+
     tournament.deleteStudentArticle(studentID, tournamentID, function (error, result) {
         if (!error && result !== "") {
             res.status(204).send("Article has been deleted");
@@ -208,6 +211,38 @@ exports.getAllArticlesFromTournament = function (req, res) {
         } else {
             console.log("This is the error: " + JSON.stringify(error));
             res.status(500).send("Unknown error");
+        }
+    })
+}
+
+// Endpoint 9: For admin to get specific articles using the tournamentID
+exports.getSpecificTournamentArticle = function (req, res) {
+    const tournamentID = req.params.tournamentid;
+
+    tournament.getArticleByTournamentID(tournamentID, function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "noSuchArticle") {
+            res.status(404).send("Cannot find any article done by user");
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    })
+}
+
+// Endpoint 10: For admin to get summarized articles using tournamentID
+exports.getSummaryTournamentArticle = function (req, res) {
+    const tournamentID = req.params.tournamentid;
+    console.log("TournamentID: " + tournamentID);
+
+    tournament.getSummarisedTournamentArticle(tournamentID, function (error, result) {
+        if (!error && result == "") {
+            res.status(404).send("Cannot find any article from this student");
+        } else if (!error && result !== "") {
+            res.status(200).send(result);
+        } else {
+            console.log("This is the error: " + JSON.stringify(error));
+            res.status(500).send("Unknown student error");
         }
     })
 }

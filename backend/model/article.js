@@ -336,6 +336,7 @@ module.exports = {
                 return callback(error, null);
             })
     },
+
     getDueDate: function (callback) {
         const query =`SELECT dueDate,dueDateType FROM DeadLine order by deadlineid asc`
         return database

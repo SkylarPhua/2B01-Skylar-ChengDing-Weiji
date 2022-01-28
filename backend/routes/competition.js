@@ -18,7 +18,7 @@ var app = require('../controller/app');
 //------------------------------------
 
 // Get tournament participant by group number
-router.get('/tournament/:groupNum/', app.getGroupByNumber);
+router.get('/tournamentByType/:groupType', app.getGroupByNumber);
 
 // Post participant into the tournament by the studentID
 router.post('/tournament/', app.postStudentToGroup);
@@ -33,13 +33,19 @@ router.put('/tournamentMarks/', app.editTournamentArticleMark);
 router.delete('/tournament/', app.deleteStudentFromGroup);
 
 // Get student's article from tournament group and userid (Can be used by admin and student)
-router.get('/tournamentArticle/:id/:groupType', app.getStudentArticleFromTournament);
+router.get('/tournamentArticle/:userid/:groupType', app.getStudentArticleFromTournament);
 
 // Delete student article done by the student
-router.delete('/tournamentArticle/:id', app.removeStudentArticle);
+router.delete('/tournamentArticle/:userid', app.removeStudentArticle);
 
 // Gets all the articles by everyone in every tournament group
 router.get('/tournamentArticles/', app.getAllArticlesFromTournament);
+
+// Get specific student article using tournamentID (This is for admin to view student's article in tournament)
+router.get('/tournamentArticle/:tournamentid', app.getSpecificTournamentArticle);
+  
+// Get the summarized version of a student's article in the tournament
+router.get('/tournamentArticleSummary/:tournamentid', app.getSummaryTournamentArticle);
 
 //------------------------------------
 // Login Routes
@@ -90,7 +96,6 @@ router.put('/studentArticle/:id', verifyToken, verifyFn.verifyUserRole, app.putA
 // DELETE article by userid [used by Both] DOne[1]
 // router.delete('/articles/:id', verifyToken, verifyFn.verifyUserLoggedIn, app.deleteArticleByID);
 router.delete('/articles/:id', verifyToken, verifyFn.verifyUserLoggedIn, app.deleteArticleByID);
-
 
 // GET article by edu
 router.get('/articles/:edu', app.getArticleByEdu);

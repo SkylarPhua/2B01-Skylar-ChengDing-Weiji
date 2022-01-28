@@ -44,12 +44,13 @@ function getAllArticle() {
                     <td>${article.email}</td>
                     <td>${article.edu_lvl}</td>
                     <td>${article.title}</td>
-                     <td>${article.catname}</td>
+                    <td>${article.catname}</td>
                     <td>${article.submitted_at}</td>
                     <td>${article.grade}</td>
                     <td>${article.marked_at}</td>
                     <td><a onclick="articleSelect('${article.userid}', '${article.articleid}')" class = "btn btn-info">View</a></td>
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Disqualify</a></td>
+                    <td><a onclick="addGroup('${article.userid}')" class = "btn btn-info">Add To Group</a></td>
                 </tr>
               `;
                     getdata.innerHTML += postHtml;
@@ -72,6 +73,167 @@ $('#resetButton').on('click', function () {
     getAllArticle();
 })
 
+function addGroup(userid) {
+
+    var n = new Noty({
+        text: "Which Group?",
+        buttons: [
+            Noty.button('1', 'btn btn-success', function () {
+                const requestBody = {
+                    userid: userid,
+                    tournamentType: 1
+                }
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'POST',
+                    url: baseUrl + '/competition/tournament/',
+                    data: requestBody,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        new Noty({
+                            type: 'success',
+                            text: 'Student has been added to group: ' + 1,
+                            timeout: '6000',
+                            killer: true
+                        }).show();
+                        n.close();
+                    })
+                    .catch(function (error) {
+                        if (error.response.status == 500) {
+                            new Noty({
+                                type: 'error',
+                                text: 'Student is already in a group',
+                                timeout: '6000',
+                                killer: true
+                            }).show();
+                        }
+                        n.close();
+                    })
+            }),
+            Noty.button('2', 'btn btn-success', function () {
+                const requestBody = {
+                    userid: userid,
+                    tournamentType: 2
+                }
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'POST',
+                    url: baseUrl + '/competition/tournament/',
+                    data: requestBody,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        new Noty({
+                            type: 'success',
+                            text: 'Student has been added to group: ' + 2,
+                            timeout: '6000',
+                            killer: true
+                        }).show();
+                        n.close();
+                    })
+                    .catch(function (error) {
+                        if (error.response.status == 500) {
+                            new Noty({
+                                type: 'error',
+                                text: 'Student is already in a group',
+                                timeout: '6000',
+                                killer: true
+                            }).show();
+                        }
+                        n.close();
+                    })
+            }),
+            Noty.button('3', 'btn btn-success', function () {
+                const requestBody = {
+                    userid: userid,
+                    tournamentType: 3
+                }
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'POST',
+                    url: baseUrl + '/competition/tournament/',
+                    data: requestBody,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        new Noty({
+                            type: 'success',
+                            text: 'Student has been added to group: ' + 3,
+                            timeout: '6000',
+                            killer: true
+                        }).show();
+                        n.close();
+                    })
+                    .catch(function (error) {
+                        if (error.response.status == 500) {
+                            new Noty({
+                                type: 'error',
+                                text: 'Student is already in a group',
+                                timeout: '6000',
+                                killer: true
+                            }).show();
+                        }
+                        n.close();
+                    })
+            }),
+            Noty.button('4', 'btn btn-success', function () {
+                const requestBody = {
+                    userid: userid,
+                    tournamentType: 4
+                }
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'POST',
+                    url: baseUrl + '/competition/tournament/',
+                    data: requestBody,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        new Noty({
+                            type: 'success',
+                            text: 'Student has been added to group: ' + 4,
+                            timeout: '6000',
+                            killer: true
+                        }).show();
+                        n.close();
+                    })
+                    .catch(function (error) {
+                        if (error.response.status == 500) {
+                            new Noty({
+                                type: 'error',
+                                text: 'Student is already in a group',
+                                timeout: '6000',
+                                killer: true
+                            }).show();
+                        }
+                        n.close();
+                    })
+            }),
+            Noty.button('Cancel', 'btn btn-danger', function () {
+                n.close();
+            }),
+        ],
+        killer: true
+    })
+    n.show();
+}
 
 function articleSelect(id, ID) {
     localStorage.setItem("userid", id);
@@ -80,35 +242,42 @@ function articleSelect(id, ID) {
 }
 
 function articleDel(id) {
-    var txt = confirm("Are you sure?");
-    if (txt == true) {
-        console.log("here");
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'DELETE',
-            url: baseUrl + '/competition/articles/' + id,
-            dataType: "json",
-        })
-            .then(function (response) {
-                window.alert("You have Disaqualified Student : " + id)
-                getAllArticle();
-            })
-            .catch(function (error) {
-                if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
-                } else {
-                    console.log("This is the error" + error);
-                    window.alert("Error, Unable to Delete Student : " + id + " " + error)
-                }
+    var n = new Noty({
+        text: "Do you want to disqualify Student ID: " + id,
+        buttons: [
+            Noty.button('YES', 'btn btn-success', function () {
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'DELETE',
+                    url: baseUrl + '/competition/articles/' + id,
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        n.close();
+                        getAllArticle();
+                    })
+                    .catch(function (error) {
+                        if (error.response.status == 403) {
+                            alert(JSON.stringify(error.response.data));
+                            window.location = "login.html";
+                        } else {
+                            console.log("This is the error" + error);
+                            window.alert("Error, Unable to Delete Student : " + id + " " + error)
+                        }
 
-            });
-    } else {
-        console.log("her");
-    }
+                    });
+            }, { id: 'button1', 'data-status': 'ok' }),
+            Noty.button('NO', 'btn btn-error', function () {
+                console.log('button 2 clicked');
+                n.close();
+            })
+        ],
+        killer: true,
+    });
+    n.show();
 }
 
 $('#submitButton').on('click', function () {
