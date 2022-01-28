@@ -17,15 +17,19 @@ var lexrank = require('lexrank');
 module.exports = {
 
     // Endpoint 1: 
-    getGroupByNum: function (tournamentType, callback) {
-        const query = `SELECT u.name, u.email, u.edu_lvl, c.name, t.title, t.articlecontent, t.marks, tt.group_type FROM (((tournament AS t FULL OUTER JOIN usertb AS u ON t.fk_userID = u.userID) RIGHT OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) RIGHT OUTER JOIN category AS c ON tt.fk_categoryid = c.catid) WHERE fk_tournament_type = $1`
+    getGroupByType: function (groupType, callback) {
+        const query = `SELECT u.userid, u.name AS username, u.email, u.edu_lvl, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, tt.group_type, tt.group_type_display
+        FROM (((tournament AS t FULL OUTER JOIN usertb AS u ON t.fk_userID = u.userID) 
+        RIGHT OUTER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) 
+        RIGHT OUTER JOIN category AS c ON tt.fk_categoryid = c.catid) 
+        WHERE tt.group_type = $1 and tournamentid IS NOT NULL`
 
         return database
-            .query(query, [tournamentType])
+            .query(query, [groupType])
             .then(function (result) {
                 if (result.rows.length == 0) {
                     return callback({ code: "emptyGroup" }, null);
-                } else if (result.rows.length == 1) {
+                } else if (result.rows.length >= 1) {
                     return callback(null, result.rows);
                 } else {
                     return callback({ code: "unknownError" }, null);

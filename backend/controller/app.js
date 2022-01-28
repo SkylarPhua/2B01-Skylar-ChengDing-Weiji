@@ -71,14 +71,16 @@ exports.logUser = function (req, res) {
 
 // Endpoint 1: getGroupByNumber
 exports.getGroupByNumber = function (req, res) {
-    const tournamentType = req.body.tournamentType;
+    const groupType = req.params.groupType;
+    console.log("groupType: " + groupType);
 
-    tournament.getGroupByNum(tournamentType, function (error, result) {
+    tournament.getGroupByType(groupType, function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
         } else if (error.code == "emptyGroup") {
             res.status(404).send("Cannot find student in tournament group")
         } else {
+            console.log("This is the error: " + JSON.stringify(error));
             res.status(500).send("Unknown error");
         }
     })

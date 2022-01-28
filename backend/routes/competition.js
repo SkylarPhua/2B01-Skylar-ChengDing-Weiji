@@ -25,7 +25,7 @@ router.get('/history/:id', app.getHistoryArticle);
 //------------------------------------
 
 // Get tournament participant by group number
-router.get('/tournament/:groupNum/', app.getGroupByNumber);
+router.get('/tournamentByType/:groupType', app.getGroupByNumber);
 
 // Post participant into the tournament by the studentID
 router.post('/tournament/', app.postStudentToGroup);
