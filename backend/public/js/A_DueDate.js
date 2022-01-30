@@ -4,13 +4,16 @@ let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
 let role = localStorage.getItem('role_name');
 
-window.onload = () => {
+
+window.addEventListener('DOMContentLoaded', function () {
+    const overlayLoading = document.getElementById('loading');
     if (role != "admin"){
         alert("Unauthorised, You are not an admin")
         window.location.replace("login.html");
     }
 
     event.preventDefault();
+    overlayLoading.style.display = "";
     axios({
         headers: {
             'user': userid,
@@ -25,6 +28,7 @@ window.onload = () => {
             console.log(dateResult);
             var dueDate = dateResult.duedate
             printDueDate(dueDate)
+            overlayLoading.style.display = "none"
         })
         .catch(function (error) {
             //Handle error
@@ -44,8 +48,8 @@ window.onload = () => {
             
 
         });
-}
 
+})
 function viewDueDate(duedatetype) {
     axios({
         headers: {
