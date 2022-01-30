@@ -60,6 +60,12 @@ router.get('/tournamentCategory/:groupType', app.getCategoryByGroup);
 
 // Get Last Four People for the leaderboard (Losers of group stage)
 router.get('/tournamentLeaderboardFour/', app.getLastFourPeople);
+
+// Get Third and Fourth place for leaderboard (Losers of semi-finals)
+router.get('/tournamentLeaderboardNextTwo/', app.getNextTwo);
+
+// Get First and Second place for leaderboard (Winners and loser of finals)
+router.get('/tournamentLeaderboardTopTwo/', app.getTopTwo);
 //------------------------------------
 // Login Routes
 //------------------------------------

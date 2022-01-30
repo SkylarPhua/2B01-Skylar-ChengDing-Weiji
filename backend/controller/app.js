@@ -277,7 +277,7 @@ exports.getSummaryTournamentArticle = function (req, res) {
 }
 
 // Endpoint 11: Get category for student to view before doing the article
-exports.getCategoryByGroup = function (req ,res) {
+exports.getCategoryByGroup = function (req, res) {
     const groupType = req.params.groupType;
     console.log(groupType);
 
@@ -295,7 +295,7 @@ exports.getCategoryByGroup = function (req ,res) {
 }
 
 // Endpoint 12: Get last 4 of top 8 (can be used by anyone)
-exports.getLastFourPeople = function (req ,res) {
+exports.getLastFourPeople = function (req, res) {
 
     tournament.getLeaderboardLastFour(function (error, result) {
         if (!error && result !== "") {
@@ -303,13 +303,40 @@ exports.getLastFourPeople = function (req ,res) {
         } else if (error.code == "noSuchGroup") {
             console.log("This is the result: " + result);
             console.log("This is the error: " + error);
-            res.status(404).send("Cannot category by group type");
+            res.status(404).send("Cannot category stage");
         } else {
             res.status(500).send("Unknown error");
         }
     })
 }
 
+// Endpoint 13: Get the third place and fourth place out of 8 (can be used by anyone)
+exports.getNextTwo = function (req, res) {
+
+    tournament.getLeaderboardSecondLast(function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "noSuchGroup") {
+            res.status(404).send("Cannot category by stage");
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    })
+}
+
+// Endpoint 14: Get the second and first place out of 8 (can be used by anyone)
+exports.getTopTwo = function (req, res) {
+
+    tournament.getLeaderboardTopTwo(function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "noSuchGroup") {
+            res.status(404).send("Cannot category by stage");
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    })
+}
 //------------------------------------
 // Endpoints (Student)
 //------------------------------------
