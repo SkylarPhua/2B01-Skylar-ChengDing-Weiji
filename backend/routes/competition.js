@@ -12,48 +12,54 @@ var verifyToken = require('../auth/verifyToken.js');
 var validateFN = require('../auth/validateFn.js');
 var verifyFn = require('../auth/verifyFn.js');
 var app = require('../controller/app');
+const { verify } = require('jsonwebtoken');
 
 //------------------------------------
 // History Routes (New for CA2)
 //------------------------------------
 
 // GET all history articles by specific user
-router.get('/history/:id', app.getHistoryArticle);
+router.get('/history/:id', verifyToken, verifyFn.verifyUserRole, app.getHistoryArticle);
 
 //------------------------------------
 // Tournament Routes (New for CA2)
 //------------------------------------
 
 // Get tournament participant by group number
-router.get('/tournamentByType/:groupType', app.getGroupByNumber);
+router.get('/tournamentByType/:groupType', verifyToken, verifyFn.verifyUserRole, app.getGroupByNumber);
 
 // Post participant into the tournament by the studentID
-router.post('/tournament/', app.postStudentToGroup);
+router.post('/tournament/', verifyToken, verifyFn.verifyUserRole, app.postStudentToGroup);
 
 // Post student's article into the article table for tournament
-router.put('/tournamentArticle/', app.postStudentArticleToGroup);
+router.put('/tournamentArticle/', verifyToken, verifyFn.verifyUserRole, app.postStudentArticleToGroup);
 
 // Edit student's article marks in tournament
-router.put('/tournamentMarks/', app.editTournamentArticleMark);
+router.put('/tournamentMarks/', verifyToken, verifyFn.verifyUserRole, app.editTournamentArticleMark);
 
 // Delete student from tournament group and set his group type in usertb back to last group
-router.delete('/tournament/', app.deleteStudentFromGroup);
+router.delete('/tournament/', verifyToken, verifyFn.verifyUserRole, app.deleteStudentFromGroup);
 
 // Get student's article from tournament group and userid (Can be used by admin and student)
-router.get('/tournamentArticle/:userid/:groupType', app.getStudentArticleFromTournament);
+router.get('/tournamentArticle/:userid/:groupType', verifyToken, verifyFn.verifyUserLoggedIn, app.getStudentArticleFromTournament);
 
 // Delete student article done by the student
-router.delete('/tournamentArticle/:userid', app.removeStudentArticle);
+router.delete('/tournamentArticle/:userid', verifyToken, verifyFn.verifyUserRole, app.removeStudentArticle);
 
 // Gets all the articles by everyone in every tournament group
-router.get('/tournamentArticles/', app.getAllArticlesFromTournament);
+router.get('/tournamentArticles/', verifyToken, verifyFn.verifyUserRole, app.getAllArticlesFromTournament);
 
 // Get specific student article using tournamentID (This is for admin to view student's article in tournament)
-router.get('/tournamentArticle/:tournamentid', app.getSpecificTournamentArticle);
+router.get('/tournamentArticle/:tournamentid', verifyToken, verifyFn.verifyUserRole, app.getSpecificTournamentArticle);
   
 // Get the summarized version of a student's article in the tournament
-router.get('/tournamentArticleSummary/:tournamentid', app.getSummaryTournamentArticle);
+router.get('/tournamentArticleSummary/:tournamentid', verifyToken, verifyFn.verifyUserRole, app.getSummaryTournamentArticle);
 
+// Get category by group type to display for student to see before writing an article
+router.get('/tournamentCategory/:groupType', app.getCategoryByGroup);
+
+// Get Last Four People for the leaderboard (Losers of group stage)
+router.get('/tournamentLeaderboardFour/', app.getLastFourPeople);
 //------------------------------------
 // Login Routes
 //------------------------------------
