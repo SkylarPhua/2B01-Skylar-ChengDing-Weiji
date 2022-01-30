@@ -446,6 +446,7 @@ exports.postArticle = function (req, res) {
             } else if (error.code == "noUpdate") {
                 res.status(404).send("Cannot find requested entry");
             } else {
+                console.log("This is the adaw: " + JSON.stringify(error));
                 res.status(500).send("Unknown error");
             }
         })

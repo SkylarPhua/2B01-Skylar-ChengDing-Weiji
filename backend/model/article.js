@@ -104,13 +104,12 @@ module.exports = {
             console.log("wat abt here?");
         }
 
-        async function addArticleToHistory(studentID, groupType, title, content, datetime, dbClient) {
+        async function addArticleToHistory(userid, groupType, title, content, datetime, dbClient) {
             console.log("ran the 2nd?");
             let result;
             try {
-                console.log("tournamentID: " + tournamentID);
                 result = await dbClient.query(`INSERT INTO history (fk_userid, tournament_type, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5)`,
-                    [studentID, groupType, title, content, datetime]);
+                    [userid, groupType, title, content, datetime]);
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
