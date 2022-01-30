@@ -104,7 +104,10 @@ function addGroup(userid) {
                         n.close();
                     })
                     .catch(function (error) {
-                        if (error.response.status == 500) {
+                        if (error.response.status == 403) {
+                            alert(JSON.stringify(error.response.data));
+                            window.location = "login.html";
+                        } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
                                 text: 'Student is already in a group',
@@ -141,7 +144,10 @@ function addGroup(userid) {
                         n.close();
                     })
                     .catch(function (error) {
-                        if (error.response.status == 500) {
+                        if (error.response.status == 403) {
+                            alert(JSON.stringify(error.response.data));
+                            window.location = "login.html";
+                        } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
                                 text: 'Student is already in a group',
@@ -178,7 +184,10 @@ function addGroup(userid) {
                         n.close();
                     })
                     .catch(function (error) {
-                        if (error.response.status == 500) {
+                        if (error.response.status == 403) {
+                            alert(JSON.stringify(error.response.data));
+                            window.location = "login.html";
+                        } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
                                 text: 'Student is already in a group',
@@ -215,7 +224,10 @@ function addGroup(userid) {
                         n.close();
                     })
                     .catch(function (error) {
-                        if (error.response.status == 500) {
+                        if (error.response.status == 403) {
+                            alert(JSON.stringify(error.response.data));
+                            window.location = "login.html";
+                        } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
                                 text: 'Student is already in a group',

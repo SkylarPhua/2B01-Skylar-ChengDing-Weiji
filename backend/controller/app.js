@@ -69,98 +69,113 @@ exports.logUser = function (req, res) {
 // Endpoints (Tournament) (New for CA2)
 //------------------------------------
 
-// Endpoint 1: getGroupByNumber
+// Endpoint 1: getGroupByNumber admin
 exports.getGroupByNumber = function (req, res) {
     const groupType = req.params.groupType;
     console.log("groupType: " + groupType);
-
-    tournament.getGroupByType(groupType, function (error, result) {
-        if (!error && result !== "") {
-            res.status(200).send(result);
-        } else if (error.code == "emptyGroup") {
-            res.status(404).send("Cannot find student in tournament group")
-        } else {
-            console.log("This is the error: " + JSON.stringify(error));
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.getGroupByType(groupType, function (error, result) {
+            if (!error && result !== "") {
+                res.status(200).send(result);
+            } else if (error.code == "emptyGroup") {
+                res.status(404).send("Cannot find student in tournament group")
+            } else {
+                console.log("This is the error: " + JSON.stringify(error));
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
-// Endpoint 2: postStudentToGroup
+// Endpoint 2: postStudentToGroup admin
 exports.postStudentToGroup = function (req, res) {
     const studentID = parseInt(req.body.userid);
     const tournamentType = req.body.tournamentType;
 
-    tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
-        if (!error && result !== "") {
-            res.status(201).send("Student has been added into Tournament");
-        } else if (error.code == "studentExists") {
-            res.status(422).send("Student already exsist in the tournament");
-        } else if (error.code == "noGroupType") {
-            res.status(404).send("No such group type")
-        } else if (error.code == "noUpdate") {
-            res.status(404).send("Cannot find the requested student");
-        } else {
-            console.log("This is the error: " + JSON.stringify(error));
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.addStudentToGroup(studentID, tournamentType, function (error, result) {
+            if (!error && result !== "") {
+                res.status(201).send("Student has been added into Tournament");
+            } else if (error.code == "studentExists") {
+                res.status(422).send("Student already exsist in the tournament");
+            } else if (error.code == "noGroupType") {
+                res.status(404).send("No such group type")
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("Cannot find the requested student");
+            } else {
+                console.log("This is the error: " + JSON.stringify(error));
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
-// Endpoint 3: postStudentArticleToGroup
+// Endpoint 3: postStudentArticleToGroup student
 exports.postStudentArticleToGroup = function (req, res) {
     const studentID = req.body.userid;
     const groupType = req.body.groupType;
     const title = req.body.title;
     const content = req.body.content;
-
-    tournament.editArticleToTournament(studentID, groupType, title, content, function (error, result) {
-        if (!error && result !== "") {
-            res.status(201).send("Student article has been posted");
-        } else if (error.code == "noSuchEntry") {
-            res.status(404).send("Cannot find such an entry");
-        } else if (error.code == "noUpdate") {
-            res.status(404).send("Cannot find requested entry");
-        } else {
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "student") {
+        tournament.editArticleToTournament(studentID, groupType, title, content, function (error, result) {
+            if (!error && result !== "") {
+                res.status(201).send("Student article has been posted");
+            } else if (error.code == "noSuchEntry") {
+                res.status(404).send("Cannot find such an entry");
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("Cannot find requested entry");
+            } else {
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
-// Endpoint 4: 
+// Endpoint 4:  admin
 exports.editTournamentArticleMark = function (req, res) {
     const marks = req.body.mark;
     const tournamentID = req.body.tournamentid;
-
-    console.log("Marks: " + marks);
-    tournament.editArticleMarks(marks, tournamentID, function (error, result) {
-        if (!error && result !== "") {
-            res.sendStatus(204);
-        } else if (error.code == "noUpdate") {
-            res.status(404).send("There is no such article");
-        } else {
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.editArticleMarks(marks, tournamentID, function (error, result) {
+            if (!error && result !== "") {
+                res.sendStatus(204);
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("There is no such article");
+            } else {
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
-// Endpoint 5: 
+// Endpoint 5: admin
 exports.deleteStudentFromGroup = function (req, res) {
     const studentID = req.body.userid;
     const tournamentID = req.body.tournamentid;
-
-    tournament.deleteStudentEntry(studentID, tournamentID, function (error, result) {
-        if (!error && result !== "") {
-            res.status(204).send("Entry deleted");
-        } else if (error.code == "noSuchEntry") {
-            res.status(404).send("Student does not exist in this group");
-        } else if (error.code == "noUpdate") {
-            res.status(404).send("Cannot find requested user");
-        } else {
-            console.log(error);
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.deleteStudentEntry(studentID, tournamentID, function (error, result) {
+            if (!error && result !== "") {
+                res.status(204).send("Entry deleted");
+            } else if (error.code == "noSuchEntry") {
+                res.status(404).send("Student does not exist in this group");
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("Cannot find requested user");
+            } else {
+                console.log(error);
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
 // Endpoint 6: For student and admin (Got word counter also)
@@ -184,68 +199,81 @@ exports.getStudentArticleFromTournament = function (req, res) {
 exports.removeStudentArticle = function (req, res) {
     const studentID = req.params.userid;
     const tournamentID = req.body.tournamentid;
-
-    tournament.deleteStudentArticle(studentID, tournamentID, function (error, result) {
-        if (!error && result !== "") {
-            res.status(204).send("Article has been deleted");
-        } else if (error.code == "noType") {
-            res.status(404).send("Cannot find tournament entry");
-        } else if (error.code == "noSuchEntry") {
-            res.status(404).send("Cannot find requested entry");
-        } else if (error.code == "studentEntryExists") {
-            res.status(422).send("Student entry already exists");
-        } else {
-            console.log("This is the errorrrr: " + JSON.stringify(error));
-            console.log(error);
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "student") {
+        tournament.deleteStudentArticle(studentID, tournamentID, function (error, result) {
+            if (!error && result !== "") {
+                res.status(204).send("Article has been deleted");
+            } else if (error.code == "noType") {
+                res.status(404).send("Cannot find tournament entry");
+            } else if (error.code == "noSuchEntry") {
+                res.status(404).send("Cannot find requested entry");
+            } else if (error.code == "studentEntryExists") {
+                res.status(422).send("Student entry already exists");
+            } else {
+                console.log("This is the errorrrr: " + JSON.stringify(error));
+                console.log(error);
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
 // Endpoint 8: For admin to get all articles in the tournament (Acts as the home page for A_tournament)
 exports.getAllArticlesFromTournament = function (req, res) {
-    tournament.getAllArticlesInTournament(function (error, result) {
-        if (!error && result !== "") {
-            res.status(200).send(result);
-        } else if (error.code == "no_articles") {
-            res.status(404).send("Unable to find any students in the tournament");
-        } else {
-            console.log("This is the error: " + JSON.stringify(error));
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.getAllArticlesInTournament(function (error, result) {
+            if (!error && result !== "") {
+                res.status(200).send(result);
+            } else if (error.code == "no_articles") {
+                res.status(404).send("Unable to find any students in the tournament");
+            } else {
+                console.log("This is the error: " + JSON.stringify(error));
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
 // Endpoint 9: For admin to get specific articles using the tournamentID
 exports.getSpecificTournamentArticle = function (req, res) {
     const tournamentID = req.params.tournamentid;
-
-    tournament.getArticleByTournamentID(tournamentID, function (error, result) {
-        if (!error && result !== "") {
-            res.status(200).send(result);
-        } else if (error.code == "noSuchArticle") {
-            res.status(404).send("Cannot find any article done by user");
-        } else {
-            res.status(500).send("Unknown error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.getArticleByTournamentID(tournamentID, function (error, result) {
+            if (!error && result !== "") {
+                res.status(200).send(result);
+            } else if (error.code == "noSuchArticle") {
+                res.status(404).send("Cannot find any article done by user");
+            } else {
+                res.status(500).send("Unknown error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
 // Endpoint 10: For admin to get summarized articles using tournamentID
 exports.getSummaryTournamentArticle = function (req, res) {
     const tournamentID = req.params.tournamentid;
     console.log("TournamentID: " + tournamentID);
-
-    tournament.getSummarisedTournamentArticle(tournamentID, function (error, result) {
-        if (!error && result == "") {
-            res.status(404).send("Cannot find any article from this student");
-        } else if (!error && result !== "") {
-            res.status(200).send(result);
-        } else {
-            console.log("This is the error: " + JSON.stringify(error));
-            res.status(500).send("Unknown student error");
-        }
-    })
+    if (req.usertype == "admin") {
+        tournament.getSummarisedTournamentArticle(tournamentID, function (error, result) {
+            if (!error && result == "") {
+                res.status(404).send("Cannot find any article from this student");
+            } else if (!error && result !== "") {
+                res.status(200).send(result);
+            } else {
+                console.log("This is the error: " + JSON.stringify(error));
+                res.status(500).send("Unknown student error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as an Admin");
+    }
 }
 
 //------------------------------------

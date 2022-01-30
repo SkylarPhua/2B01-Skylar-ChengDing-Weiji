@@ -92,16 +92,21 @@ $('#submitButton').on('click', function () {
         dataType: "json"
     })
         .then(function (response) {
-            
+
             event.preventDefault();
             window.location("A_tournamentView.html");
         })
         .catch(function (error) {
-            window.alert("Error: " + error);
+            if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                window.alert("Error: " + error);
+            }
         })
 })
 
-$('#summariseButton').on('click', function() {
+$('#summariseButton').on('click', function () {
     event.preventDefault();
     axios({
         headers: {
@@ -135,11 +140,11 @@ $('#summariseButton').on('click', function() {
             content.innerHTML = response.data[1].information;
         })
         .catch(function (error) {
-            // if (error.response.status == 403) {
-            //     alert(JSON.stringify(error.response.data));
-            //     window.location = "login.html";
-            // } else {
-            //     window.alert(error);
-            // }
+            if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                window.alert(error);
+            }
         });
 })

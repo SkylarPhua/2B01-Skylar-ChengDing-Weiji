@@ -85,7 +85,6 @@ module.exports = {
 
     // Endpoint 3 (This is for students to post their article)
     addArticleByID: function (userid, catid, title, content, callback) {
-        // const query = `INSERT INTO article (fk_userid, fk_categoryid, title, content) VALUES ($1, $2, $3, $4)`;
 
         async function addArticleToArticle(userid, catid, title, content, datetime, dbClient) {
             console.log("ran the 1st");
@@ -141,29 +140,10 @@ module.exports = {
             .catch(function (err) {
                 return callback({ code: err.code }, null);
             })
-        // return database
-        //     .query(query, [userid, catid, title, content])
-        //     .then(function (result) {
-        //         if (result.rowCount == 0) {
-        //             console.log("The result of wrong id" + JSON.stringify(result));
-        //             return callback({ code: "too_many_article" }, null);
-        //         } else if (result.rowCount == 1) {
-        //             console.log("This is the result (addArticleByID): " + JSON.stringify(result));
-        //             return callback(null, result);
-        //         } else {
-        //             console.log("The error is unknown (article.js)");
-        //             return callback({ code: "unknown_error" }, null);
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         console.log("This is the error (addArticleByID): " + error);
-        //         return callback(error, null);
-        //     })
     },
 
     // Endpoint 4 (lets student to edit their article)
     editArticleByID: function (userid, title, content, callback) {
-        // const query = `UPDATE article SET  title = $1, content = $2 WHERE fk_userid = $3`;
 
         async function editArticleToArticle(studentID, title, content, datetime, dbClient) {
             let result;
@@ -212,26 +192,6 @@ module.exports = {
             .catch(function (err) {
                 return callback({ code: err.code }, null);
             })
-
-        // return database
-        //     .query(query, [title, content, userid])
-        //     .then(function (result) {
-        //         if (result.rowCount == 0) {
-        //             console.log("No such article");
-        //             return callback({ code: "no_article" }, null);
-        //         } else if (result.rowCount == 1) {
-        //             //console.log("This is the result: " + JSON.stringify(result));
-        //             console.log("This is here (article.js)");
-        //             return callback(null, result);
-        //         } else {
-        //             console.log("The error is unknown");
-        //             return callback({ code: "unknown_error" }, null);
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         console.log("This is the error: " + error);
-        //         return callback(error, null);
-        //     })
     },
 
     // Endpoint 5 (This deletes the article)
@@ -424,13 +384,8 @@ module.exports = {
                         }
                     }
                 });
-                // console.log(info)
                 everything = results.rows.push({ information: info });
                 length = results.rows.push({ length: info.length })
-                // console.log(results.rows);
-                // console.log(summarised[0].text);
-                // console.log("The artice is : " + JSON.stringify(results));
-                // return callback(null , results.rows);
                 return callback(null, results.rows);
             })
             .catch(function (error) {
@@ -477,8 +432,6 @@ module.exports = {
         console.log(groupEdit);
         const query = `UPDATE deadline SET duedate = $1 WHERE duedatetype ILIKE $2`;
         return database
-            // .query(query, [dateEdit, `ILIKE '`+groupEdit+`%'`])
-            // .query(query, [dateEdit, `ILIKE`+groupEdit+"%"])
             .query(query, [dateEdit, groupEdit + '%'])
             .then(function (result) {
                 if (result.rowCount == 0) {

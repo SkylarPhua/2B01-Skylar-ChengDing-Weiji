@@ -95,7 +95,10 @@ window.addEventListener('DOMContentLoaded', function () {
             })
             .catch(function (error) {
                 console.log("This is the error" + error);
-                if (error.response.status == 404) {
+                if (error.response.status == 403) {
+                    alert(JSON.stringify(error.response.data));
+                    window.location = "login.html";
+                } else if (error.response.status == 404) {
                     overlayLoading.style.display = "none"
                 } else {
                     console.log("This is the error: " + error);
@@ -137,6 +140,17 @@ window.addEventListener('DOMContentLoaded', function () {
                     })
                 } else {
                     console.log("Issue in retrieving...");
+                }
+            })
+            .catch(function (error) {
+                console.log("This is the error" + error);
+                if (error.response.status == 403) {
+                    alert(JSON.stringify(error.response.data));
+                    window.location = "login.html";
+                } else if (error.response.status == 404) {
+                    overlayLoading.style.display = "none"
+                } else {
+                    console.log("This is the error: " + error);
                 }
             })
     }
@@ -205,7 +219,10 @@ function sendingDetailsToAddStudent(studentid, newGroupType) {
             location.reload();
         })
         .catch(function (error) {
-            if (error.response.status == 500) {
+            if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else if (error.response.status == 500) {
                 var n = new Noty({
                     type: 'error',
                     text: 'Student is already in a group',

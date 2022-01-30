@@ -115,7 +115,6 @@ module.exports = {
             if (result.rows.length == 0) {
                 throw { code: "noSuchEntry" };
             }
-            // return result.rows[0].tournamentid;
             return result.rows[0];
         }
 
@@ -165,12 +164,6 @@ module.exports = {
 
         database.transaction(async (dbClient) => {
             var currentdate = new Date();
-            // var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
-            //     + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
-            //     + currentdate.getFullYear() + " "
-            //     + currentdate.getHours() + ":"
-            //     + currentdate.getMinutes() + ":"
-            //     + currentdate.getSeconds();
             var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
                 + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
                 + currentdate.getFullYear() + " "
@@ -197,32 +190,8 @@ module.exports = {
             })
     },
 
-    // Endpoint 4: Admin to mark the article (its post and edit) (TO BE CHANGED FOR HISTORY (TRANSACTION))
+    // Endpoint 4: Admin to mark the article (its post and edit) 
     editArticleMarks: function (marks, tournamentID, callback) {
-        // const query = `UPDATE tournament SET marks = $1, graded_at = $2 WHERE tournamentID = $3`
-        // var currentdate = new Date();
-        // var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
-        //     + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
-        //     + currentdate.getFullYear() + " "
-        //     + ("0" + currentdate.getHours()).slice(-2) + ":"
-        //     + ("0" + currentdate.getMinutes()).slice(-2) + ":"
-        //     + ("0" + currentdate.getSeconds()).slice(-2);
-
-        // return database
-        //     .query(query, [marks, datetime, tournamentID])
-        //     .then(function (result) {
-        //         if (result.rowCount == 0) {
-        //             return callback({ code: "noUpdate" }, null);
-        //         } else if (result.rowCount == 1) {
-        //             return callback(null, result);
-        //         } else {
-        //             return callback({ code: "unknownError" }, null);
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         console.log("This is the error: " + error);
-        //         return callback(error, null);
-        //     })
         async function getInfo(tournamentID, dbClient) {
             let result;
             try {
@@ -324,7 +293,6 @@ module.exports = {
             try {
                 result = await dbClient.query(`UPDATE usertb SET grouptype = $1 WHERE userid = $2`, [groupType, studentID])
             } catch (error) {
-                // throw { code: 'database_error', details: error };
                 throw { code: "database_error: " + error };
             }
 
