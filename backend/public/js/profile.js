@@ -79,9 +79,9 @@ function getArticles() {
                         </div>
                     </div>
               `;
-                getData.innerHTML += postHtml;
-                collapsetest();
             })
+            getData.innerHTML += postHtml;
+            collapsetest();
         } else {
             console.log("Issue in retrieving...");
         }
