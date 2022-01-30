@@ -85,51 +85,154 @@ module.exports = {
 
     // Endpoint 3 (This is for students to post their article)
     addArticleByID: function (userid, catid, title, content, callback) {
-        const query = `INSERT INTO article (fk_userid, fk_categoryid, title, content) VALUES ($1, $2, $3, $4)`;
+        // const query = `INSERT INTO article (fk_userid, fk_categoryid, title, content) VALUES ($1, $2, $3, $4)`;
 
-        return database
-            .query(query, [userid, catid, title, content])
+        async function addArticleToArticle(userid, catid, title, content, datetime, dbClient) {
+            console.log("ran the 1st");
+            console.log(userid);
+            let result;
+            try {
+                result = await dbClient.query(`INSERT INTO article (fk_userid, fk_categoryid, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5)`,
+                    [userid, catid, title, content, datetime]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: "noUpdate" };
+            }
+            console.log("wat abt here?");
+        }
+
+        async function addArticleToHistory(studentID, groupType, title, content, datetime, dbClient) {
+            console.log("ran the 2nd?");
+            let result;
+            try {
+                console.log("tournamentID: " + tournamentID);
+                result = await dbClient.query(`INSERT INTO history (fk_userid, tournament_type, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5)`,
+                    [studentID, groupType, title, content, datetime]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: "noUpdate" };
+            }
+            return result;
+        }
+
+        database.transaction(async (dbClient) => {
+            var currentdate = new Date();
+            var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
+                + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
+                + currentdate.getFullYear() + " "
+                + ("0" + currentdate.getHours()).slice(-2) + ":"
+                + ("0" + currentdate.getMinutes()).slice(-2) + ":"
+                + ("0" + currentdate.getSeconds()).slice(-2);
+            var groupType = "qualifying_round";
+            console.log("before");
+            await addArticleToArticle(userid, catid, title, content, datetime, dbClient);
+            console.log("after");
+            let result = await addArticleToHistory(userid, groupType, title, content, datetime, dbClient);
+            return result;
+        })
             .then(function (result) {
-                if (result.rowCount == 0) {
-                    console.log("The result of wrong id" + JSON.stringify(result));
-                    return callback({ code: "too_many_article" }, null);
-                } else if (result.rowCount == 1) {
-                    console.log("This is the result (addArticleByID): " + JSON.stringify(result));
-                    return callback(null, result);
-                } else {
-                    console.log("The error is unknown (article.js)");
-                    return callback({ code: "unknown_error" }, null);
-                }
+                return callback(null, result);
             })
-            .catch(function (error) {
-                console.log("This is the error (addArticleByID): " + error);
-                return callback(error, null);
+            .catch(function (err) {
+                return callback({ code: err.code }, null);
             })
+        // return database
+        //     .query(query, [userid, catid, title, content])
+        //     .then(function (result) {
+        //         if (result.rowCount == 0) {
+        //             console.log("The result of wrong id" + JSON.stringify(result));
+        //             return callback({ code: "too_many_article" }, null);
+        //         } else if (result.rowCount == 1) {
+        //             console.log("This is the result (addArticleByID): " + JSON.stringify(result));
+        //             return callback(null, result);
+        //         } else {
+        //             console.log("The error is unknown (article.js)");
+        //             return callback({ code: "unknown_error" }, null);
+        //         }
+        //     })
+        //     .catch(function (error) {
+        //         console.log("This is the error (addArticleByID): " + error);
+        //         return callback(error, null);
+        //     })
     },
 
     // Endpoint 4 (lets student to edit their article)
     editArticleByID: function (userid, title, content, callback) {
-        const query = `UPDATE article SET  title = $1, content = $2 WHERE fk_userid = $3`;
+        // const query = `UPDATE article SET  title = $1, content = $2 WHERE fk_userid = $3`;
 
-        return database
-            .query(query, [title, content, userid])
+        async function editArticleToArticle(studentID, title, content, datetime, dbClient) {
+            let result;
+            try {
+                result = await dbClient.query(`UPDATE article SET title = $1 , content = $2, submitted_at = $3 WHERE fk_userid = $4`,
+                    [title, content, datetime, studentID]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: "noUpdate" };
+            }
+        }
+
+        async function editArticleToHistory(studentID, title, content, datetime, dbClient) {
+            let result;
+            try {
+                result = await dbClient.query(`UPDATE history SET title = $1 , content = $2, submitted_at = $3 WHERE fk_userid = $4 AND tournament_type = 'qualifying_round'`,
+                    [title, content, datetime, studentID]);
+            } catch (error) {
+                throw { code: "database_error: " + error };
+            }
+
+            if (result.rowCount == 0) {
+                throw { code: "noUpdate" };
+            }
+            return result;
+        }
+
+        database.transaction(async (dbClient) => {
+            var currentdate = new Date();
+            var datetime = ("0" + currentdate.getDate()).slice(-2) + "-"
+                + ("0" + (currentdate.getMonth() + 1)).slice(-2) + "-"
+                + currentdate.getFullYear() + " "
+                + ("0" + currentdate.getHours()).slice(-2) + ":"
+                + ("0" + currentdate.getMinutes()).slice(-2) + ":"
+                + ("0" + currentdate.getSeconds()).slice(-2);
+            await editArticleToArticle(userid, title, content, datetime, dbClient);
+            let result = await editArticleToHistory(userid, title, content, datetime, dbClient);
+            return result;
+        })
             .then(function (result) {
-                if (result.rowCount == 0) {
-                    console.log("No such article");
-                    return callback({ code: "no_article" }, null);
-                } else if (result.rowCount == 1) {
-                    //console.log("This is the result: " + JSON.stringify(result));
-                    console.log("This is here (article.js)");
-                    return callback(null, result);
-                } else {
-                    console.log("The error is unknown");
-                    return callback({ code: "unknown_error" }, null);
-                }
+                return callback(null, result);
             })
-            .catch(function (error) {
-                console.log("This is the error: " + error);
-                return callback(error, null);
+            .catch(function (err) {
+                return callback({ code: err.code }, null);
             })
+
+        // return database
+        //     .query(query, [title, content, userid])
+        //     .then(function (result) {
+        //         if (result.rowCount == 0) {
+        //             console.log("No such article");
+        //             return callback({ code: "no_article" }, null);
+        //         } else if (result.rowCount == 1) {
+        //             //console.log("This is the result: " + JSON.stringify(result));
+        //             console.log("This is here (article.js)");
+        //             return callback(null, result);
+        //         } else {
+        //             console.log("The error is unknown");
+        //             return callback({ code: "unknown_error" }, null);
+        //         }
+        //     })
+        //     .catch(function (error) {
+        //         console.log("This is the error: " + error);
+        //         return callback(error, null);
+        //     })
     },
 
     // Endpoint 5 (This deletes the article)
@@ -317,20 +420,20 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        for (var i = 0; i < summarised.length; i++){
+                        for (var i = 0; i < summarised.length; i++) {
                             info += summarised[i].text;
                         }
                     }
                 });
                 // console.log(info)
-                everything = results.rows.push({information : info});
-                length = results.rows.push({length : info.length})
+                everything = results.rows.push({ information: info });
+                length = results.rows.push({ length: info.length })
                 // console.log(results.rows);
                 // console.log(summarised[0].text);
                 // console.log("The artice is : " + JSON.stringify(results));
                 // return callback(null , results.rows);
                 return callback(null, results.rows);
-            })       
+            })
             .catch(function (error) {
                 console.log("summarise Student article error : " + error);
                 return callback(error, null);
@@ -338,7 +441,7 @@ module.exports = {
     },
 
     getDueDate: function (callback) {
-        const query =`SELECT dueDate,dueDateType FROM DeadLine order by deadlineid asc`
+        const query = `SELECT dueDate,dueDateType FROM DeadLine order by deadlineid asc`
         return database
             .query(query)
             .then(function (results) {
@@ -351,38 +454,38 @@ module.exports = {
             })
     },
 
-    ViewDueDateByGroup: function(dueDateType, callback) {
+    ViewDueDateByGroup: function (dueDateType, callback) {
         console.log("appppppp.js check here " + dueDateType);
         const query = `SELECT dueDate From Deadline where duedatetype ILIKE  $1 `
         return database
-        .query(query,[dueDateType+"%"])
-        .then(function (results) {
-            if(results.rows.length == 0) {
-                return callback({code: "no this dueDateType"},null);
-            }else if  (results.rows.length == 1 ){
-                return callback(null,results.rows)
-            } else {
-                console.log({code:"viewduedatebygroup unknown_error"}, null);
-            }
-        })
-        .catch(function(error){
-            return callback(error,null);
-        })
+            .query(query, [dueDateType + "%"])
+            .then(function (results) {
+                if (results.rows.length == 0) {
+                    return callback({ code: "no this dueDateType" }, null);
+                } else if (results.rows.length == 1) {
+                    return callback(null, results.rows)
+                } else {
+                    console.log({ code: "viewduedatebygroup unknown_error" }, null);
+                }
+            })
+            .catch(function (error) {
+                return callback(error, null);
+            })
     },
 
     editDueDateByGroup: function (dateEdit, groupEdit, callback) {
-        console.log("sssssssssssss"+dateEdit);
+        console.log("sssssssssssss" + dateEdit);
         console.log(groupEdit);
         const query = `UPDATE deadline SET duedate = $1 WHERE duedatetype ILIKE $2`;
         return database
             // .query(query, [dateEdit, `ILIKE '`+groupEdit+`%'`])
             // .query(query, [dateEdit, `ILIKE`+groupEdit+"%"])
-            .query(query, [dateEdit,groupEdit+'%'])
+            .query(query, [dateEdit, groupEdit + '%'])
             .then(function (result) {
                 if (result.rowCount == 0) {
                     console.log("No update made");
-                    return callback({code:"no_update"}, null);
-                } else if (result.rowCount == 1||result.rowCount == 4) {
+                    return callback({ code: "no_update" }, null);
+                } else if (result.rowCount == 1 || result.rowCount == 4) {
                     console.log("This is the result: " + result.rowCount);
                     return callback(null, result);
                 } else {
