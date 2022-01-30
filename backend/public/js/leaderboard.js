@@ -65,8 +65,8 @@ function getTop2() {
         .then(function (response) {
             const data = response.data;
             if (response.data[0].marks != null) {
-                first.innerHTML = `${data[1].username}`;
-                second.innerHTML = `${data[0].username}`;
+                first.innerHTML = `${data[0].username}`;
+                second.innerHTML = `${data[1].username}`;
             }
             datas2.push(data);
         })
@@ -80,11 +80,11 @@ function display(target) {
     var dataarray4 = datas4[0];
     var dataarray3 = datas4[0];
     var dataarray2 = datas4[0];
-    if (target == '1') {
+    if (target == '2') {
         head.innerHTML = `Title : ${dataarray2[1].title} <br><br>Category : ${dataarray2[1].name}`;
         contents.innerHTML = `${dataarray2[1].articlecontent}`;
 
-    } else if (target == '2') {
+    } else if (target == '1') {
         head.innerHTML = `Title : ${dataarray2[0].title} <br><br>Category : ${dataarray2[0].name}`;
         contents.innerHTML = `${dataarray2[0].articlecontent}`;
 
