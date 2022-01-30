@@ -32,7 +32,7 @@ function getTheDue(dueDateType) {
 
           if(dueDate < today) {
               alert("Competition was end. You cannot post")
-              window.location = "submission.html"
+              window.location = "nocontent.html"
           } else if (today < dueDate) {
               getArticleData()
           } else {
