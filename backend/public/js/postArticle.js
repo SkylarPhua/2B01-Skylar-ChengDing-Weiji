@@ -1,15 +1,53 @@
+const baseUrl = 'http://localhost:8000';
 var count = document.getElementById('count');
 var article = document.getElementById('article');
 var styles = document.getElementById('styles');
 let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
+let dueDateType = localStorage.getItem('group_type');
 let role = localStorage.getItem('role_name');
 
 window.onload = () => {
   if (role != "student") {
       alert("Unauthorised, You are not a Student")
       window.location.replace("login.html");
+  } else {
+    getTheDue(dueDateType)
   }
+}
+
+function getTheDue(dueDateType) {
+  axios({
+      method: 'GET',
+      url: baseUrl + '/competition/dueDate/' + dueDateType,
+      dataType: "json",
+  })
+      .then(function (response) {
+          const dateResult = response.data;
+          console.log(dateResult);
+          var dueDate = dateResult[0].duedate
+          console.log(dueDate);
+          var dueDate = new Date(dueDate)
+          var today = new Date()
+
+          if(dueDate < today) {
+              alert("Competition was end. You cannot post")
+              window.location = "submission.html"
+          } else if (today < dueDate) {
+              getArticleData()
+          } else {
+              alert("bug found")
+          }
+
+      })
+      .catch(function (error) {
+          //Handle error
+          if (error.response.status == 404) {
+          } else {
+              alert("There is an unknown error")
+              console.log(error)
+          }
+      });
 }
 
 document.getElementById('submitButton').disabled = true;

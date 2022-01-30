@@ -20,20 +20,20 @@ window.onload = () => {
     event.preventDefault();
     if (groupType === "final") {
         console.log("Im in FINAL");
-        showTournamentContent()
-        getTheDue(groupType);
+        getTheTournamentDue(groupType)
+        showCountDown(groupType);
     } else if (groupType === "semi_final_one" || groupType === "semi_final_two") {
         console.log("Im in SEMI FINAL");
-        showTournamentContent()
-        getTheDue(groupType);
+        getTheTournamentDue(groupType)
+        showCountDown(groupType);
     } else if (groupType === "group_one" || groupType === "group_two" || groupType === "group_three" || groupType === "group_four") {
         console.log("Im in GROUP");
-        showTournamentContent()
-        getTheDue(groupType);
+        getTheTournamentDue(groupType)
+        showCountDown(groupType);
     } else {
         console.log("IM in the ELSE");
-        showQualifyingContent()
-        getTheDue(groupType);
+        showCountDown(groupType);
+        getTheDue(groupType)
     }
 }
 
@@ -121,8 +121,6 @@ function getCategory() {
         })
         .catch(function (error) {
             if (error.response.status == 404) {
-                printText();
-                btn();
             } else if (error.response.status == 403) {
                 alert(JSON.stringify(error.response.data));
                 window.location = "login.html";
@@ -227,7 +225,7 @@ function btn() {
 //     element.parentNode.removeChild(element);
 //   }
 
-function getTheDue(dueDateType) {
+function showCountDown(dueDateType) {
     axios({
         method: 'GET',
         url: baseUrl + '/competition/dueDate/' + dueDateType,
@@ -249,6 +247,191 @@ function getTheDue(dueDateType) {
             }
         });
 }
+
+function getTheDue(dueDateType) {
+    axios({
+        method: 'GET',
+        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const dateResult = response.data;
+            console.log(dateResult);
+            var dueDate = dateResult[0].duedate
+            console.log(dueDate);
+            var dueDate = new Date(dueDate)
+            var today = new Date()
+
+            if(dueDate < today) {
+                showQualifyingContent2()
+            } else if (today < dueDate) {
+                showQualifyingContent()
+            } else {
+                alert("bug found")
+            }
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
+function getTheTournamentDue(dueDateType) {
+    axios({
+        method: 'GET',
+        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const dateResult = response.data;
+            console.log(dateResult);
+            var dueDate = dateResult[0].duedate
+            console.log(dueDate);
+            var dueDate = new Date(dueDate)
+            var today = new Date()
+
+            if(dueDate < today) {
+                showTournamentContent2()
+            } else if (today < dueDate) {
+                showTournamentContent()
+            } else {
+                alert("bug found")
+            }
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
+function showTournamentContent2() {
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const articles = response.data;
+            if (articles != null) {
+                getdata.innerHTML = '';
+                articles.forEach((article) => {
+                    var postHtml = `
+                    <div align="center" class="container pt-7">
+                    <div class="card" style="width: 2rems">
+                        <div class="class-body" id="getArticleData">
+                            <h1 class="card-title"><b>Title:</b> ${article.title}</h1>
+                            <hr>
+                            <h2 class="card-subtitle"><b>Word Count:</b> ${article.count} word(s)</h3>
+                                <br>
+                                <h2 class="card-subtitle"><b>Marks:</b> ${article.marks}</h2>
+                                <br>
+                                <h2 class="card-subtitle"><b>Submission Date:</b> ${article.submitted_at}</h2>
+                                <br>
+                                <h2 class="card-subtitle"><b>Graded Date:</b> ${article.graded_at}</h2>
+                                <hr>
+                                <h2 class="card-subtitle"><b>Article:</b></h2>
+                                <article class="card-text" style="font-size:25px">${article.articlecontent}</article>
+                                <hr>
+                        </div>
+                    </div>
+                </div>
+        `;
+                    localStorage.setItem('tournamentID', article.tournamentid);
+                    getdata.innerHTML += postHtml;
+                })
+            } else {
+                console.log("There is an issue");
+            }
+        })
+        .catch(function (error) {
+            if (error.response.status == 404) {
+                printText();
+                btn();
+            } else if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
+function showQualifyingContent2() {
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/article/' + userid,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const articles = response.data;
+            console.log(articles);
+            if (articles != null) {
+                getdata.innerHTML = '';
+                articles.forEach((article) => {
+                    console.log("ssssss" + articles[0].title);
+                    var postHtml = `
+                <div class="container pt-5">
+                    <table class="table">
+                        <thead class="thead-dark" id="field" hidden
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th style="font-size: 25px;font-weight:bold">Title</th>
+                                <th style="font-size: 25px;font-weight:bold">Article</th>
+                                <th style="font-size: 25px;font-weight:bold">Submission Date</th>
+                                <th style="font-size: 25px;font-weight:bold">Grade</th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 25px;">${article.title}</td>
+                                <td style="font-size: 25px;">${article.content}</td>
+                                <td style="font-size: 15px;">${article.submitted_at}</td>
+                            <td style="font-size: 25px;">${article.grade}</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+          `;
+                    getdata.innerHTML += postHtml;
+                })
+            } else {
+                console.log("Issue in retrieving...");
+            }
+
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+
+            } else if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+
+}
+
+
 
 function printText() {
     var txt = `Welcome to our Competition!!! Submit your article and win the Prizes`;

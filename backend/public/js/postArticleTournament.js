@@ -11,6 +11,8 @@ const baseUrl = 'http://localhost:8000';
 
 window.addEventListener('DOMContentLoaded', function () {
 
+    getTheDue(groupType)
+
     overlayLoading.style.display = "";
     if (role != "student") {
         alert("Unauthorised, You are not a Student")
@@ -70,6 +72,36 @@ window.addEventListener('DOMContentLoaded', function () {
             });
     });
 });
+
+function getTheDue(dueDateType) {
+    axios({
+        method: 'GET',
+        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        dataType: "json",
+    })
+        .then(function (response) {
+            const dateResult = response.data;
+            console.log(dateResult);
+            var dueDate = dateResult[0].duedate
+            console.log(dueDate);
+            var dueDate = new Date(dueDate)
+            var today = new Date()
+
+            if(dueDate < today) {
+                alert("Competition was end. You cannot edit")
+                window.location = "submission.html"
+            } 
+        })
+        .catch(function (error) {
+            //Handle error
+            if (error.response.status == 404) {
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
 
 function getArticle() {
     const baseUrl = 'http://localhost:8000';

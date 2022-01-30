@@ -68,7 +68,6 @@ if ($registerFormContainer.length != 0) {
                         theme: 'bootstrap-v4',
                         text: 'You have registered. Please <a href="login.html" class=" class="btn btn-default btn-sm" >Login</a>',
                     }).show();
-                    sendMail(email);
                 })
                 .catch(function (response) {
                     //Handle error
