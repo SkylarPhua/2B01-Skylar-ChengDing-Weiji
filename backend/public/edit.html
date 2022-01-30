@@ -4,6 +4,7 @@
 <head>
     <title>[W]riting[C]ompetition</title>
     <!-- Font Awesome-->
+    <link rel="stylesheet" type="text/css" href="/styles/loader.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Google Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap">
@@ -92,6 +93,30 @@
             </fieldset>
         </form>
     </div>
+
+    <div id="loading" class="loader">
+        <div class="loader-inner">
+          <div class="loader-line-wrap">
+            <div class="loader-line"></div>
+          </div>
+          <div class="loader-line-wrap">
+            <div class="loader-line"></div>
+          </div>
+          <div class="loader-line-wrap">
+            <div class="loader-line"></div>
+          </div>
+          <div class="loader-line-wrap">
+            <div class="loader-line"></div>
+          </div>
+          <div class="loader-line-wrap">
+            <div class="loader-line"></div>
+          </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("loading").style.display = "none"
+    </script>
+
 
     <!-- JQuery-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

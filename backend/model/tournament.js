@@ -513,7 +513,7 @@ module.exports = {
             })
     },
 
-    // Endpoint 12: This is for leaderboard, get by group type, and judge by the top 8
+    // Endpoint 12: This is for leaderboard, get by the last four people (loser of group stage)
     getLeaderboardLastFour: function (callback) {
         const query = `
         SELECT u.userid, u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.marks, tt.group_type, tt.group_type_display
@@ -521,7 +521,59 @@ module.exports = {
         WHERE tt.group_type IN ('group_one', 'group_two', 'group_three', 'group_four')
         ORDER BY marks ASC
         LIMIT 4
-        `
+        `;
+
+        return database
+            .query(query)
+            .then(function (result) {
+                if (result.rows.length == 0) {
+                    return callback({ code: "noSuchGroup" }, null);
+                } else if (result.rows.length >= 1) {
+                    return callback(null, result.rows);
+                } else {
+                    return callback({ code: "unknownError" }, null);
+                }
+            })
+            .catch(function (error) {
+                return callback(error, null);
+            })
+    },
+
+    // Endpoint 13: This is for leaderboard, get the loser of semi-finals
+    getLeaderboardSecondLast: function (callback) {
+        const query = `
+        SELECT u.userid, u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.marks, tt.group_type, tt.group_type_display
+        FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) INNER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid)
+        WHERE tt.group_type IN ('semi_final_one', 'semi_final_two')
+        ORDER BY marks ASC
+        LIMIT 2
+        `;
+
+        return database
+            .query(query)
+            .then(function (result) {
+                if (result.rows.length == 0) {
+                    return callback({ code: "noSuchGroup" }, null);
+                } else if (result.rows.length >= 1) {
+                    return callback(null, result.rows);
+                } else {
+                    return callback({ code: "unknownError" }, null);
+                }
+            })
+            .catch(function (error) {
+                return callback(error, null);
+            })
+    },
+
+    // Endpoint 14: This is for leaderboard, get the top 2
+    getLeaderboardTopTwo: function (callback) {
+        const query = `
+        SELECT u.userid, u.name AS username, u.email, c.name, t.tournamentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.marks, tt.group_type, tt.group_type_display
+        FROM (((usertb AS u INNER JOIN tournament AS t ON u.userid = t.fk_userid) INNER JOIN tournament_type AS tt ON t.fk_tournament_type = tt.tournament_typeid) INNER JOIN category AS c ON tt.fk_categoryid = c.catid)
+        WHERE tt.group_type = 'final'
+        ORDER BY marks DESC
+        LIMIT 2
+        `;
 
         return database
             .query(query)

@@ -1,3 +1,4 @@
+
 $('#logoutButton').on('click', function(event) {
     event.preventDefault();
     localStorage.clear();
