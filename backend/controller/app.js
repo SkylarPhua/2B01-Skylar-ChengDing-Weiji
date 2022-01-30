@@ -848,3 +848,21 @@ exports.getHistoryArticle = function (req, res) {
         }
     })
 };
+
+exports.checkPlagiarism = function (req, res) {
+    const userid = parseInt(req.params.id);
+    console.log(userid)
+    article.checkPlagiarism(userid, function (error, total) {
+        if (!error && total < 0) {
+            console.log("the result is smaller than 0 ")
+            res.status(404).send("Cannot find any article from this student");
+        } else if (!error && total !== "" || total == 0) {
+            let results = JSON.stringify(total)
+            res.status(200).send(results);
+        } else {
+            console.log("This is the error message " + error.status)
+            console.log("This is the error: " + JSON.stringify(error));
+            res.status(500).send("Unknown student error");
+        }
+    })
+};
