@@ -3,7 +3,7 @@ const database = require('../database/database')
 module.exports = {
     // Endpoint 1: get all articles belonging to specific user
     getArticleByUserID: function (userid, callback) {
-        const query = `SELECT historyid, tournament_type, title, content, marks, submitted_at FROM history WHERE fk_userid = $1`
+        const query = `SELECT historyid, tournament_type, title, content, marks, submitted_at FROM history WHERE fk_userid = $1 order by submitted_at ASC`
         return database
             .query(query, [userid])
             .then(function (result) {
