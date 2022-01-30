@@ -136,8 +136,7 @@ module.exports = {
         async function addArticleToHistory(studentID, groupType, title, content, datetime, dbClient) {
             let result;
             try {
-                console.log("tournamentID: " + tournamentID);
-                result = await dbClient.query(`INSERT INTO history (fk_userid, tournament_type, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5, $6)`,
+                result = await dbClient.query(`INSERT INTO history (fk_userid, tournament_type, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5)`,
                     [studentID, groupType, title, content, datetime]);
             } catch (error) {
                 throw { code: "database_error: " + error };
@@ -149,12 +148,11 @@ module.exports = {
             return result;
         }
 
-        async function editArticleToHistory(studentID, title, content, datetime, dbClient) {
+        async function editArticleToHistory(studentID, title, content, datetime, groupType, dbClient) {
             let result;
             try {
-                console.log("tournamentID: " + tournamentID);
-                result = await dbClient.query(`UPDATE history SET title = $1 , content = $2, submitted_at = $3 WHERE fk_userid = $4`,
-                    [title, content, datetime, studentID]);
+                result = await dbClient.query(`UPDATE history SET title = $1 , content = $2, submitted_at = $3 WHERE fk_userid = $4 AND tournament_type = $5`,
+                    [title, content, datetime, studentID, groupType]);
             } catch (error) {
                 throw { code: "database_error: " + error };
             }
@@ -187,7 +185,7 @@ module.exports = {
             if (info.articlecontent == null) {
                 result = await addArticleToHistory(studentID, groupType, title, content, datetime, dbClient);
             } else {
-                result = await editArticleToHistory(studentID, title, content, datetime, dbClient);
+                result = await editArticleToHistory(studentID, title, content, datetime, groupType, dbClient);
             }
             return result;
         })
@@ -243,7 +241,6 @@ module.exports = {
         async function editArticleMarks(marks, datetime, tournamentID, dbClient) {
             let result;
             try {
-                console.log("tournamentID: " + tournamentID);
                 result = await dbClient.query(`UPDATE tournament SET marks = $1, graded_at = $2 WHERE tournamentid = $3`,
                     [marks, datetime, tournamentID]);
             } catch (error) {
@@ -258,7 +255,6 @@ module.exports = {
         async function editMarksToHistory(marks, userid, groupType, dbClient) {
             let result;
             try {
-                console.log("tournamentID: " + tournamentID);
                 result = await dbClient.query(`UPDATE history SET marks = $1 WHERE fk_userid = $2 AND tournament_type = $3`,
                     [marks, userid, groupType]);
             } catch (error) {
@@ -281,7 +277,7 @@ module.exports = {
                 + ("0" + currentdate.getSeconds()).slice(-2);
             const info = await getInfo(tournamentID, dbClient);
             await editArticleMarks(marks, datetime, tournamentID, dbClient);
-            let result = await editMarksToHistory(marks, info.fk_userid, info.group_type);
+            let result = await editMarksToHistory(marks, info.fk_userid, info.group_type, dbClient);
             return result;
         })
             .then(function (result) {

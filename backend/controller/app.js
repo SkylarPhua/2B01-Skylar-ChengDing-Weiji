@@ -431,14 +431,22 @@ exports.postArticle = function (req, res) {
     var content = req.body.content;
     if (req.usertype == "student") {
         article.addArticleByID(userid, catid, title, content, function (error, result) {
-            if (!error && result !== "") {
-                console.log("This is the result (app.js): " + JSON.stringify(result));
-                res.status(201).send("Article has been submitted");
-            } else if (error.code == '23505') {
-                console.log("This is the bad result(postArticle): " + JSON.stringify(result));
-                res.status(422).send("Article already exsist");
+            // if (!error && result !== "") {
+            //     console.log("This is the result (app.js): " + JSON.stringify(result));
+            //     res.status(201).send("Article has been submitted");
+            // } else if (error.code == '23505') {
+            //     console.log("This is the bad result(postArticle): " + JSON.stringify(result));
+            //     res.status(422).send("Article already exsist");
+            // } else {
+            //     console.log("This is the error: " + error);
+            //     res.status(500).send("Unknown error");
+            // }
+            if (!error) {
+                res.status(201).send("Student article has been posted");
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("Cannot find requested entry");
             } else {
-                console.log("This is the error: " + error);
+                console.log("This is the adaw: " + JSON.stringify(error));
                 res.status(500).send("Unknown error");
             }
         })
@@ -455,14 +463,21 @@ exports.putArticle = function (req, res) {
     var content = req.body.content;
     if (req.usertype == "student") {
         article.editArticleByID(userid, title, content, function (error, result) {
+            // if (!error && result !== "") {
+            //     console.log("ssssss" + result);
+            //     res.status(200).send("Article updated")
+            // } else if (error.code == "no_article") {
+            //     console.log("This is the bad result: " + JSON.stringify(result));
+            //     res.status(404).send("There is no such article");
+            // } else {
+            //     console.log("This is the error: " + error);
+            //     res.status(500).send("Unknown error");
+            // }
             if (!error && result !== "") {
-                console.log("ssssss" + result);
-                res.status(200).send("Article updated")
-            } else if (error.code == "no_article") {
-                console.log("This is the bad result: " + JSON.stringify(result));
-                res.status(404).send("There is no such article");
+                res.status(201).send("Student article has been posted");
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("Cannot find requested entry");
             } else {
-                console.log("This is the error: " + error);
                 res.status(500).send("Unknown error");
             }
         })
@@ -629,12 +644,11 @@ exports.postGrade = function (req, res) {
     console.log("This is the grade: " + grade);
     if (req.usertype == "admin") {
         grading.insertMarks(userid, articleid, grade, function (error, result) {
-            if (!error) {
+            if (!error && result !== "") {
                 res.status(201).send("You have marked this article");
-            } else if (error.code === '23505') {
-                res.status(422).send("You already marked an article");
+            } else if (error.code == "noUpdate") {
+                res.status(404).send("There is no such article");
             } else {
-                console.log("This is the error (app.js): " + error)
                 res.status(500).send("Unknown error");
             }
         })
@@ -654,10 +668,9 @@ exports.putGrade = function (req, res) {
         grading.updateMarks(grade, articleid, function (error, result) {
             if (!error && result !== "") {
                 res.sendStatus(204)
-            } else if (error.code == "no_update") {
+            } else if (error.code == "noUpdate") {
                 res.status(404).send("There is no such article");
             } else {
-                console.log("This is the error: " + error);
                 res.status(500).send("Unknown error");
             }
         })
