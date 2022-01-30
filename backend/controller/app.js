@@ -248,6 +248,40 @@ exports.getSummaryTournamentArticle = function (req, res) {
     })
 }
 
+// Endpoint 11: Get category for student to view before doing the article
+exports.getCategoryByGroup = function (req ,res) {
+    const groupType = req.params.groupType;
+    console.log(groupType);
+
+    tournament.getCategoryByGroupType(groupType, function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "noSuchGroup") {
+            console.log("This is the result: " + result);
+            console.log("This is the error: " + error);
+            res.status(404).send("Cannot category by group type");
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    })
+}
+
+// Endpoint 12: Get last 4 of top 8 (can be used by anyone)
+exports.getLastFourPeople = function (req ,res) {
+
+    tournament.getLeaderboardLastFour(function (error, result) {
+        if (!error && result !== "") {
+            res.status(200).send(result);
+        } else if (error.code == "noSuchGroup") {
+            console.log("This is the result: " + result);
+            console.log("This is the error: " + error);
+            res.status(404).send("Cannot category by group type");
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    })
+}
+
 //------------------------------------
 // Endpoints (Student)
 //------------------------------------
