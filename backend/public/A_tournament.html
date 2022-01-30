@@ -22,7 +22,7 @@
     <style>
         th,
         td {
-            width: 150px;
+            width: 100px;
             text-align: center;
             border: 1px solid black;
             padding: auto;
@@ -30,7 +30,12 @@
 
         table {
             border-collapse: collapse;
-            white-space: nowrap;
+            /* white-space: nowrap; */
+            width: 30px;
+        }
+
+        .table {
+            width: auto;
         }
 
         .tableP {
@@ -47,7 +52,7 @@
 
         .float-child {
             text-align: left;
-            width: 50%;
+            width: auto;
             float: left;
             padding: 20px;
             border: 2px solid black;
@@ -112,7 +117,7 @@
                         <th>Education Level</th>
                         <th>Marks</th>
                     </tr>
-                    <tbody id="groupTwo">
+                    <tbody id="groupTwo" class="tableB">
 
                     </tbody>
                 </table>
