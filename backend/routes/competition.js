@@ -55,6 +55,11 @@ router.get('/tournamentArticle/:tournamentid', verifyToken, verifyFn.verifyUserR
 // Get the summarized version of a student's article in the tournament
 router.get('/tournamentArticleSummary/:tournamentid', verifyToken, verifyFn.verifyUserRole, app.getSummaryTournamentArticle);
 
+// Get category by group type to display for student to see before writing an article
+router.get('/tournamentCategory/:groupType', app.getCategoryByGroup);
+
+// Get Last Four People for the leaderboard (Losers of group stage)
+router.get('/tournamentLeaderboardFour/', app.getLastFourPeople);
 //------------------------------------
 // Login Routes
 //------------------------------------

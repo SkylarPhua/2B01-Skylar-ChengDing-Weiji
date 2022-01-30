@@ -1,4 +1,5 @@
 const getdata = document.getElementById("getArticleData");
+const getCat = document.getElementById("category");
 let userid = localStorage.getItem('user_id');
 let token = localStorage.getItem('token');
 let role = localStorage.getItem('role_name');
@@ -13,6 +14,9 @@ window.onload = () => {
         window.location.replace("login.html");
     }
     console.log("This is the group type: " + groupType);
+
+    getCategory();
+
     event.preventDefault();
     if (groupType === "final") {
         console.log("Im in FINAL");
@@ -76,6 +80,43 @@ function showTournamentContent() {
                 })
             } else {
                 console.log("There is an issue");
+            }
+        })
+        .catch(function (error) {
+            if (error.response.status == 404) {
+                printText();
+                btn();
+            } else if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                alert("There is an unknown error")
+                console.log(error)
+            }
+        });
+}
+
+function getCategory() {
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/tournamentCategory/' + groupType,
+        dataType: "json"
+    })
+        .then(function (response) {
+            const categorys = response.data;
+            if (categorys !== null) {
+                categorys.forEach((category) => {
+                    var postCatHtml = `
+                    <h1><b><u>Category: ${category.name}</u></b></h1>
+                    `;
+                    getCat.innerHTML += postCatHtml
+                })
+            } else {
+                console.log("Issue in retrieving...");
             }
         })
         .catch(function (error) {
