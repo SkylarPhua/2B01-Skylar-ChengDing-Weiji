@@ -12,12 +12,35 @@ var category = require('../model/category');
 var grading = require('../model/grade');
 var tournament = require('../model/tournament')
 var history = require('../model/history')
+var nodemailer = require('../model/nodemailer');
 
 const bcrypt = require('bcrypt');
 var async = require('async');
 var config = require('../config');
 var jwt = require('jsonwebtoken');
 const { summarize } = require('lexrank');
+
+//------------------------------------
+// Endpoints (nodemailer)
+//------------------------------------
+// Endpoint 1: sending mail to student
+exports.sendingMail = function (req, res) {
+    const userSentTo = req.body.email;
+    const subject = req.body.subject;
+    const text = req.body.text;
+    console.log(userSentTo);
+    console.log(subject);
+    console.log(text);
+    
+    nodemailer.sendMail(userSentTo, subject, text, function (error, result) {
+        if (!error && result !== "") {
+            res.status(204).send("Email has been sent");
+        } else {
+            console.log("This is the error: " + error);
+            res.status(500).send("Unknown Error");
+        }
+    })
+}
 
 //------------------------------------
 // Endpoints (login)
@@ -52,7 +75,7 @@ exports.logUser = function (req, res) {
                 });
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({ success: true, data: result[0].userid, UserData: result[0].usertype, groupType: result[0].grouptype, token: token, status: 'You are successfully login' });
+                res.json({ success: true, data: result[0].userid, UserData: result[0].usertype, groupType: result[0].grouptype, email: result[0].email, token: token, status: 'You are successfully login' });
                 console.log("Token is: " + token);
                 res.send();
             } else {

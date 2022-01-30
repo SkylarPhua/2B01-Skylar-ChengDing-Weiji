@@ -50,7 +50,7 @@ function getAllArticle() {
                     <td>${article.marked_at}</td>
                     <td><a onclick="articleSelect('${article.userid}', '${article.articleid}')" class = "btn btn-info">View</a></td>
                     <td><a onclick="articleDel('${article.userid}')" class = "btn btn-danger" id="dis">Disqualify</a></td>
-                    <td><a onclick="addGroup('${article.userid}')" class = "btn btn-info">Add To Group</a></td>
+                    <td><a onclick="addGroup('${article.userid}', '${article.email}', '${article.content}', '${article.title}', '${article.submitted_at}')" class = "btn btn-info">Add To Group</a></td>
                 </tr>
               `;
                     getdata.innerHTML += postHtml;
@@ -73,7 +73,7 @@ $('#resetButton').on('click', function () {
     getAllArticle();
 })
 
-function addGroup(userid) {
+function addGroup(userid, email, title, subDate) {
 
     var n = new Noty({
         text: "Which Group?",
@@ -101,6 +101,7 @@ function addGroup(userid) {
                             timeout: '6000',
                             killer: true
                         }).show();
+                        sendMail(1, email, title, subDate);
                         n.close();
                     })
                     .catch(function (error) {
@@ -141,6 +142,7 @@ function addGroup(userid) {
                             timeout: '6000',
                             killer: true
                         }).show();
+                        sendMail(2, email, title, subDate);
                         n.close();
                     })
                     .catch(function (error) {
@@ -181,6 +183,7 @@ function addGroup(userid) {
                             timeout: '6000',
                             killer: true
                         }).show();
+                        sendMail(3, email, title, subDate);
                         n.close();
                     })
                     .catch(function (error) {
@@ -221,6 +224,7 @@ function addGroup(userid) {
                             timeout: '6000',
                             killer: true
                         }).show();
+                        sendMail(4, email, title, subDate);
                         n.close();
                     })
                     .catch(function (error) {
@@ -246,6 +250,33 @@ function addGroup(userid) {
     })
     n.show();
 }
+
+function sendMail(groupNumber, email, title, subDate) {
+    const subject = "You have advanced higher into the tournament!"
+    const text = "Your article was so exceptional, this was your previous details(Title and Submission Date): \nTitle: " + title + " \nSubmission Date: " + subDate + " \nWe have advanced you into group number " + groupNumber + " \nAll the best!!!"
+    const requestBody = {
+        email: email,
+        subject: subject,
+        text: text
+    };
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'POST',
+        url: baseUrl + '/competition/tournamentSendMail/',
+        data: requestBody,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+    })
+        .then(function (response) {
+            console.log("Everything is fine, it sent");
+        })
+        .catch(function (error) {
+            console.log("The sending of email failed");
+        })
+};
 
 function articleSelect(id, ID) {
     localStorage.setItem("userid", id);

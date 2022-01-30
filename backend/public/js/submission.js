@@ -291,35 +291,72 @@ function editBtnTournamentEdition() {
     window.location = "postArticleTournament.html";
 }
 
+// function articleDeleteTournament(id) {
+//     let tournamentID = localStorage.getItem('tournamentID');
+//     var txt = confirm("Are you sure you want to delete your article?");
+//     if (txt == true) {
+//         console.log("Process of deleting");
+//         const requestBody = {
+//             tournamentid: tournamentID
+//         }
+//         axios({
+//             headers: {
+//                 'user': userid,
+//                 'authorization': 'Bearer ' + token
+//             },
+//             method: 'DELETE',
+//             url: baseUrl + '/competition/tournamentArticle/' + userid,
+//             data: requestBody,
+//             contentType: "application/json; charset=utf-8",
+//             dataType: "json",
+//         })
+//             .then(function (response) {
+//                 window.alert("You have deleted the article");
+//                 location.reload();
+//             })
+//             .catch(function (error) {
+//                 console.log("Error: " + error);
+//             })
+//     } else {
+//         console.log("Cancel button detected");
+//     }
+// }
 function articleDeleteTournament(id) {
     let tournamentID = localStorage.getItem('tournamentID');
-    var txt = confirm("Are you sure you want to delete your article?");
-    if (txt == true) {
-        console.log("Process of deleting");
-        const requestBody = {
-            tournamentid: tournamentID
-        }
-        axios({
-            headers: {
-                'user': userid,
-                'authorization': 'Bearer ' + token
-            },
-            method: 'DELETE',
-            url: baseUrl + '/competition/tournamentArticle/' + userid,
-            data: requestBody,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-        })
-            .then(function (response) {
-                window.alert("You have deleted the article");
-                location.reload();
+    var n = new Noty({
+        text: "Are you sure you want to delete your article?",
+        buttons: [
+            Noty.button('Yes', 'btn btn-danger', function () {
+                const requestBody = {
+                    tournamentid: tournamentID
+                }
+                axios({
+                    headers: {
+                        'user': userid,
+                        'authorization': 'Bearer ' + token
+                    },
+                    method: 'DELETE',
+                    url: baseUrl + '/competition/tournamentArticle/' + userid,
+                    data: requestBody,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                })
+                    .then(function (response) {
+                        window.alert("You have deleted the article");
+                        location.reload();
+                    })
+                    .catch(function (error) {
+                        console.log("Error: " + error);
+                        n.close();
+                    })
+            }),
+            Noty.button('NO', 'btn', function () {
+                n.close();
             })
-            .catch(function (error) {
-                console.log("Error: " + error);
-            })
-    } else {
-        console.log("Cancel button detected");
-    }
+        ],
+        killer: true,
+    });
+    n.show();
 }
 
 function articleDel(id) {
@@ -361,10 +398,5 @@ function articleDel(id) {
         console.log("Cancel button detected");
     }
 }
-
-
-
-
-
 
 //End of checking for $loginFormContainer jQuery object

@@ -34,12 +34,14 @@ window.addEventListener('DOMContentLoaded', function () {
                         const token = response.data.token;
                         const id = response.data.data;
                         const grouptype = response.data.groupType;
+                        const email = response.data.email;
                         if (usertype == 'student') {
                             console.log("heloooooo" + email)
                             localStorage.setItem('token', token);
                             localStorage.setItem('user_id', id);
                             localStorage.setItem('role_name', usertype);
                             localStorage.setItem('group_type', grouptype);
+                            localStorage.setItem('email', email);
                             window.location.replace('submission.html');
                             return;
                         }

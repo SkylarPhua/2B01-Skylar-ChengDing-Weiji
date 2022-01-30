@@ -5,25 +5,73 @@ let token = localStorage.getItem('token');
 let userid = localStorage.getItem('user_id');
 let groupType = localStorage.getItem('group_type');
 let role = localStorage.getItem('role_name');
+let email = localStorage.getItem('email');
+const overlayLoading = document.getElementById('loading');
+const baseUrl = 'http://localhost:8000';
 
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', function () {
+
+    overlayLoading.style.display = "";
     if (role != "student") {
         alert("Unauthorised, You are not a Student")
         window.location.replace("login.html");
     }
-}
 
-document.getElementById('submitButton').disabled = true;
-window.addEventListener('keyup', chkinput)
-function chkinput() {
-    if (document.getElementById("title").value.trim() === "" || document.getElementById("article").value.trim() === "") {
-        document.getElementById('submitButton').disabled = true;
-    } else {
-        document.getElementById('submitButton').disabled = false;
+    document.getElementById('submitButton').disabled = true;
+    window.addEventListener('keyup', chkinput)
+    function chkinput() {
+        if (document.getElementById("title").value.trim() === "" || document.getElementById("article").value.trim() === "") {
+            document.getElementById('submitButton').disabled = true;
+        } else {
+            document.getElementById('submitButton').disabled = false;
+        }
     }
-}
 
-window.onload = () => {
+    getArticle();
+
+    $('#submitButton').on('click', function (event) {
+        event.preventDefault();
+        overlayLoading.style.display = "";
+        const baseUrl = 'http://localhost:8000';
+        let title = $('#title').val();
+        let article = $('#article').val();
+        const requestBody = {
+            userid: userid,
+            groupType: groupType,
+            title: title,
+            content: article
+        };
+        console.log("This is the reqbody: " + JSON.stringify(requestBody));
+        axios({
+            headers: {
+                'user': userid,
+                'authorization': 'Bearer ' + token
+            },
+            method: 'PUT',
+            url: baseUrl + '/competition/tournamentArticle/',
+            data: requestBody,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        })
+            .then(function (response) {
+                sendMail();
+                overlayLoading.style.display = "none";
+                alert("submit successfully")
+                window.location = "submission.html"
+            })
+            .catch(function (error) {
+                if (error.response.status == 403) {
+                    alert(JSON.stringify(error.response.data));
+                    window.location = "login.html";
+                } else {
+                    window.alert("This is the error: " + error);
+                    console.log("This is the error: " + error.message);
+                }
+            });
+    });
+});
+
+function getArticle() {
     const baseUrl = 'http://localhost:8000';
     axios({
         headers: {
@@ -47,56 +95,53 @@ window.onload = () => {
             article.innerText += postarticle;
             count.innerText += postcount;
 
+            overlayLoading.style.display = "none";
         })
         .catch(function (error) {
-            // if (error.response.status == 403) {
-            //     alert("You are not logged in")
-            //     window.location = "login.html";
-            // } else {
-            //     window.alert(error);
-            // }
+            if (error.response.status == 403) {
+                alert("You are not logged in")
+                window.location = "login.html";
+            } else {
+                overlayLoading.style.display = "none";
+                new Noty({
+                    type: 'success',
+                    timeout: '6000',
+                    layout: 'topCenter',
+                    theme: 'bootstrap-v4',
+                    text: 'Please writer up your article below',
+                    killer: true
+                }).show();
+            }
             console.log("The is the ERROR: " + error);
         });
-
 }
 
-$('#submitButton').on('click', function (event) {
-    event.preventDefault();
-    const baseUrl = 'http://localhost:8000';
-    let title = $('#title').val();
-    let article = $('#article').val();
+function sendMail() {
+    const subject = "Your work was received!";
+    const text = "You have successfully submitted your article";
     const requestBody = {
-        userid: userid,
-        groupType: groupType,
-        title: title,
-        content: article
+        email: email,
+        subject: subject,
+        text: text
     };
-    console.log("This is the reqbody: " + JSON.stringify(requestBody));
     axios({
         headers: {
             'user': userid,
             'authorization': 'Bearer ' + token
         },
-        method: 'PUT',
-        url: baseUrl + '/competition/tournamentArticle/',
+        method: 'POST',
+        url: baseUrl + '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
     })
         .then(function (response) {
-            alert("submit successfully")
-            window.location = "submission.html"
+            console.log("Everything is fine, it sent");
         })
         .catch(function (error) {
-            if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                window.alert("This is the error: " + error);
-                console.log("This is the error: " + error.message);
-            }
-        });
-});
+            console.log("The sending of email failed");
+        })
+}
 
 var globalWordCount = 0;
 var wordLimit = 500;
@@ -125,6 +170,7 @@ article.addEventListener('keydown', function (e) {
             killer: true
         }).show();
         e.preventDefault();
+        count();
         return;
     }
 });

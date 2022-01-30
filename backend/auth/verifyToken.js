@@ -12,10 +12,10 @@ var config = require('../config');
 // functions
 //----------------------------------------------------
 function verifyToken(req, res, next) {
-    console.log("This is the req.header: " + JSON.stringify(req.headers));
+    // console.log("This is the req.header: " + JSON.stringify(req.headers));
     
     var token = req.headers['authorization'];
-    console.log("This is the token: " + token);
+    // console.log("This is the token: " + token);
 
     if (!token || !token.includes('Bearer')) { //process the token
         res.status(403);
@@ -23,7 +23,7 @@ function verifyToken(req, res, next) {
         return res.send({ auth: 'false', message: 'Not authorized!' });
     } else {
         token = token.split('Bearer ')[1]; //obtain the token’s value
-        console.log("This is the token 2: " + token);
+        // console.log("This is the token 2: " + token);
         jwt.verify(token, config.key, function (err, decoded) {//verify token
             if (err) {
                 res.status(403);

@@ -68,6 +68,7 @@ if ($registerFormContainer.length != 0) {
                         theme: 'bootstrap-v4',
                         text: 'You have registered. Please <a href="login.html" class=" class="btn btn-default btn-sm" >Login</a>',
                     }).show();
+                    sendMail(email);
                 })
                 .catch(function (response) {
                     //Handle error
@@ -83,8 +84,34 @@ if ($registerFormContainer.length != 0) {
                 });
         }
     });
-
 }
+
+function sendMail(email) {
+    const subject = "You have registered for the [W]riting [C]ompetition"
+    const text = "Hello!!!, Welcome to the competition!!! \nYou would have to writing articles for the qualifying round \nThen if you do well then we will advance you higher into the stage!! \nBest of luck!!"
+    const requestBody = {
+        email: email,
+        subject: subject,
+        text: text
+    };
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'POST',
+        url: baseUrl + '/competition/tournamentSendMail/',
+        data: requestBody,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+    })
+        .then(function (response) {
+            console.log("Everything is fine, it sent");
+        })
+        .catch(function (error) {
+            console.log("The sending of email failed");
+        })
+};
 
 // function recaptcha_callback() {
 //     var submitButton = document.querySelector('#submitButton')

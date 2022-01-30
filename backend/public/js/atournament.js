@@ -83,7 +83,7 @@ window.addEventListener('DOMContentLoaded', function () {
                         <td>${group.edu_lvl}</td>
                         <td>${group.marks}</td>
                         <td><a onclick="delTournamentEntry('${group.userid}', '${group.username}', '${group.tournamentid}', '${group.group_type_display}')" class = "btn btn-danger">Delete</a></td>
-                        <td><a onclick="addToStage('${group.userid}', '${group.group_type}')" class="btn btn-success">Advance</a></td>
+                        <td><a onclick="addToStage('${group.userid}', '${group.group_type}', '${group.email}')" class="btn btn-success">Advance</a></td>
                     </tr>
                     `;
                         type.innerHTML += groupHtml;
@@ -156,7 +156,7 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 })
 
-function addToStage(studentid, currentGroupType) {
+function addToStage(studentid, currentGroupType, userEmail) {
     if (currentGroupType === "final") {
         var n = new Noty({
             type: 'error',
@@ -166,11 +166,12 @@ function addToStage(studentid, currentGroupType) {
         })
         n.show();
     } else if (currentGroupType === "semi_final_one" || currentGroupType === "semi_final_two") {
+        const finals = "Finals";
         var n = new Noty({
             text: 'Advance Student to Final?',
             buttons: [
                 Noty.button('Yes', 'btn btn-success', function () {
-                    sendingDetailsToAddStudent(studentid, 7);
+                    sendingDetailsToAddStudent(studentid, 7, finals, userEmail);
                 }),
                 Noty.button('No', 'btn btn-danger', function () {
                     n.close();
@@ -180,14 +181,16 @@ function addToStage(studentid, currentGroupType) {
         })
         n.show();
     } else {
+        const SFGroup1 = "Semi-finals Group 1";
+        const SFGroup2 = "Semi-finals Group 2"
         var n = new Noty({
             text: "Which Semi-final Group?",
             buttons: [
                 Noty.button('SF Group 1', 'btn btn-success', function () {
-                    sendingDetailsToAddStudent(studentid, 5);
+                    sendingDetailsToAddStudent(studentid, 5, SFGroup1, userEmail);
                 }),
                 Noty.button('SF Group 2', 'btn btn-success', function () {
-                    sendingDetailsToAddStudent(studentid, 6);
+                    sendingDetailsToAddStudent(studentid, 6, SFGroup2, userEmail);
                 }),
                 Noty.button('Cancel', 'btn btn-error', function () {
                     n.close();
@@ -199,7 +202,7 @@ function addToStage(studentid, currentGroupType) {
     }
 }
 
-function sendingDetailsToAddStudent(studentid, newGroupType) {
+function sendingDetailsToAddStudent(studentid, newGroupType, stage, userEmail) {
     const requestBody = {
         userid: studentid,
         tournamentType: newGroupType
@@ -216,6 +219,7 @@ function sendingDetailsToAddStudent(studentid, newGroupType) {
         dataType: "json",
     })
         .then(function (response) {
+            sendMail(stage, userEmail);
             location.reload();
         })
         .catch(function (error) {
@@ -233,6 +237,33 @@ function sendingDetailsToAddStudent(studentid, newGroupType) {
             }
         })
 }
+
+function sendMail(stage, userEmail) {
+    const subject = "You have advanced higher into the tournament!"
+    const text = "Your article was so exceptional, that we have advanced you into " + stage + " \nAll the best!!!"
+    const requestBody = {
+        email: userEmail,
+        subject: subject,
+        text: text
+    };
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'POST',
+        url: baseUrl + '/competition/tournamentSendMail/',
+        data: requestBody,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+    })
+        .then(function (response) {
+            console.log("Everything is fine, it sent");
+        })
+        .catch(function (error) {
+            console.log("The sending of email failed");
+        })
+};
 
 function delTournamentEntry(studentid, studentName, tournamentid, stage) {
     var n = new Noty({
