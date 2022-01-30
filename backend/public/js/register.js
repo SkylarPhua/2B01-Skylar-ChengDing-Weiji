@@ -54,7 +54,7 @@ if ($registerFormContainer.length != 0) {
             };
             axios({
                 method: 'post',
-                url: baseUrl + '/competition/student',
+                url:  '/competition/student',
                 data: requestBody,
                 dataType: "json",
             })
@@ -99,7 +99,7 @@ function sendMail(email) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url: baseUrl + '/competition/tournamentSendMail/',
+        url:  '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",

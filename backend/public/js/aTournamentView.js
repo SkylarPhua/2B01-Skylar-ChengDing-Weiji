@@ -30,7 +30,7 @@ window.onload = () => {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/tournamentArticle/' + tournamentID,
+        url:  '/competition/tournamentArticle/' + tournamentID,
         dataType: "json",
     })
         .then(function (response) {
@@ -86,7 +86,7 @@ $('#submitButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url: baseUrl + '/competition/tournamentMarks/',
+        url:  '/competition/tournamentMarks/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json"
@@ -114,7 +114,7 @@ $('#summariseButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/tournamentArticleSummary/' + tournamentID,
+        url:  '/competition/tournamentArticleSummary/' + tournamentID,
         dataType: "json",
     })
         .then(function (response) {

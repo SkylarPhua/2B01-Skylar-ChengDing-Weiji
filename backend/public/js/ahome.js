@@ -30,7 +30,7 @@ function getAllArticle() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/articles',
+        url:  '/competition/articles',
         dataType: "json",
     })
         .then(function (response) {
@@ -89,7 +89,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url: baseUrl + '/competition/tournament/',
+                    url:  '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -130,7 +130,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url: baseUrl + '/competition/tournament/',
+                    url:  '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -171,7 +171,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url: baseUrl + '/competition/tournament/',
+                    url:  '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -212,7 +212,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url: baseUrl + '/competition/tournament/',
+                    url:  '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -265,7 +265,7 @@ function sendMail(groupNumber, email, title, subDate) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url: baseUrl + '/competition/tournamentSendMail/',
+        url:  '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -295,7 +295,7 @@ function articleDel(id) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url: baseUrl + '/competition/articles/' + id,
+                    url:  '/competition/articles/' + id,
                     dataType: "json",
                 })
                     .then(function (response) {
@@ -345,7 +345,7 @@ $('#submitButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + URL,
+        url:  URL,
         dataType: "application/json",
     }).then(function (response) {
         console.log(response)

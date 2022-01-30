@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 };
                 axios({
                     method: 'post',
-                    url: baseUrl + '/competition/login/',
+                    url:  '/competition/login/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",

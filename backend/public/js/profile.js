@@ -21,7 +21,7 @@ function getProfile() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/article/' + userid,
+        url:  '/competition/article/' + userid,
         dataType: "json",
     }).then(function (response) {
         const articles = response.data[0];
@@ -56,7 +56,7 @@ function getArticles() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/history/' + userid,
+        url:  '/competition/history/' + userid,
         dataType: "json",
     }).then(function (response) {
         const articles = response.data;

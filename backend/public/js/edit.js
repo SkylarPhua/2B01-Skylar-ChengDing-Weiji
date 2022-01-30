@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', function () {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        url:  '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -64,7 +64,7 @@ function getArticleData() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/article/' + userid,
+        url:  '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -115,7 +115,7 @@ $('#submitButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url: baseUrl + '/competition/studentArticle/' + userid,
+        url:  '/competition/studentArticle/' + userid,
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
