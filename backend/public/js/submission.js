@@ -44,7 +44,7 @@ function showTournamentContent() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
+        url:  '/competition/tournamentArticle/' + userid + '/' + groupType,
         dataType: "json",
     })
         .then(function (response) {
@@ -103,7 +103,7 @@ function getCategory() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/tournamentCategory/' + groupType,
+        url:  '/competition/tournamentCategory/' + groupType,
         dataType: "json"
     })
         .then(function (response) {
@@ -138,7 +138,7 @@ function showQualifyingContent() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/article/' + userid,
+        url:  '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -228,7 +228,7 @@ function btn() {
 function showCountDown(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        url:  '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -251,7 +251,7 @@ function showCountDown(dueDateType) {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        url:  '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -283,7 +283,7 @@ function getTheDue(dueDateType) {
 function getTheTournamentDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        url:  '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -319,7 +319,7 @@ function showTournamentContent2() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
+        url:  '/competition/tournamentArticle/' + userid + '/' + groupType,
         dataType: "json",
     })
         .then(function (response) {
@@ -376,7 +376,7 @@ function showQualifyingContent2() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/article/' + userid,
+        url:  '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -519,7 +519,7 @@ function articleDeleteTournament(id) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url: baseUrl + '/competition/tournamentArticle/' + userid,
+                    url:  '/competition/tournamentArticle/' + userid,
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -553,7 +553,7 @@ function articleDel(id) {
                 'authorization': 'Bearer ' + token
             },
             method: 'DELETE',
-            url: baseUrl + '/competition/articles/' + userid,
+            url:  '/competition/articles/' + userid,
             dataType: "json",
         })
             .then(function (response) {

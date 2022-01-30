@@ -24,7 +24,7 @@ window.onload = () => {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/article/' + userid,
+        url:  '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -85,7 +85,7 @@ $('#summariseButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/article/summarise/' + userid,
+        url:  '/competition/article/summarise/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -133,7 +133,7 @@ function postgrade(grade) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url: baseUrl + '/competition/grade/' + articleid,
+        url:  '/competition/grade/' + articleid,
         data: requestBody,
         dataType: "json",
     })
@@ -163,7 +163,7 @@ function putgrade(grade) {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url: baseUrl + '/competition/grades/' + articleid,
+        url:  '/competition/grades/' + articleid,
         data: requestBody,
         dataType: "json",
     })
@@ -191,7 +191,7 @@ $('#plagiarismCheck').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/checkPlagiarism/' + userid,
+        url:  '/competition/checkPlagiarism/' + userid,
         dataType: "json",
     })
         .then(function (response) {

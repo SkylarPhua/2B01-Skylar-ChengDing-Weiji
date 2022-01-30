@@ -22,7 +22,7 @@ var datas2 = [];
 function getLast4() {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/tournamentLeaderboardFour/',
+        url: '/competition/tournamentLeaderboardFour/',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
     }).then(function (response) {
@@ -40,7 +40,7 @@ function getLast4() {
 function getNext2() {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/tournamentLeaderboardNextTwo/',
+        url:  '/competition/tournamentLeaderboardNextTwo/',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
     })
@@ -58,7 +58,7 @@ function getNext2() {
 function getTop2() {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/tournamentLeaderboardTopTwo/',
+        url:  '/competition/tournamentLeaderboardTopTwo/',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
     })

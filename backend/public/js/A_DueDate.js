@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/dueDate',
+        url:  '/competition/dueDate',
         dataType: "json",
     })
         .then(function (response) {
@@ -57,7 +57,7 @@ function viewDueDate(duedatetype) {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/'+duedatetype,
+        url:  '/competition/dueDate/'+duedatetype,
         dataType: "json",
     })
         .then(function (response) {
@@ -92,7 +92,7 @@ $('#editButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url: baseUrl + '/competition/dueDate',
+        url:  '/competition/dueDate',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",

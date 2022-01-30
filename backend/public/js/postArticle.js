@@ -19,7 +19,7 @@ window.onload = () => {
 function getTheDue(dueDateType) {
   axios({
       method: 'GET',
-      url: baseUrl + '/competition/dueDate/' + dueDateType,
+      url:  '/competition/dueDate/' + dueDateType,
       dataType: "json",
   })
       .then(function (response) {
@@ -80,7 +80,7 @@ $('#submitButton').on('click', function (event) {
       'authorization': 'Bearer ' + token
     },
     method: 'POST',
-    url: baseUrl + '/competition/studentArticles/',
+    url:  '/competition/studentArticles/',
     data: requestBody,
     contentType: "application/json; charset=utf-8",
     dataType: "json",

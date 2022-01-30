@@ -50,7 +50,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 'authorization': 'Bearer ' + token
             },
             method: 'PUT',
-            url: baseUrl + '/competition/tournamentArticle/',
+            url:  '/competition/tournamentArticle/',
             data: requestBody,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -76,7 +76,7 @@ window.addEventListener('DOMContentLoaded', function () {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url: baseUrl + '/competition/dueDate/' + dueDateType,
+        url:  '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -111,7 +111,7 @@ function getArticle() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url: baseUrl + '/competition/tournamentArticle/' + userid + '/' + groupType,
+        url:  '/competition/tournamentArticle/' + userid + '/' + groupType,
         dataType: "json",
     })
         .then(function (response) {
@@ -162,7 +162,7 @@ function sendMail() {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url: baseUrl + '/competition/tournamentSendMail/',
+        url:  '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
