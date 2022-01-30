@@ -10,7 +10,7 @@ module.exports = {
                 console.log(result.rows.length);
                 if (result.rows.length == 0) {
                     return callback({ code: "emptyEntry" }, null);
-                } else if (result.rows.length = 1) {
+                } else if (result.rows.length >= 1) {
                     return callback(null, result.rows);
                 } else {
                     return callback({ code: "unknownError" }, null);

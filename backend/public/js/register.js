@@ -28,7 +28,8 @@ if ($registerFormContainer.length != 0) {
 
         if (name.trim() == "" || email.trim() == "" || password.trim() == "") {
             validateFE();
-        }else if (allowSubmit != "true"){
+        }else if (allowSubmit != true){
+            console.log("ssssssss"+allowSubmit);
             event.preventDefault();
             new Noty({
                 timeout: '6000',
