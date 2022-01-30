@@ -9,7 +9,7 @@ let dueDateType = localStorage.getItem('group_type');
 let role = localStorage.getItem('role_name');
 
 window.addEventListener('DOMContentLoaded', function () {
-    const overlayLoading = document.getElementById('loading');
+    // const overlayLoading = document.getElementById('loading');
         if (role != "student"){
             alert("Unauthorised, You are not a Student")
             window.location.replace("login.html");
@@ -99,7 +99,7 @@ function getArticleData() {
 }
 
 $('#submitButton').on('click', function () {
-    overlayLoading.style.display = ""
+    // overlayLoading.style.display = ""
     event.preventDefault();
     let title = $('#title').val();
     let article = $('#article').val();
@@ -122,7 +122,7 @@ $('#submitButton').on('click', function () {
     }).then(function (response) {
         console.log(response.data)
         window.alert("Successfully Edited")
-        overlayLoading.style.display = "none"
+        // overlayLoading.style.display = "none"
         window.location = "submission.html";
     }).catch(function (error) {
         if (error.response.status == 403) {

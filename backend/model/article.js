@@ -7,6 +7,7 @@
 //------------------------------------
 const database = require('../database/database');
 var lexrank = require('lexrank');
+var stringSimilarity = require("string-similarity");
 //------------------------------------
 // functions/exports
 //------------------------------------
@@ -449,6 +450,52 @@ module.exports = {
                 console.log("This is the error: " + error);
                 return callback(error, null);
             })
+    },
+    checkPlagiarism: function(userid, callback) {
+        console.log("appppppp.js check here " + userid);
+        const query = `SELECT content From article where fk_userid = $1 `
+        return database
+        .query(query,[userid])
+        .then(async function (results) {
+            if(results.rows.length == 0) {
+                return callback({code: "no this dueDateType"},null);
+            }else if  (results.rows.length == 1 ){
+                var sentences = results.rows[0].content;
+                // console.log(sentences);
+                var lines =sentences.split("\n\n"); //original article
+                // console.log(lines);
+                let allContent = `select content from article where fk_userid != $1 `
+                return database
+                .query(allContent,[userid])
+                .then(async function(results){
+                    var total = 0.0;
+                    for (var i = 0; i < lines.length; i++){
+                        var ArticleLine =lines[i];
+                        for(var a = 0; a<results.rows.length;a++) {
+                            var show = results.rows[a].content
+                            var cutArticleToLines = show.split("\n\n")
+                              for(var b = 0; b < cutArticleToLines.length; b ++) {
+                                var allArticleLines = cutArticleToLines[b]
+                                var percentage = stringSimilarity.compareTwoStrings(ArticleLine,allArticleLines);
+                                // console.log(ArticleLine);
+                                // console.log(allArticleLines);
+                                console.log(percentage);
+                                if (percentage > 0.6) {
+                                    total += percentage
+                                }  
+                              }
+                        }
+                    }
+                    console.log(total);
+                    return callback(null, total)
+                })
+            } else {
+                console.log({code:"viewduedatebygroup unknown_error"}, null);
+            }
+        })
+        .catch(function(error){
+            return callback(error,null);
+        })
     },
 
 }

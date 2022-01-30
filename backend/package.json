@@ -30,6 +30,7 @@
     "nodemailer": "^6.7.2",
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
+    "string-similarity": "^4.0.4",
     "validator": "^13.7.0"
   }
 }

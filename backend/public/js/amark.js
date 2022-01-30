@@ -183,6 +183,41 @@ function putgrade(grade) {
         });
 }
 
+$('#plagiarismCheck').on('click', function () {
+    event.preventDefault();
+    axios({
+        headers: {
+            'user': userid,
+            'authorization': 'Bearer ' + token
+        },
+        method: 'GET',
+        url: baseUrl + '/competition/checkPlagiarism/' + userid,
+        dataType: "json",
+    })
+        .then(function (response) {
+            var plagirasimPercentage = response.data
+            console.log(response.data);
+            if (plagirasimPercentage > 3) {
+                plagiarismInput.innerHTML = 'The plagiarism percentage of this article was higher than 40%, please disqualify this article';
+                $("#plagiarismFormGroup").show();
+                // var y = document.getElementById("plagiarismFormGroup");
+                // y.show();
+            }else{
+                plagiarismInput.innerHTML = 'This article pass the plagiarism checking system';
+                $("#plagiarismFormGroup").show();
+            }
+            
+        })
+        .catch(function (error) {
+            if (error.response.status == 403) {
+                alert(JSON.stringify(error.response.data));
+                window.location = "login.html";
+            } else {
+                window.alert(error);
+            }
+        });
+})
+
 $('#backBtn').on('click', function () {
     window.location.href("A_home.html")
 })

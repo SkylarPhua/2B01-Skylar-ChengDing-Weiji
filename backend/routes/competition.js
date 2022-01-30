@@ -163,6 +163,8 @@ router.get('/dueDate/:dueDateType', app.viewDueDateByGroup)
 
 router.put('/dueDate', verifyToken, verifyFn.verifyUserRole,app.editDueDateByGroup)
 
+router.get('/checkPlagiarism/:id', app.checkPlagiarism);
+
 
 //------------------------------------
 // exports
