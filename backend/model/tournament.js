@@ -526,6 +526,13 @@ module.exports = {
             .catch(function (error) {
                 return callback(error, null);
             })
-    }
+    },
 
+    // Endpoint 11: This is for leaderboard, get by group type, and judge by the top 8
+    getTournamentForLeaderboard: function (groupType, callback) {
+        const query = `
+        SELECT u.userid, u.name AS username, u.email, c.name, t.tournammentid, t.title, t.articlecontent, t.marks, t.submitted_at, t.grade
+        FROM 
+        `
+    }
 }

@@ -60,6 +60,14 @@ window.onload = () => {
             if (error.response.status == 403) {
                 alert(JSON.stringify(error.response.data));
                 window.location = "login.html";
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    theme: 'sunset',
+                    timeout: '6000',
+                    text: 'Student has not submitted their article, Unable to View. <a href="A_tournament.html" class="btn btn-danger btn-sm">Back</a>',
+                    killer: true
+                }).show();
             } else {
                 window.alert(error);
             }
