@@ -31,7 +31,7 @@ exports.sendingMail = function (req, res) {
     console.log(userSentTo);
     console.log(subject);
     console.log(text);
-    
+
     nodemailer.sendMail(userSentTo, subject, text, function (error, result) {
         if (!error && result !== "") {
             res.status(204).send("Email has been sent");
@@ -525,7 +525,6 @@ exports.getContentByID = function (req, res) {
             res.status(200).send(result);
         } else if (error.code == "No_such_article") {
             console.log("No Article lel, post new: " + result);
-            // res.status(404).send("Cannot find any article done by user");
             res.status(404).send("Cannot find any article done by user");
         } else {
             console.log("This is the error: " + error);
@@ -543,22 +542,11 @@ exports.postArticle = function (req, res) {
     var content = req.body.content;
     if (req.usertype == "student") {
         article.addArticleByID(userid, catid, title, content, function (error, result) {
-            // if (!error && result !== "") {
-            //     console.log("This is the result (app.js): " + JSON.stringify(result));
-            //     res.status(201).send("Article has been submitted");
-            // } else if (error.code == '23505') {
-            //     console.log("This is the bad result(postArticle): " + JSON.stringify(result));
-            //     res.status(422).send("Article already exsist");
-            // } else {
-            //     console.log("This is the error: " + error);
-            //     res.status(500).send("Unknown error");
-            // }
             if (!error) {
                 res.status(201).send("Student article has been posted");
             } else if (error.code == "noUpdate") {
                 res.status(404).send("Cannot find requested entry");
             } else {
-                console.log("This is the adaw: " + JSON.stringify(error));
                 res.status(500).send("Unknown error");
             }
         })
@@ -858,19 +846,22 @@ exports.editDueDateByGroup = function (req, res) {
 exports.getHistoryArticle = function (req, res) {
     const userid = parseInt(req.params.id);
     console.log(userid)
-    history.getArticleByUserID(userid, function (error, result) {
-
-        if (!error && result == "") {
-            console.log("Cannot find any article from this student")
-            res.status(404).send("Cannot find any article from this student");
-        } else if (!error && result !== "") {
-            console.log(result)
-            res.status(200).send(result);
-        } else {
-            console.log("This is the error: " + JSON.stringify(error));
-            res.status(500).send("Unknown student error");
-        }
-    })
+    if (req.usertype == "student") {
+        history.getArticleByUserID(userid, function (error, result) {
+            if (!error && result == "") {
+                console.log("Cannot find any article from this student")
+                res.status(404).send("Cannot find any article from this student");
+            } else if (!error && result !== "") {
+                console.log(result)
+                res.status(200).send(result);
+            } else {
+                console.log("This is the error: " + JSON.stringify(error));
+                res.status(500).send("Unknown student error");
+            }
+        })
+    } else {
+        res.status(403).send("Unauthorised Access, you are not registered as a Student");
+    }
 };
 
 exports.checkPlagiarism = function (req, res) {

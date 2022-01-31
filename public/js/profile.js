@@ -7,8 +7,13 @@ const baseUrl = 'http://localhost:8000';
 
 window.onload = () => {
     if (role != "student") {
-        alert("Unauthorised, You are not a Student")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not a Student",
+            timeout: '10000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        }).show();
     }
     getProfile();
     getArticles();
@@ -21,7 +26,7 @@ function getProfile() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/article/' + userid,
+        url: '/competition/article/' + userid,
         dataType: "json",
     }).then(function (response) {
         const articles = response.data[0];
@@ -39,13 +44,23 @@ function getProfile() {
             console.log("Issue in retrieving...");
         }
     }).catch(function (error) {
-        if (error.response.status == 403) {
-            alert(JSON.stringify(error.response.data));
-            window.location = "login.html";
-        } else {
-            window.alert(error);
-        }
+        if (error.response.status == 404) {
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data),
+                timeout: '6000',
+                killer: true
+            }).show();
 
+        } else if (error.response.status == 500) {
+            new Noty({
+                type: 'error',
+                text: error.response.data + ' Please try again later',
+                timeout: '6000',
+                killer: true
+            }).show();
+        }
+        n.close();
     });
 }
 
@@ -56,7 +71,7 @@ function getArticles() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/history/' + userid,
+        url: '/competition/history/' + userid,
         dataType: "json",
     }).then(function (response) {
         const articles = response.data;
@@ -83,16 +98,40 @@ function getArticles() {
             getData.innerHTML += postHtml;
             collapsetest();
         } else {
-            console.log("Issue in retrieving...");
+            new Noty({
+                type: 'error',
+                text: 'Issues while retrieving.. Please try again later',
+                timeout: '6000',
+                killer: true
+            }).show();
         }
     }).catch(function (error) {
-        console.log("it ran the error");
-        if (error.status == 403) {
-            alert(JSON.stringify(error.response.data));
-            window.location = "login.html";
+        if (error.response.status == 403) {
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data),
+                timeout: '6000',
+            }).on('onClose', () => {
+                window.location = "login.html"
+            }).show();
+
+        } else if (error.response.status == 404) {
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data),
+                timeout: '6000',
+                killer: true
+            }).show();
+
         } else {
-            window.alert(error);
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data) + 'Please try again later',
+                timeout: '6000',
+                killer: true
+            }).show();
         }
+        n.close();
 
     });
 }

@@ -28,8 +28,8 @@ if ($registerFormContainer.length != 0) {
 
         if (name.trim() == "" || email.trim() == "" || password.trim() == "") {
             validateFE();
-        }else if (allowSubmit != true){
-            console.log("ssssssss"+allowSubmit);
+        } else if (allowSubmit != true) {
+            console.log("ssssssss" + allowSubmit);
             event.preventDefault();
             new Noty({
                 timeout: '6000',
@@ -37,7 +37,7 @@ if ($registerFormContainer.length != 0) {
                 layout: 'topCenter',
                 theme: 'sunset',
                 text: 'captcha not completed',
-                killer: true, // New Not tested
+                killer: true,
             }).show();
         } else {
             console.log("not empty");
@@ -54,7 +54,7 @@ if ($registerFormContainer.length != 0) {
             };
             axios({
                 method: 'post',
-                url:  '/competition/student',
+                url: '/competition/student',
                 data: requestBody,
                 dataType: "json",
             })
@@ -67,19 +67,30 @@ if ($registerFormContainer.length != 0) {
                         layout: 'topCenter',
                         theme: 'bootstrap-v4',
                         text: 'You have registered. Please <a href="login.html" class=" class="btn btn-default btn-sm" >Login</a>',
+                        killer: true
                     }).show();
                 })
                 .catch(function (response) {
-                    //Handle error
-                    console.dir(response);
-                    new Noty({
-                        timeout: '6000',
-                        type: 'error',
-                        layout: 'topCenter',
-                        theme: 'sunset',
-                        text: 'Unable to register.',
-                        killer: true, // New Not tested
-                    }).show();
+                    if (error.response.status == 422) {
+                        new Noty({
+                            type: 'error',
+                            text: JSON.stringify(error.response.data + '. Duplicate entry error'),
+                            timeout: '6000',
+                        }).on('onClose', () => {
+                            window.location = "login.html"
+                        }).show();
+
+                    } else if (error.response.status == 500) {
+                        new Noty({
+                            timeout: '6000',
+                            type: 'error',
+                            layout: 'topCenter',
+                            theme: 'sunset',
+                            text: JSON.stringify(error.response.data) + ' Unable to register.',
+                            killer: true,
+                        }).show();
+                    }
+                    n.close();
                 });
         }
     });
@@ -99,7 +110,7 @@ function sendMail(email) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournamentSendMail/',
+        url: '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -111,12 +122,6 @@ function sendMail(email) {
             console.log("The sending of email failed");
         })
 };
-
-// function recaptcha_callback() {
-//     var submitButton = document.querySelector('#submitButton')
-//     // submitButton.removeAttribute('disabled')
-//     submitButton.style.cursoe = 'pointer';
-// }
 
 function validateFE() {
     'use strict'
