@@ -14,8 +14,15 @@ let token = localStorage.getItem('token');
 
 window.onload = () => {
     if (role != "admin") {
-        alert("Unauthorised, You are not an admin")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not an admin",
+            timeout: '6000',
+
+        }) .on('onClose', ()=> {
+            window.location = "login.html"
+        })
+        .show();
     }
 
     axios({
@@ -53,10 +60,23 @@ window.onload = () => {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error,
+                    timeout: '6000',
+                }) 
+                .show();
+
             }
         });
 }
@@ -73,7 +93,13 @@ $('#submitButton').on('click', function () {
         console.log("putting");
         putgrade(grade);
     } else {
-        window.alert("Please enter a grade before proceeding");
+        new Noty({
+            type: 'error',
+            text: "Please enter a grade before proceeding",
+            timeout: '6000',
+
+        }) 
+        .show();
     }
 })
 
@@ -113,10 +139,23 @@ $('#summariseButton').on('click', function () {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error,
+                    timeout: '6000',
+        
+                }) 
+                .show();
             }
         });
 })
@@ -138,15 +177,35 @@ function postgrade(grade) {
         dataType: "json",
     })
         .then(function (response) {
-            alert("You Have Successfully graded Student : " + userid)
-            window.location = "A_home.html"
+            new Noty({
+                type: 'error',
+                text: "You Have Successfully graded Student : " + userid,
+                timeout: '6000',
+    
+            }) .on('onClose', ()=> {
+                window.location = "A_home.html"
+            })
+            .show();
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html"
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert("Cannot Grade this student : " + error);
+                new Noty({
+                    type: 'error',
+                    text: "Cannot Grade this student : " + error,
+                    timeout: '6000',
+        
+                }) 
+                .show();
                 console.log("Ungradable student : " + error.message);
             }
         });
@@ -168,15 +227,36 @@ function putgrade(grade) {
         dataType: "json",
     })
         .then(function (response) {
-            alert("You Have Successfully Updated grade for student : " + userid)
-            window.location = "A_home.html"
+            new Noty({
+                type: 'error',
+                text: "You Have Successfully Updated grade for student : " + userid,
+                timeout: '6000',
+    
+            }) .on('onClose', ()=> {
+                window.location = "A_home.html"
+            })
+            .show();
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert("Cannot update Grade for this student : " + error);
+                new Noty({
+                    type: 'error',
+                    text: "Cannot update Grade for this student : " + error,
+                    timeout: '6000',
+        
+                }) 
+                .show();
+                
                 console.log("Ungradable student : " + error.message);
             }
 
@@ -210,10 +290,22 @@ $('#plagiarismCheck').on('click', function () {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error,
+                    timeout: '6000',
+                }) 
+                .show();
             }
         });
 })

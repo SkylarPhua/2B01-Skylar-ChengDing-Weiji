@@ -20,8 +20,16 @@ const submitDate = document.getElementById("subDate");
 
 window.onload = () => {
     if (role != "admin") {
-        alert("Unauthorised, You are not an admin")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not an admin",
+            timeout: '6000',
+
+        }) .on('onClose', ()=> {
+            window.location = "login.html"
+        })
+        .show();
+      
     }
 
     axios({
@@ -58,8 +66,15 @@ window.onload = () => {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else if (error.response.status == 404) {
                 new Noty({
                     type: 'error',
@@ -69,7 +84,13 @@ window.onload = () => {
                     killer: true
                 }).show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error,
+                    timeout: '6000',
+        
+                }) 
+                .show();
             }
         });
 }
@@ -98,10 +119,23 @@ $('#submitButton').on('click', function () {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert("Error: " + error);
+                new Noty({
+                    type: 'error',
+                    text: "Error: " + error,
+                    timeout: '6000',
+        
+                })
+                .show();
             }
         })
 })
@@ -141,10 +175,23 @@ $('#summariseButton').on('click', function () {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error,
+                    timeout: '6000',
+        
+                }) 
+                .show();
             }
         });
 })
