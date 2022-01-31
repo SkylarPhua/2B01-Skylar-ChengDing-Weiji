@@ -12,10 +12,10 @@ window.onload = () => {
             text: "Unauthorised, You are not an admin",
             timeout: '6000',
 
-        }) .on('onClose', ()=> {
+        }).on('onClose', () => {
             window.location = "login.html"
         })
-        .show();
+            .show();
     }
     searchparameters();
 }
@@ -37,7 +37,7 @@ function getAllArticle() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/articles',
+        url: '/competition/articles',
         dataType: "json",
     })
         .then(function (response) {
@@ -71,17 +71,17 @@ function getAllArticle() {
                     type: 'error',
                     text: error.response.data,
                     timeout: '6000',
-                }) .on('onClose', ()=> {
+                }).on('onClose', () => {
                     window.location = "login.html"
                 })
-                .show();
+                    .show();
             } else {
                 new Noty({
                     type: 'error',
                     text: error,
                     timeout: '6000',
-                }) 
-                .show();
+                })
+                    .show();
             }
 
         });
@@ -107,7 +107,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url:  '/competition/tournament/',
+                    url: '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -128,11 +128,11 @@ function addGroup(userid, email, title, subDate) {
                                 type: 'error',
                                 text: JSON.stringify(error.response.data),
                                 timeout: '6000',
-                            }) .on('onClose', ()=> {
+                            }).on('onClose', () => {
                                 window.location = "login.html"
                             })
-                            .show();
-                        
+                                .show();
+
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -155,7 +155,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url:  '/competition/tournament/',
+                    url: '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -176,11 +176,11 @@ function addGroup(userid, email, title, subDate) {
                                 type: 'error',
                                 text: error.response.data,
                                 timeout: '6000',
-                            }) .on('onClose', ()=> {
+                            }).on('onClose', () => {
                                 window.location = "login.html"
                             })
-                            .show();
-                        
+                                .show();
+
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -203,7 +203,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url:  '/competition/tournament/',
+                    url: '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -224,11 +224,11 @@ function addGroup(userid, email, title, subDate) {
                                 type: 'error',
                                 text: error.response.data,
                                 timeout: '6000',
-                            }) .on('onClose', ()=> {
+                            }).on('onClose', () => {
                                 window.location = "login.html"
                             })
-                            .show();
-                        
+                                .show();
+
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -251,7 +251,7 @@ function addGroup(userid, email, title, subDate) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'POST',
-                    url:  '/competition/tournament/',
+                    url: '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -272,10 +272,10 @@ function addGroup(userid, email, title, subDate) {
                                 type: 'error',
                                 text: error.response.data,
                                 timeout: '6000',
-                            }) .on('onClose', ()=> {
+                            }).on('onClose', () => {
                                 window.location = "login.html"
                             })
-                            .show();
+                                .show();
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -310,7 +310,7 @@ function sendMail(groupNumber, email, title, subDate) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournamentSendMail/',
+        url: '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -340,7 +340,7 @@ function articleDel(id) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url:  '/competition/articles/' + id,
+                    url: '/competition/articles/' + id,
                     dataType: "json",
                 })
                     .then(function (response) {
@@ -353,18 +353,18 @@ function articleDel(id) {
                                 type: 'error',
                                 text: error.response.data,
                                 timeout: '6000',
-                            }) .on('onClose', ()=> {
+                            }).on('onClose', () => {
                                 window.location = "login.html"
                             })
-                            .show();
+                                .show();
                         } else {
                             new Noty({
                                 type: 'error',
                                 text: "Error, Unable to Delete Student : " + id + " " + error,
                                 timeout: '6000',
                                 killer: true
-                            }) 
-                            .show();
+                            })
+                                .show();
                         }
 
                     });
@@ -401,7 +401,7 @@ $('#submitButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  URL,
+        url: URL,
         dataType: "application/json",
     }).then(function (response) {
         console.log(response)
@@ -434,26 +434,26 @@ $('#submitButton').on('click', function () {
                 type: 'error',
                 text: error.response.data,
                 timeout: '6000',
-            }) .on('onClose', ()=> {
+            }).on('onClose', () => {
                 window.location = "login.html"
             })
-            .show();
+                .show();
         } else if (error.response.status == 404) {
             new Noty({
                 type: 'error',
                 text: error.response.data,
                 timeout: '6000',
                 killer: true
-            }) 
-            .show();
-        }else {
+            })
+                .show();
+        } else {
             new Noty({
                 type: 'error',
-                text: error,
+                text: JSON.stringify(error.response.data) + ' Please try again later',
                 timeout: '6000',
                 killer: true
-            }) 
-            .show();
+            })
+                .show();
         }
 
     });

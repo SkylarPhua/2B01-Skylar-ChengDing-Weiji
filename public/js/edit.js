@@ -10,13 +10,18 @@ let role = localStorage.getItem('role_name');
 
 window.addEventListener('DOMContentLoaded', function () {
     // const overlayLoading = document.getElementById('loading');
-        if (role != "student"){
-            alert("Unauthorised, You are not a Student")
-            window.location.replace("login.html");
-        } else {
-            getTheDue(dueDateType)
+    if (role != "student") {
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not a Student",
+            timeout: '6000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        }).show();
+    } else {
+        getTheDue(dueDateType)
 
-        }
+    }
 })
 
 
@@ -24,7 +29,7 @@ window.addEventListener('DOMContentLoaded', function () {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url:  '/competition/dueDate/' + dueDateType,
+        url: '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -35,7 +40,7 @@ function getTheDue(dueDateType) {
             var dueDate = new Date(dueDate)
             var today = new Date()
 
-            if(dueDate < today) {
+            if (dueDate < today) {
                 window.location = "nocontent.html"
             } else if (today < dueDate) {
                 getArticleData()
@@ -45,12 +50,22 @@ function getTheDue(dueDateType) {
 
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
@@ -63,7 +78,7 @@ function getArticleData() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/article/' + userid,
+        url: '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -88,11 +103,31 @@ function getArticleData() {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert("You are not logged in")
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
+
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + 'Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 
 }
@@ -114,7 +149,7 @@ $('#submitButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url:  '/competition/studentArticle/' + userid,
+        url: '/competition/studentArticle/' + userid,
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -125,11 +160,31 @@ $('#submitButton').on('click', function () {
         window.location = "submission.html";
     }).catch(function (error) {
         if (error.response.status == 403) {
-            alert(JSON.stringify(error.response.data));
-            window.location = "login.html";
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data),
+                timeout: '6000',
+            }).on('onClose', () => {
+                window.location = "login.html"
+            }).show();
+
+        } else if (error.response.status == 404) {
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data),
+                timeout: '6000',
+                killer: true
+            }).show();
+
         } else {
-            window.alert(error);
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data) + 'Please try again later',
+                timeout: '6000',
+                killer: true
+            }).show();
         }
+        n.close();
     });
 
 })

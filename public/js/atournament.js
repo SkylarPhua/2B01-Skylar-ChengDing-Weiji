@@ -42,13 +42,12 @@ window.addEventListener('DOMContentLoaded', function () {
     if (role != "admin") {
         new Noty({
             type: 'error',
-            text: error.response.data,
+            text: 'Unauthorised User, You are not an Admin',
             timeout: '6000',
-
-        }) .on('onClose', ()=> {
+        }).on('onClose', () => {
             window.location = "login.html"
         })
-        .show();
+            .show();
     }
 
     // Cheng Ding your filter feature should go here
@@ -69,7 +68,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 'authorization': 'Bearer ' + token
             },
             method: 'GET',
-            url:  '/competition/tournamentByType/' + tournamentType,
+            url: '/competition/tournamentByType/' + tournamentType,
             dataType: "json",
         })
             .then(function (response) {
@@ -97,7 +96,12 @@ window.addEventListener('DOMContentLoaded', function () {
                         overlayLoading.style.display = "none"
                     })
                 } else {
-                    console.log("There is an issure with getting")
+                    new Noty({
+                        type: 'error',
+                        text: 'Issues while retrieving.. Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
             })
             .catch(function (error) {
@@ -105,18 +109,29 @@ window.addEventListener('DOMContentLoaded', function () {
                 if (error.response.status == 403) {
                     new Noty({
                         type: 'error',
-                        text: error.response.data,
+                        text: JSON.stringify(error.response.data),
                         timeout: '6000',
-            
-                    }) .on('onClose', ()=> {
+                    }).on('onClose', () => {
                         window.location = "login.html"
-                    })
-                    .show();
+                    }).show();
+
                 } else if (error.response.status == 404) {
-                    overlayLoading.style.display = "none"
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+
                 } else {
-                    console.log("This is the error: " + error);
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data) + 'Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
+                n.close();
             })
     }
 
@@ -127,7 +142,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 'authorization': 'Bearer ' + token
             },
             method: 'GET',
-            url:  '/competition/tournamentArticles/',
+            url: '/competition/tournamentArticles/',
             dataType: "json",
         })
             .then(function (response) {
@@ -153,7 +168,12 @@ window.addEventListener('DOMContentLoaded', function () {
                         getdata.innerHTML += postHtml;
                     })
                 } else {
-                    console.log("Issue in retrieving...");
+                    new Noty({
+                        type: 'error',
+                        text: 'Issues while retrieving.. Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
             })
             .catch(function (error) {
@@ -161,18 +181,29 @@ window.addEventListener('DOMContentLoaded', function () {
                 if (error.response.status == 403) {
                     new Noty({
                         type: 'error',
-                        text: error.response.data,
+                        text: JSON.stringify(error.response.data),
                         timeout: '6000',
-            
-                    }) .on('onClose', ()=> {
+                    }).on('onClose', () => {
                         window.location = "login.html"
-                    })
-                    .show();
+                    }).show();
+
                 } else if (error.response.status == 404) {
-                    overlayLoading.style.display = "none"
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+
                 } else {
-                    console.log("This is the error: " + error);
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data) + 'Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
+                n.close();
             })
     }
 })
@@ -234,7 +265,7 @@ function sendingDetailsToAddStudent(studentid, newGroupType, stage, userEmail) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournament/',
+        url: '/competition/tournament/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -247,19 +278,29 @@ function sendingDetailsToAddStudent(studentid, newGroupType, stage, userEmail) {
             if (error.response.status == 403) {
                 new Noty({
                     type: 'error',
-                    text: error,
+                    text: JSON.stringify(error.response.data),
                     timeout: '6000',
-                }) 
-                .show();
-            } else if (error.response.status == 500) {
-                var n = new Noty({
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
+
+            } else if (error.response.status == 404) {
+                new Noty({
                     type: 'error',
-                    text: 'Student is already in a group',
+                    text: JSON.stringify(error.response.data),
                     timeout: '6000',
                     killer: true
-                })
-                n.show();
+                }).show();
+
+            } else {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + 'Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         })
 }
 
@@ -277,7 +318,7 @@ function sendMail(stage, userEmail) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournamentSendMail/',
+        url: '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -305,7 +346,7 @@ function delTournamentEntry(studentid, studentName, tournamentid, stage) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url:  '/competition/tournament/',
+                    url: '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -315,8 +356,8 @@ function delTournamentEntry(studentid, studentName, tournamentid, stage) {
                             type: 'success',
                             text: "You have deleted Student: " + studentName + " From " + stage,
                             timeout: '6000',
-                        }) 
-                        .show();
+                        })
+                            .show();
                         n.close();
                         location.reload();
                     })
@@ -326,18 +367,18 @@ function delTournamentEntry(studentid, studentName, tournamentid, stage) {
                                 type: 'error',
                                 text: error.response.data,
                                 timeout: '6000',
-                    
-                            }) .on('onClose', ()=> {
+
+                            }).on('onClose', () => {
                                 window.location = "login.html"
                             })
-                            .show();
+                                .show();
                         } else {
                             new Noty({
                                 type: 'error',
                                 text: "Error, Unable to Delete Student : " + studentName + " " + error,
                                 timeout: '6000',
-                            }) 
-                            .show();
+                            })
+                                .show();
                             console.log("This is the error" + error);
                             n.close();
                         }
@@ -370,7 +411,7 @@ function studentDelete(userid) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url:  '/competition/students/' + userid + "/",
+                    url: '/competition/students/' + userid + "/",
                     dataType: "json",
                 })
                     .then(function (response) {
@@ -378,8 +419,8 @@ function studentDelete(userid) {
                             type: 'success',
                             text: "You Have Disqualified Student : " + id,
                             timeout: '6000',
-                        }) 
-                        .show();
+                        })
+                            .show();
                         n.close();
 
                         getAllUserByStage(gOneHeader, groupOne, "group_one");
@@ -397,16 +438,16 @@ function studentDelete(userid) {
                                 type: 'error',
                                 text: error,
                                 timeout: '6000',
-                            }) 
-                            .show();
+                            })
+                                .show();
                         } else {
                             console.log("This is the error" + error);
                             new Noty({
                                 type: 'error',
                                 text: "Error, Unable to Delete Student : " + id + " " + error,
                                 timeout: '6000',
-                            }) 
-                            .show();
+                            })
+                                .show();
                         }
                     })
             }, { id: 'button1', 'data-status': 'ok' }),
