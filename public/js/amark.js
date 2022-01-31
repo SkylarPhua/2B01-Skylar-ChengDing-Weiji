@@ -69,14 +69,24 @@ window.onload = () => {
                     window.location = "login.html"
                 })
                 .show();
-            } else {
+            } else if (error.response.status == 404) {
                 new Noty({
                     type: 'error',
-                    text: error,
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
+            }
+             else {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
                     timeout: '6000',
                 }) 
                 .show();
-
             }
         });
 }
@@ -148,10 +158,30 @@ $('#summariseButton').on('click', function () {
                     window.location = "login.html"
                 })
                 .show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
                 new Noty({
                     type: 'error',
-                    text: error,
+                    text: JSON.stringify(error.response.data),
                     timeout: '6000',
         
                 }) 
@@ -299,10 +329,20 @@ $('#plagiarismCheck').on('click', function () {
                     window.location = "login.html"
                 })
                 .show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+        
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
                 new Noty({
                     type: 'error',
-                    text: error,
+                    text: JSON.stringify(error),
                     timeout: '6000',
                 }) 
                 .show();
