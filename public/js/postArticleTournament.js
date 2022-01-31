@@ -88,7 +88,7 @@ window.addEventListener('DOMContentLoaded', function () {
                         timeout: '6000',
                         killer: true
                     }).show();
-
+                    overlayLoading.style.display = "none";
                 } else {
                     new Noty({
                         type: 'error',
@@ -177,13 +177,14 @@ function getArticle() {
         .catch(function (error) {
             if (error.response.status == 404) {
                 new Noty({
-                    type: 'error',
-                    text: JSON.stringify(error.response.data),
+                    type: 'success',
                     timeout: '6000',
-                }).on('onClose', () => {
-                    window.location = "login.html"
+                    layout: 'topCenter',
+                    theme: 'bootstrap-v4',
+                    text: 'Please writer up your article below',
+                    killer: true
                 }).show();
-
+                overlayLoading.style.display = "none";
             } else {
                 overlayLoading.style.display = "none";
                 new Noty({
@@ -195,7 +196,6 @@ function getArticle() {
                     killer: true
                 }).show();
             }
-            n.close();
         });
 }
 

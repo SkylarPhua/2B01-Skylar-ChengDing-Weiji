@@ -105,7 +105,6 @@ function showTournamentContent() {
                     killer: true
                 }).show();
             }
-            n.close();
         });
 }
 
