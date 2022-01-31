@@ -62,7 +62,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 'authorization': 'Bearer ' + token
             },
             method: 'GET',
-            url:  '/competition/tournamentByType/' + tournamentType,
+            url: '/competition/tournamentByType/' + tournamentType,
             dataType: "json",
         })
             .then(function (response) {
@@ -113,7 +113,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 'authorization': 'Bearer ' + token
             },
             method: 'GET',
-            url:  '/competition/tournamentArticles/',
+            url: '/competition/tournamentArticles/',
             dataType: "json",
         })
             .then(function (response) {
@@ -213,7 +213,7 @@ function sendingDetailsToAddStudent(studentid, newGroupType, stage, userEmail) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournament/',
+        url: '/competition/tournament/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -252,7 +252,7 @@ function sendMail(stage, userEmail) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournamentSendMail/',
+        url: '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -280,7 +280,7 @@ function delTournamentEntry(studentid, studentName, tournamentid, stage) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url:  '/competition/tournament/',
+                    url: '/competition/tournament/',
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -328,7 +328,7 @@ function studentDelete(userid) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url:  '/competition/students/' + userid + "/",
+                    url: '/competition/students/' + userid + "/",
                     dataType: "json",
                 })
                     .then(function (response) {

@@ -21,6 +21,34 @@ var jwt = require('jsonwebtoken');
 const { summarize } = require('lexrank');
 
 //------------------------------------
+// Error Variables
+//------------------------------------
+const Errors = {
+    tournament : {
+        noUpdate : "noUpdate",
+        noSuchEntry : "noSuchEntry",
+        noSuchArticle : "noSuchArticle",
+        noSuchGroup : "noSuchGroup",
+    },
+    student : {
+        userNotFound : "user_not_found",
+
+    }, 
+    article : {
+        noUpdate : "noUpdate",
+        noArticle : "no_article",
+
+    },
+    category : {
+        noArticle : "no_article",
+    },
+
+    grade : {
+        noUpdate : "noUpdate",
+    },
+}
+
+//------------------------------------
 // Endpoints (nodemailer)
 //------------------------------------
 // Endpoint 1: sending mail to student
@@ -33,6 +61,22 @@ exports.sendingMail = function (req, res) {
     console.log(text);
     
     nodemailer.sendMail(userSentTo, subject, text, function (error, result) {
+        if (!error && result !== "") {
+            res.status(204).send("Email has been sent");
+        } else {
+            console.log("This is the error: " + error);
+            res.status(500).send("Unknown Error");
+        }
+    })
+}
+
+// Endpoint 2: sending mail to every student that leaderboard result has been posted
+exports.sendingBulkMail = function (req, res) {
+    const usersToSent = ['skylarstester+1@gmail.com', 'skylarstester+2@gmail.com', 'skylarstester+3@gmail.com', 'skylarphua@gmail.com', 'vietyet123@gmail.com'];
+    const subject = "This is a tester";
+    const text = "tester only";
+
+    nodemailer.sendBulkMail(usersToSent, subject, text, function (error, result) {
         if (!error && result !== "") {
             res.status(204).send("Email has been sent");
         } else {
@@ -125,7 +169,7 @@ exports.postStudentToGroup = function (req, res) {
                 res.status(422).send("Student already exsist in the tournament");
             } else if (error.code == "noGroupType") {
                 res.status(404).send("No such group type")
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.tournament.noUpdate) {
                 res.status(404).send("Cannot find the requested student");
             } else {
                 console.log("This is the error: " + JSON.stringify(error));
@@ -147,9 +191,9 @@ exports.postStudentArticleToGroup = function (req, res) {
         tournament.editArticleToTournament(studentID, groupType, title, content, function (error, result) {
             if (!error && result !== "") {
                 res.status(201).send("Student article has been posted");
-            } else if (error.code == "noSuchEntry") {
+            } else if (error.code == Errors.tournament.noSuchEntry) {
                 res.status(404).send("Cannot find such an entry");
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.tournament.noUpdate) {
                 res.status(404).send("Cannot find requested entry");
             } else {
                 res.status(500).send("Unknown error");
@@ -168,7 +212,7 @@ exports.editTournamentArticleMark = function (req, res) {
         tournament.editArticleMarks(marks, tournamentID, function (error, result) {
             if (!error && result !== "") {
                 res.sendStatus(204);
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.tournament.noUpdate) {
                 res.status(404).send("There is no such article");
             } else {
                 res.status(500).send("Unknown error");
@@ -187,9 +231,9 @@ exports.deleteStudentFromGroup = function (req, res) {
         tournament.deleteStudentEntry(studentID, tournamentID, function (error, result) {
             if (!error && result !== "") {
                 res.status(204).send("Entry deleted");
-            } else if (error.code == "noSuchEntry") {
+            } else if (error.code == Errors.tournament.noSuchEntry) {
                 res.status(404).send("Student does not exist in this group");
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.tournament.noUpdate) {
                 res.status(404).send("Cannot find requested user");
             } else {
                 console.log(error);
@@ -209,7 +253,7 @@ exports.getStudentArticleFromTournament = function (req, res) {
     tournament.getStudentArticle(studentID, groupType, function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "noSuchArticle") {
+        } else if (error.code == Errors.tournament.noSuchArticle) {
             res.status(404).send("Cannot find any article done by user");
         } else {
             console.log("This is the error (getStudentArticleFromTournament): " + error);
@@ -228,7 +272,7 @@ exports.removeStudentArticle = function (req, res) {
                 res.status(204).send("Article has been deleted");
             } else if (error.code == "noType") {
                 res.status(404).send("Cannot find tournament entry");
-            } else if (error.code == "noSuchEntry") {
+            } else if (error.code == Errors.tournament.noSuchEntry) {
                 res.status(404).send("Cannot find requested entry");
             } else if (error.code == "studentEntryExists") {
                 res.status(422).send("Student entry already exists");
@@ -268,7 +312,7 @@ exports.getSpecificTournamentArticle = function (req, res) {
         tournament.getArticleByTournamentID(tournamentID, function (error, result) {
             if (!error && result !== "") {
                 res.status(200).send(result);
-            } else if (error.code == "noSuchArticle") {
+            } else if (error.code == Errors.tournament.noSuchArticle) {
                 res.status(404).send("Cannot find any article done by user");
             } else {
                 res.status(500).send("Unknown error");
@@ -307,7 +351,7 @@ exports.getCategoryByGroup = function (req, res) {
     tournament.getCategoryByGroupType(groupType, function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "noSuchGroup") {
+        } else if (error.code == Errors.tournament.noSuchGroup) {
             console.log("This is the result: " + result);
             console.log("This is the error: " + error);
             res.status(404).send("Cannot category by group type");
@@ -323,7 +367,7 @@ exports.getLastFourPeople = function (req, res) {
     tournament.getLeaderboardLastFour(function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "noSuchGroup") {
+        } else if (error.code == Errors.tournament.noSuchGroup) {
             console.log("This is the result: " + result);
             console.log("This is the error: " + error);
             res.status(404).send("Cannot category stage");
@@ -339,7 +383,7 @@ exports.getNextTwo = function (req, res) {
     tournament.getLeaderboardSecondLast(function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "noSuchGroup") {
+        } else if (error.code == Errors.tournament.noSuchGroup) {
             res.status(404).send("Cannot category by stage");
         } else {
             res.status(500).send("Unknown error");
@@ -353,7 +397,7 @@ exports.getTopTwo = function (req, res) {
     tournament.getLeaderboardTopTwo(function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "noSuchGroup") {
+        } else if (error.code == Errors.tournament.noSuchGroup) {
             res.status(404).send("Cannot category by stage");
         } else {
             res.status(500).send("Unknown error");
@@ -441,7 +485,7 @@ exports.putStudent = function (req, res) {
     student.editStudent(userid, req.body, function (error, result) {
         if (!error && result !== "") {
             res.status(204).send("User updated");
-        } else if (error.code == "user_not_found") {
+        } else if (error.code == Errors.student.userNotFound) {
             res.status(404).send("Cannot find the requested user");
         } else if (error.code === '23505') { // Duplicate error
             res.status(422).send("The data provided already exists.");
@@ -461,7 +505,7 @@ exports.deleteStudent = function (req, res) {
         if (!error && result !== "") {
             console.log("Successfully deleted");
             res.sendStatus(204);
-        } else if (error.code == "user_not_found") {
+        } else if (error.code == Errors.student.userNotFound) {
             res.status(404).send("No such user, cannot delete");
         } else {
             console.log("error is: " + JSON.stringify(error));
@@ -555,7 +599,7 @@ exports.postArticle = function (req, res) {
             // }
             if (!error) {
                 res.status(201).send("Student article has been posted");
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.article.noUpdate) {
                 res.status(404).send("Cannot find requested entry");
             } else {
                 console.log("This is the adaw: " + JSON.stringify(error));
@@ -587,7 +631,7 @@ exports.putArticle = function (req, res) {
             // }
             if (!error && result !== "") {
                 res.status(201).send("Student article has been posted");
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.article.noUpdate) {
                 res.status(404).send("Cannot find requested entry");
             } else {
                 res.status(500).send("Unknown error");
@@ -610,7 +654,7 @@ exports.deleteArticleByID = function (req, res) {
         console.log(result);
         if (userid == null) {
             res.status(403).send("Unauthorised Access, you are not Logged in / registered");
-        } else if (error.code == "no_article") {
+        } else if (error.code == Errors.article.noArticle) {
             res.status(404).send("There is no such article");
             console.log("///////////////////");
         } else if (error.code == "deleted") {
@@ -633,7 +677,7 @@ exports.getArticleByEdu = function (req, res) {
     article.selectArticleByEdu(edu, function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "no_article") {
+        } else if (error.code == Errors.article.noArticle) {
             res.status(404).send("There is no article from that level");
         } else {
             console.log("This is the error: " + error);
@@ -651,7 +695,7 @@ exports.getArticleByTitle = function (req, res) {
     article.selectArticleByTitle(title, function (error, result) {
         if (!error && result !== "") {
             res.status(200).send(result);
-        } else if (error.code == "no_article") {
+        } else if (error.code == Errors.article.noArticle) {
             res.status(404).send("There is no article with that title");
         } else {
             console.log("This is the error: " + error);
@@ -667,7 +711,7 @@ exports.getArticleBythreeFilters = function (req, res) {
         article.selectArticleBythreeFilters(title, recent, category, function (error, result) {
             if (!error && result !== "") {
                 res.status(200).send(result);
-            } else if (error.code == "no_article") {
+            } else if (error.code == Errors.article.noArticle) {
                 res.status(404).send("There is no article with these 3 filters");
             } else {
                 console.log("This is the error: ", error);
@@ -687,7 +731,7 @@ exports.getArticleByfourFilters = function (req, res) {
         article.selectArticleByfourFilters(title, recent, edu_lvl, category, function (error, result) {
             if (!error && result !== "") {
                 res.status(200).send(result);
-            } else if (error.code == "no_article") {
+            } else if (error.code == Errors.article.noArticle) {
                 res.status(404).send("There is no article with these 4 filters");
             } else {
                 console.log("This is the error: ", error);
@@ -730,7 +774,7 @@ exports.getArticleByName = function (req, res) {
     category.getArticleByCat(catName, function (error, result) {
         if (!error && result !== "") {
             res.sendStatus(200);
-        } else if (error.code == "no_article") {
+        } else if (error.code == Errors.category.noArticle) {
             console.log("This is the result: " + result);
             res.status(404).send("There is no article under this category");
         } else {
@@ -758,7 +802,7 @@ exports.postGrade = function (req, res) {
         grading.insertMarks(userid, articleid, grade, function (error, result) {
             if (!error && result !== "") {
                 res.status(201).send("You have marked this article");
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.grade.noUpdate) {
                 res.status(404).send("There is no such article");
             } else {
                 res.status(500).send("Unknown error");
@@ -780,7 +824,7 @@ exports.putGrade = function (req, res) {
         grading.updateMarks(grade, articleid, function (error, result) {
             if (!error && result !== "") {
                 res.sendStatus(204)
-            } else if (error.code == "noUpdate") {
+            } else if (error.code == Errors.grade.noUpdate) {
                 res.status(404).send("There is no such article");
             } else {
                 res.status(500).send("Unknown error");

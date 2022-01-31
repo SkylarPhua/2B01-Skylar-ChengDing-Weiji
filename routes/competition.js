@@ -67,8 +67,11 @@ router.get('/tournamentLeaderboardNextTwo/', app.getNextTwo);
 // Get First and Second place for leaderboard (Winners and loser of finals)
 router.get('/tournamentLeaderboardTopTwo/', app.getTopTwo);
 
-// Send Mail
+// Send Mail to one student
 router.post('/tournamentSendMail/', app.sendingMail);
+
+// Send Mail to multiple students (Did not implement);
+router.post('/tournamentSendBulkMail/', app.sendingBulkMail);
 //------------------------------------
 // Login Routes
 //------------------------------------
