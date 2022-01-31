@@ -123,8 +123,8 @@ function getTop2() {
 
 function display(target) {
     var dataarray4 = datas4[0];
-    var dataarray3 = datas4[0];
-    var dataarray2 = datas4[0];
+    var dataarray3 = datas3[0];
+    var dataarray2 = datas2[0];
     if (target == '2') {
         head.innerHTML = `Title : ${dataarray2[1].title} <br><br>Category : ${dataarray2[1].name}`;
         contents.innerHTML = `${dataarray2[1].articlecontent}`;
