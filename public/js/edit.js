@@ -155,9 +155,14 @@ $('#submitButton').on('click', function () {
         dataType: "json",
     }).then(function (response) {
         console.log(response.data)
-        window.alert("Successfully Edited")
-        // overlayLoading.style.display = "none"
-        window.location = "submission.html";
+        new Noty({
+            type: 'success',
+            text: "Successfully Edited",
+            timeout: '6000',
+          }).on('onClose', () => {
+            window.location = "submission.html"
+          }).show();
+
     }).catch(function (error) {
         if (error.response.status == 403) {
             new Noty({
