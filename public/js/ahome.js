@@ -7,8 +7,15 @@ const axios = window.axios;
 
 window.onload = () => {
     if (role != "admin") {
-        alert("Unauthorised, You are not an admin")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not an admin",
+            timeout: '6000',
+
+        }) .on('onClose', ()=> {
+            window.location = "login.html"
+        })
+        .show();
     }
     searchparameters();
 }
@@ -60,10 +67,21 @@ function getAllArticle() {
             }
         }).catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+                }) .on('onClose', ()=> {
+                    window.location = "login.html"
+                })
+                .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error,
+                    timeout: '6000',
+                }) 
+                .show();
             }
 
         });
@@ -106,8 +124,15 @@ function addGroup(userid, email, title, subDate) {
                     })
                     .catch(function (error) {
                         if (error.response.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: JSON.stringify(error.response.data),
+                                timeout: '6000',
+                            }) .on('onClose', ()=> {
+                                window.location = "login.html"
+                            })
+                            .show();
+                        
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -147,8 +172,15 @@ function addGroup(userid, email, title, subDate) {
                     })
                     .catch(function (error) {
                         if (error.response.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: error.response.data,
+                                timeout: '6000',
+                            }) .on('onClose', ()=> {
+                                window.location = "login.html"
+                            })
+                            .show();
+                        
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -188,8 +220,15 @@ function addGroup(userid, email, title, subDate) {
                     })
                     .catch(function (error) {
                         if (error.response.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: error.response.data,
+                                timeout: '6000',
+                            }) .on('onClose', ()=> {
+                                window.location = "login.html"
+                            })
+                            .show();
+                        
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -229,8 +268,14 @@ function addGroup(userid, email, title, subDate) {
                     })
                     .catch(function (error) {
                         if (error.response.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: error.response.data,
+                                timeout: '6000',
+                            }) .on('onClose', ()=> {
+                                window.location = "login.html"
+                            })
+                            .show();
                         } else if (error.response.status == 500) {
                             new Noty({
                                 type: 'error',
@@ -304,11 +349,22 @@ function articleDel(id) {
                     })
                     .catch(function (error) {
                         if (error.response.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: error.response.data,
+                                timeout: '6000',
+                            }) .on('onClose', ()=> {
+                                window.location = "login.html"
+                            })
+                            .show();
                         } else {
-                            console.log("This is the error" + error);
-                            window.alert("Error, Unable to Delete Student : " + id + " " + error)
+                            new Noty({
+                                type: 'error',
+                                text: "Error, Unable to Delete Student : " + id + " " + error,
+                                timeout: '6000',
+                                killer: true
+                            }) 
+                            .show();
                         }
 
                     });
@@ -374,10 +430,30 @@ $('#submitButton').on('click', function () {
         }
     }).catch(function (error) {
         if (error.response.status == 403) {
-            alert(JSON.stringify(error.response.data));
-            window.location = "login.html"
-        } else {
-            window.alert(error);
+            new Noty({
+                type: 'error',
+                text: error.response.data,
+                timeout: '6000',
+            }) .on('onClose', ()=> {
+                window.location = "login.html"
+            })
+            .show();
+        } else if (error.response.status == 404) {
+            new Noty({
+                type: 'error',
+                text: error.response.data,
+                timeout: '6000',
+                killer: true
+            }) 
+            .show();
+        }else {
+            new Noty({
+                type: 'error',
+                text: error,
+                timeout: '6000',
+                killer: true
+            }) 
+            .show();
         }
 
     });

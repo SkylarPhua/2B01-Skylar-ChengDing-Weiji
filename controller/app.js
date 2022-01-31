@@ -668,6 +668,7 @@ exports.getArticleBythreeFilters = function (req, res) {
             if (!error && result !== "") {
                 res.status(200).send(result);
             } else if (error.code == "no_article") {
+                console.log("//////////");
                 res.status(404).send("There is no article with these 3 filters");
             } else {
                 console.log("This is the error: ", error);
