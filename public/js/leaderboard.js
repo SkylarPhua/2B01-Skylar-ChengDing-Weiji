@@ -191,3 +191,7 @@ window.onclick = function (event) {
         modal.style.display = "none";
     }
 }
+
+$('#refresh').on('click', function () {
+    location.reload();
+})
