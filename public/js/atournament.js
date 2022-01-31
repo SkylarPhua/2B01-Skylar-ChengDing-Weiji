@@ -40,8 +40,14 @@ window.addEventListener('DOMContentLoaded', function () {
     const overlayLoading = document.getElementById('loading');
 
     if (role != "admin") {
-        alert("Unauthorised, You are not an admin")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: 'Unauthorised User, You are not an Admin',
+            timeout: '6000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        })
+            .show();
     }
 
     // Cheng Ding your filter feature should go here
@@ -90,19 +96,42 @@ window.addEventListener('DOMContentLoaded', function () {
                         overlayLoading.style.display = "none"
                     })
                 } else {
-                    console.log("There is an issure with getting")
+                    new Noty({
+                        type: 'error',
+                        text: 'Issues while retrieving.. Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
             })
             .catch(function (error) {
                 console.log("This is the error" + error);
                 if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                    }).on('onClose', () => {
+                        window.location = "login.html"
+                    }).show();
+
                 } else if (error.response.status == 404) {
-                    overlayLoading.style.display = "none"
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+
                 } else {
-                    console.log("This is the error: " + error);
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data) + 'Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
+                n.close();
             })
     }
 
@@ -139,19 +168,42 @@ window.addEventListener('DOMContentLoaded', function () {
                         getdata.innerHTML += postHtml;
                     })
                 } else {
-                    console.log("Issue in retrieving...");
+                    new Noty({
+                        type: 'error',
+                        text: 'Issues while retrieving.. Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
             })
             .catch(function (error) {
                 console.log("This is the error" + error);
                 if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                    }).on('onClose', () => {
+                        window.location = "login.html"
+                    }).show();
+
                 } else if (error.response.status == 404) {
-                    overlayLoading.style.display = "none"
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+
                 } else {
-                    console.log("This is the error: " + error);
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data) + 'Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
+                n.close();
             })
     }
 })
@@ -224,17 +276,31 @@ function sendingDetailsToAddStudent(studentid, newGroupType, stage, userEmail) {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else if (error.response.status == 500) {
-                var n = new Noty({
+                new Noty({
                     type: 'error',
-                    text: 'Student is already in a group',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
+
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
                     timeout: '6000',
                     killer: true
-                })
-                n.show();
+                }).show();
+
+            } else {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + 'Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         })
 }
 
@@ -286,17 +352,34 @@ function delTournamentEntry(studentid, studentName, tournamentid, stage) {
                     dataType: "json",
                 })
                     .then(function (response) {
-                        window.alert("You have deleted Student: " + studentName + " From " + stage);
+                        new Noty({
+                            type: 'success',
+                            text: "You have deleted Student: " + studentName + " From " + stage,
+                            timeout: '6000',
+                        })
+                            .show();
                         n.close();
                         location.reload();
                     })
                     .catch(function (error) {
                         if (error.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: error.response.data,
+                                timeout: '6000',
+
+                            }).on('onClose', () => {
+                                window.location = "login.html"
+                            })
+                                .show();
                         } else {
+                            new Noty({
+                                type: 'error',
+                                text: "Error, Unable to Delete Student : " + studentName + " " + error,
+                                timeout: '6000',
+                            })
+                                .show();
                             console.log("This is the error" + error);
-                            window.alert("Error, Unable to Delete Student : " + studentName + " " + error)
                             n.close();
                         }
                     })
@@ -332,7 +415,12 @@ function studentDelete(userid) {
                     dataType: "json",
                 })
                     .then(function (response) {
-                        window.alert("You Have Disqualified Student : " + id);
+                        new Noty({
+                            type: 'success',
+                            text: "You Have Disqualified Student : " + id,
+                            timeout: '6000',
+                        })
+                            .show();
                         n.close();
 
                         getAllUserByStage(gOneHeader, groupOne, "group_one");
@@ -346,11 +434,20 @@ function studentDelete(userid) {
                     })
                     .catch(function (error) {
                         if (error.status == 403) {
-                            alert(JSON.stringify(error.response.data));
-                            window.location = "login.html";
+                            new Noty({
+                                type: 'error',
+                                text: error,
+                                timeout: '6000',
+                            })
+                                .show();
                         } else {
                             console.log("This is the error" + error);
-                            window.alert("Error, Unable to Delete Student : " + id + " " + error)
+                            new Noty({
+                                type: 'error',
+                                text: "Error, Unable to Delete Student : " + id + " " + error,
+                                timeout: '6000',
+                            })
+                                .show();
                         }
                     })
             }, { id: 'button1', 'data-status': 'ok' }),

@@ -20,8 +20,14 @@ const submitDate = document.getElementById("subDate");
 
 window.onload = () => {
     if (role != "admin") {
-        alert("Unauthorised, You are not an admin")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not an admin",
+            timeout: '6000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        }).show();
+
     }
 
     axios({
@@ -30,7 +36,7 @@ window.onload = () => {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/tournamentArticle/' + tournamentID,
+        url: '/competition/tournamentArticle/' + tournamentID,
         dataType: "json",
     })
         .then(function (response) {
@@ -58,8 +64,15 @@ window.onload = () => {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
             } else if (error.response.status == 404) {
                 new Noty({
                     type: 'error',
@@ -69,7 +82,12 @@ window.onload = () => {
                     killer: true
                 }).show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
         });
 }
@@ -86,22 +104,40 @@ $('#submitButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url:  '/competition/tournamentMarks/',
+        url: '/competition/tournamentMarks/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json"
     })
         .then(function (response) {
 
-            event.preventDefault();
-            window.location("A_tournamentView.html");
+            // event.preventDefault();
+            new Noty({
+                type: 'success',
+                text: 'Successfully graded!',
+                timeout: '6000',
+            }).on('onClose', () => {
+                window.location("A_tournamentView.html");
+            }).show();
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
             } else {
-                window.alert("Error: " + error);
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
         })
 })
@@ -114,7 +150,7 @@ $('#summariseButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/tournamentArticleSummary/' + tournamentID,
+        url: '/competition/tournamentArticleSummary/' + tournamentID,
         dataType: "json",
     })
         .then(function (response) {
@@ -141,10 +177,21 @@ $('#summariseButton').on('click', function () {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+
+                }).show();
             }
         });
 })

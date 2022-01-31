@@ -14,8 +14,14 @@ let token = localStorage.getItem('token');
 
 window.onload = () => {
     if (role != "admin") {
-        alert("Unauthorised, You are not an admin")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not an admin",
+            timeout: '6000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        })
+            .show();
     }
 
     axios({
@@ -24,7 +30,7 @@ window.onload = () => {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/article/' + userid,
+        url: '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -53,10 +59,32 @@ window.onload = () => {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+                    killer: true
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
+            }
+            else {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
             }
         });
 }
@@ -73,7 +101,12 @@ $('#submitButton').on('click', function () {
         console.log("putting");
         putgrade(grade);
     } else {
-        window.alert("Please enter a grade before proceeding");
+        new Noty({
+            type: 'error',
+            text: "Please enter a grade before proceeding",
+            timeout: '6000',
+
+        }).show();
     }
 })
 
@@ -85,7 +118,7 @@ $('#summariseButton').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/article/summarise/' + userid,
+        url: '/competition/article/summarise/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -113,10 +146,44 @@ $('#summariseButton').on('click', function () {
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
             }
         });
 })
@@ -133,20 +200,37 @@ function postgrade(grade) {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/grade/' + articleid,
+        url: '/competition/grade/' + articleid,
         data: requestBody,
         dataType: "json",
     })
         .then(function (response) {
-            alert("You Have Successfully graded Student : " + userid)
-            window.location = "A_home.html"
+            new Noty({
+                type: 'error',
+                text: "You Have Successfully graded Student : " + userid,
+                timeout: '6000',
+
+            }).on('onClose', () => {
+                window.location = "A_home.html"
+            })
+                .show();
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html"
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
             } else {
-                window.alert("Cannot Grade this student : " + error);
+                new Noty({
+                    type: 'error',
+                    text: "Cannot Grade this student : " + error,
+                    timeout: '6000',
+                    killer: true
+                }).show();
                 console.log("Ungradable student : " + error.message);
             }
         });
@@ -163,20 +247,40 @@ function putgrade(grade) {
             'authorization': 'Bearer ' + token
         },
         method: 'PUT',
-        url:  '/competition/grades/' + articleid,
+        url: '/competition/grades/' + articleid,
         data: requestBody,
         dataType: "json",
     })
         .then(function (response) {
-            alert("You Have Successfully Updated grade for student : " + userid)
-            window.location = "A_home.html"
+            new Noty({
+                type: 'error',
+                text: "You Have Successfully Updated grade for student : " + userid,
+                timeout: '6000',
+
+            }).on('onClose', () => {
+                window.location = "A_home.html"
+            }).show();
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
             } else {
-                window.alert("Cannot update Grade for this student : " + error);
+                new Noty({
+                    type: 'error',
+                    text: "Cannot update Grade for this student : " + error,
+                    timeout: '6000',
+                    killer: true
+
+                }).show();
+
                 console.log("Ungradable student : " + error.message);
             }
 
@@ -191,7 +295,7 @@ $('#plagiarismCheck').on('click', function () {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/checkPlagiarism/' + userid,
+        url: '/competition/checkPlagiarism/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -200,20 +304,40 @@ $('#plagiarismCheck').on('click', function () {
             if (plagirasimPercentage > 3) {
                 plagiarismInput.innerHTML = 'The plagiarism percentage of this article was higher than 40%, please disqualify this article';
                 $("#plagiarismFormGroup").show();
-                // var y = document.getElementById("plagiarismFormGroup");
-                // y.show();
-            }else{
+            } else {
                 plagiarismInput.innerHTML = 'This article pass the plagiarism checking system';
                 $("#plagiarismFormGroup").show();
             }
-            
+
         })
         .catch(function (error) {
             if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
+            } else if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data,
+                    timeout: '6000',
+
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                })
+                    .show();
             } else {
-                window.alert(error);
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error) + 'Please try again later',
+                    timeout: '6000',
+                })
+                    .show();
             }
         });
 })

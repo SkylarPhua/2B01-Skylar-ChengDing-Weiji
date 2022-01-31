@@ -88,8 +88,6 @@ module.exports = {
     addArticleByID: function (userid, catid, title, content, callback) {
 
         async function addArticleToArticle(userid, catid, title, content, datetime, dbClient) {
-            console.log("ran the 1st");
-            console.log(userid);
             let result;
             try {
                 result = await dbClient.query(`INSERT INTO article (fk_userid, fk_categoryid, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5)`,
@@ -101,11 +99,9 @@ module.exports = {
             if (result.rowCount == 0) {
                 throw { code: "noUpdate" };
             }
-            console.log("wat abt here?");
         }
 
         async function addArticleToHistory(userid, groupType, title, content, datetime, dbClient) {
-            console.log("ran the 2nd?");
             let result;
             try {
                 result = await dbClient.query(`INSERT INTO history (fk_userid, tournament_type, title, content, submitted_at) VALUES ($1, $2, $3, $4, $5)`,

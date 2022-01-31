@@ -9,8 +9,13 @@ let role = localStorage.getItem('role_name');
 
 window.onload = () => {
   if (role != "student") {
-      alert("Unauthorised, You are not a Student")
-      window.location.replace("login.html");
+    new Noty({
+      type: 'error',
+      text: "Unauthorised, You are not a Student",
+      timeout: '6000',
+    }).on('onClose', () => {
+      window.location = "login.html"
+    }).show();
   } else {
     getTheDue(dueDateType)
   }
@@ -18,35 +23,45 @@ window.onload = () => {
 
 function getTheDue(dueDateType) {
   axios({
-      method: 'GET',
-      url:  '/competition/dueDate/' + dueDateType,
-      dataType: "json",
+    method: 'GET',
+    url: '/competition/dueDate/' + dueDateType,
+    dataType: "json",
   })
-      .then(function (response) {
-          const dateResult = response.data;
-          console.log(dateResult);
-          var dueDate = dateResult[0].duedate
-          console.log(dueDate);
-          var dueDate = new Date(dueDate)
-          var today = new Date()
+    .then(function (response) {
+      const dateResult = response.data;
+      console.log(dateResult);
+      var dueDate = dateResult[0].duedate
+      console.log(dueDate);
+      var dueDate = new Date(dueDate)
+      var today = new Date()
 
-          if(dueDate < today) {
-              window.location = "nocontent.html"
-          } else if (today < dueDate) {
-              getArticleData()
-          } else {
-              alert("bug found")
-          }
+      if (dueDate < today) {
+        window.location = "nocontent.html"
+      } else if (today < dueDate) {
+        getArticleData()
+      } else {
+        alert("bug found")
+      }
 
-      })
-      .catch(function (error) {
-          //Handle error
-          if (error.response.status == 404) {
-          } else {
-              alert("There is an unknown error")
-              console.log(error)
-          }
-      });
+    })
+    .catch(function (error) {
+      if (error.response.status == 404) {
+        new Noty({
+          type: 'error',
+          text: JSON.stringify(error.response.data),
+          timeout: '6000',
+        }).show();
+
+      } else if (error.response.status == 500) {
+        new Noty({
+          type: 'error',
+          text: error.response.data + ' Please try again later',
+          timeout: '6000',
+          killer: true
+        }).show();
+      }
+      n.close();
+    });
 }
 
 document.getElementById('submitButton').disabled = true;
@@ -62,7 +77,6 @@ function chkinput() {
 
 $('#submitButton').on('click', function (event) {
   event.preventDefault();
-  const baseUrl = 'http://localhost:8000';
   let category = $('#cat').val();
   let title = $('#title').val();
   let article = $('#article').val();
@@ -79,60 +93,56 @@ $('#submitButton').on('click', function (event) {
       'authorization': 'Bearer ' + token
     },
     method: 'POST',
-    url:  '/competition/studentArticles/',
+    url: '/competition/studentArticles/',
     data: requestBody,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
   })
     .then(function (response) {
-      alert("submit successfully")
-      window.location = "submission.html"
+      new Noty({
+        type: 'success',
+        text: JSON.stringify(response.data),
+        timeout: '6000',
+      }).on('onClose', () => {
+        window.location = "submission.html"
+      }).show();
     })
     .catch(function (error) {
       if (error.response.status == 403) {
-        alert(JSON.stringify(error.response.data));
-        window.location = "login.html";
-      } else {
-        window.alert("This is the error: " + error);
-        console.log("This is the error: " + error.message);
+        new Noty({
+          type: 'error',
+          text: JSON.stringify(error.response.data),
+          timeout: '6000',
+        }).on('onClose', () => {
+          window.location = "login.html"
+        }).show();
+
+      } else if (error.response.status == 404) {
+        new Noty({
+          type: 'error',
+          text: JSON.stringify(error.response.data),
+          timeout: '6000',
+        }).show();
+
+      } else if (error.response.status == 500) {
+        new Noty({
+          type: 'error',
+          text: error.response.data + ' Please try again later',
+          timeout: '6000',
+          killer: true
+        }).show();
       }
+      n.close();
     });
 });
 
-// article.addEventListener('keyup', function (e) {
-//   wordCounter(e.target.value);
-// });
-
-// function wordCounter(text) {
-//   var text = article.value;
-//   var wordCount = 0;
-//   for (var i = 0; i <= text.length; i++) {
-//     if (text.charAt(i) == ' ') {
-//       wordCount++;
-//     }
-//   }
-//   count.innerHTML = wordCount;
-// }
-
-// var globalWordCount = 0;
-// var wordLimit = 500;
-
 function countWord() {
-    let text = article.value;
-    text = text.trim();
-    const words = text.split(" ");
-    if (words[0] === "") {
-        count.innerText = 0;
-    } else {
-        count.innerText = words.length;
-        // globalWordCount = words.length;
-        // console.log("Words: " + globalWordCount);
-    }
+  let text = article.value;
+  text = text.trim();
+  const words = text.split(" ");
+  if (words[0] === "") {
+    count.innerText = 0;
+  } else {
+    count.innerText = words.length;
+  }
 }
-
-// article.addEventListener('keydown', function(e) {
-//     if (globalWordCount > wordLimit && e.code !== "Backspace") {
-//       e.preventDefault();
-//       return;
-//     }
-//   });

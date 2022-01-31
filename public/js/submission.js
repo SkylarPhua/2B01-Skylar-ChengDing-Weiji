@@ -10,8 +10,13 @@ const baseUrl = 'http://localhost:8000';
 
 window.onload = () => {
     if (role != "student") {
-        alert("Unauthorised, You are not a Student")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not a Student",
+            timeout: '6000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        }).show();
     }
     console.log("This is the group type: " + groupType);
 
@@ -44,7 +49,7 @@ function showTournamentContent() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/tournamentArticle/' + userid + '/' + groupType,
+        url: '/competition/tournamentArticle/' + userid + '/' + groupType,
         dataType: "json",
     })
         .then(function (response) {
@@ -84,15 +89,23 @@ function showTournamentContent() {
         })
         .catch(function (error) {
             if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
                 printText();
                 btn();
-            } else if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
@@ -103,7 +116,7 @@ function getCategory() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/tournamentCategory/' + groupType,
+        url: '/competition/tournamentCategory/' + groupType,
         dataType: "json"
     })
         .then(function (response) {
@@ -116,18 +129,33 @@ function getCategory() {
                     getCat.innerHTML += postCatHtml
                 })
             } else {
-                console.log("Issue in retrieving...");
+                new Noty({
+                    type: 'error',
+                    text: 'Issues while retrieving.. Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
         })
         .catch(function (error) {
             if (error.response.status == 404) {
-            } else if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: ture
+                }).show();
+                printText();
+                btn();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
@@ -138,7 +166,7 @@ function showQualifyingContent() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/article/' + userid,
+        url: '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -178,22 +206,34 @@ function showQualifyingContent() {
                     getdata.innerHTML += postHtml;
                 })
             } else {
-                console.log("Issue in retrieving...");
+                new Noty({
+                    type: 'error',
+                    text: 'Issues when retrieving.. Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
 
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
                 printText();
                 btn();
-            } else if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 
 }
@@ -220,15 +260,10 @@ function btn() {
     getdata.innerHTML += postHtml;
 }
 
-// function myFunction() {
-//     var element = document.getElementById("demo");
-//     element.parentNode.removeChild(element);
-//   }
-
 function showCountDown(dueDateType) {
     axios({
         method: 'GET',
-        url:  '/competition/dueDate/' + dueDateType,
+        url: '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -239,19 +274,29 @@ function showCountDown(dueDateType) {
             countDown(dueDate)
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url:  '/competition/dueDate/' + dueDateType,
+        url: '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -262,7 +307,7 @@ function getTheDue(dueDateType) {
             var dueDate = new Date(dueDate)
             var today = new Date()
 
-            if(dueDate < today) {
+            if (dueDate < today) {
                 showQualifyingContent2()
             } else if (today < dueDate) {
                 showQualifyingContent()
@@ -271,19 +316,29 @@ function getTheDue(dueDateType) {
             }
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
 function getTheTournamentDue(dueDateType) {
     axios({
         method: 'GET',
-        url:  '/competition/dueDate/' + dueDateType,
+        url: '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -294,7 +349,7 @@ function getTheTournamentDue(dueDateType) {
             var dueDate = new Date(dueDate)
             var today = new Date()
 
-            if(dueDate < today) {
+            if (dueDate < today) {
                 showTournamentContent2()
             } else if (today < dueDate) {
                 showTournamentContent()
@@ -303,12 +358,22 @@ function getTheTournamentDue(dueDateType) {
             }
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
@@ -319,7 +384,7 @@ function showTournamentContent2() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/tournamentArticle/' + userid + '/' + groupType,
+        url: '/competition/tournamentArticle/' + userid + '/' + groupType,
         dataType: "json",
     })
         .then(function (response) {
@@ -352,20 +417,31 @@ function showTournamentContent2() {
                     getdata.innerHTML += postHtml;
                 })
             } else {
-                console.log("There is an issue");
+                new Noty({
+                    type: 'error',
+                    text: 'There is an issue while retrieving data',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
         })
         .catch(function (error) {
             if (error.response.status == 404) {
-                printText();
-                btn();
-            } else if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
@@ -376,7 +452,7 @@ function showQualifyingContent2() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/article/' + userid,
+        url: '/competition/article/' + userid,
         dataType: "json",
     })
         .then(function (response) {
@@ -412,21 +488,32 @@ function showQualifyingContent2() {
                     getdata.innerHTML += postHtml;
                 })
             } else {
-                console.log("Issue in retrieving...");
+                new Noty({
+                    type: 'error',
+                    text: 'Issues while retrieving data... Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
 
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
-
-            } else if (error.response.status == 403) {
-                alert(JSON.stringify(error.response.data));
-                window.location = "login.html";
-            } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            } else if (error.response.status == 500) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 
 }
@@ -474,36 +561,6 @@ function editBtnTournamentEdition() {
     window.location = "postArticleTournament.html";
 }
 
-// function articleDeleteTournament(id) {
-//     let tournamentID = localStorage.getItem('tournamentID');
-//     var txt = confirm("Are you sure you want to delete your article?");
-//     if (txt == true) {
-//         console.log("Process of deleting");
-//         const requestBody = {
-//             tournamentid: tournamentID
-//         }
-//         axios({
-//             headers: {
-//                 'user': userid,
-//                 'authorization': 'Bearer ' + token
-//             },
-//             method: 'DELETE',
-//             url: baseUrl + '/competition/tournamentArticle/' + userid,
-//             data: requestBody,
-//             contentType: "application/json; charset=utf-8",
-//             dataType: "json",
-//         })
-//             .then(function (response) {
-//                 window.alert("You have deleted the article");
-//                 location.reload();
-//             })
-//             .catch(function (error) {
-//                 console.log("Error: " + error);
-//             })
-//     } else {
-//         console.log("Cancel button detected");
-//     }
-// }
 function articleDeleteTournament(id) {
     let tournamentID = localStorage.getItem('tournamentID');
     var n = new Noty({
@@ -519,17 +576,27 @@ function articleDeleteTournament(id) {
                         'authorization': 'Bearer ' + token
                     },
                     method: 'DELETE',
-                    url:  '/competition/tournamentArticle/' + userid,
+                    url: '/competition/tournamentArticle/' + userid,
                     data: requestBody,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                 })
                     .then(function (response) {
-                        window.alert("You have deleted the article");
-                        location.reload();
+                        new Noty({
+                            type: 'success',
+                            text: 'You have deleted your article',
+                            timeout: '6000',
+                        }).on('onClose', () => {
+                            location.reload();
+                        }).show();
                     })
                     .catch(function (error) {
-                        console.log("Error: " + error);
+                        new Noty({
+                            type: 'error',
+                            text: error,
+                            timeout: '6000',
+                            killer: true
+                        }).show();
                         n.close();
                     })
             }),
@@ -553,32 +620,54 @@ function articleDel(id) {
                 'authorization': 'Bearer ' + token
             },
             method: 'DELETE',
-            url:  '/competition/articles/' + userid,
+            url: '/competition/articles/' + userid,
             dataType: "json",
         })
             .then(function (response) {
-                // new Noty({
-                //     type: 'success',
-                //     timeout: '6000',
-                //     layout: 'topCenter',
-                //     theme: 'bootstrap-v4',
-                //     text: 'You have deleted your article',
-                // }).show();
-                window.alert("You have deleted the article");
-                location.reload();
+                new Noty({
+                    type: 'success',
+                    text: 'You have deleted your article',
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    location.reload();
+                }).show();
             })
             .catch(function (error) {
-                // if (error.response.status = 404) {
-                //     console.log("This is the error" + error);
-                //     window.alert("Error, Unable to Delete Student : " + id + " " + error)
-                // } else if (error.response.status == 403) {
-                //     alert(JSON.stringify(error.response.data));
-                //     window.location = "login.html";
-                // };
-                console.log("There was an error: " + JSON.stringify(error));
+                if (error.response.status == 403) {
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                    }).on('onClose', () => {
+                        window.location = "login.html"
+                    }).show();
+
+                } else if (error.response.status == 404) {
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+
+                } else {
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data) + 'Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+                }
+                n.close();
             });
     } else {
-        console.log("Cancel button detected");
+        new Noty({
+            type: 'error',
+            text: 'Canceled',
+            timeout: '6000',
+        }).on('onClose', () => {
+            location.reload();
+        }).show();
     }
 }
 

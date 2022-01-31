@@ -15,8 +15,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
     overlayLoading.style.display = "";
     if (role != "student") {
-        alert("Unauthorised, You are not a Student")
-        window.location.replace("login.html");
+        new Noty({
+            type: 'error',
+            text: "Unauthorised, You are not a Student",
+            timeout: '6000',
+        }).on('onClose', () => {
+            window.location = "login.html"
+        }).show();
     }
 
     document.getElementById('submitButton').disabled = true;
@@ -34,7 +39,6 @@ window.addEventListener('DOMContentLoaded', function () {
     $('#submitButton').on('click', function (event) {
         event.preventDefault();
         overlayLoading.style.display = "";
-        const baseUrl = 'http://localhost:8000';
         let title = $('#title').val();
         let article = $('#article').val();
         const requestBody = {
@@ -50,7 +54,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 'authorization': 'Bearer ' + token
             },
             method: 'PUT',
-            url:  '/competition/tournamentArticle/',
+            url: '/competition/tournamentArticle/',
             data: requestBody,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -58,17 +62,42 @@ window.addEventListener('DOMContentLoaded', function () {
             .then(function (response) {
                 sendMail();
                 overlayLoading.style.display = "none";
-                alert("submit successfully")
-                window.location = "submission.html"
+                new Noty({
+                    type: 'success',
+                    text: JSON.stringify(response.data),
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "submission.html"
+                }).show();
+
             })
             .catch(function (error) {
                 if (error.response.status == 403) {
-                    alert(JSON.stringify(error.response.data));
-                    window.location = "login.html";
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                    }).on('onClose', () => {
+                        window.location = "login.html"
+                    }).show();
+
+                } else if (error.response.status == 404) {
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data),
+                        timeout: '6000',
+                        killer: true
+                    }).show();
+
                 } else {
-                    window.alert("This is the error: " + error);
-                    console.log("This is the error: " + error.message);
+                    new Noty({
+                        type: 'error',
+                        text: JSON.stringify(error.response.data) + ' Please try again later',
+                        timeout: '6000',
+                        killer: true
+                    }).show();
                 }
+                n.close();
             });
     });
 });
@@ -76,7 +105,7 @@ window.addEventListener('DOMContentLoaded', function () {
 function getTheDue(dueDateType) {
     axios({
         method: 'GET',
-        url:  '/competition/dueDate/' + dueDateType,
+        url: '/competition/dueDate/' + dueDateType,
         dataType: "json",
     })
         .then(function (response) {
@@ -87,18 +116,34 @@ function getTheDue(dueDateType) {
             var dueDate = new Date(dueDate)
             var today = new Date()
 
-            if(dueDate < today) {
-                alert("Competition was end. You cannot edit")
-                window.location = "submission.html"
-            } 
+            if (dueDate < today) {
+                new Noty({
+                    type: 'error',
+                    text: 'Submission dateline has ended, You are not able to submit any article',
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "submission.html"
+                }).show();
+            }
         })
         .catch(function (error) {
-            //Handle error
             if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+
             } else {
-                alert("There is an unknown error")
-                console.log(error)
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data) + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
             }
+            n.close();
         });
 }
 
@@ -111,7 +156,7 @@ function getArticle() {
             'authorization': 'Bearer ' + token
         },
         method: 'GET',
-        url:  '/competition/tournamentArticle/' + userid + '/' + groupType,
+        url: '/competition/tournamentArticle/' + userid + '/' + groupType,
         dataType: "json",
     })
         .then(function (response) {
@@ -130,13 +175,19 @@ function getArticle() {
             overlayLoading.style.display = "none";
         })
         .catch(function (error) {
-            if (error.response.status == 403) {
-                alert("You are not logged in")
-                window.location = "login.html";
+            if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                }).on('onClose', () => {
+                    window.location = "login.html"
+                }).show();
+
             } else {
                 overlayLoading.style.display = "none";
                 new Noty({
-                    type: 'success',
+                    type: 'error',
                     timeout: '6000',
                     layout: 'topCenter',
                     theme: 'bootstrap-v4',
@@ -144,7 +195,7 @@ function getArticle() {
                     killer: true
                 }).show();
             }
-            console.log("The is the ERROR: " + error);
+            n.close();
         });
 }
 
@@ -162,7 +213,7 @@ function sendMail() {
             'authorization': 'Bearer ' + token
         },
         method: 'POST',
-        url:  '/competition/tournamentSendMail/',
+        url: '/competition/tournamentSendMail/',
         data: requestBody,
         contentType: "application/json; charset=utf-8",
         dataType: "json",

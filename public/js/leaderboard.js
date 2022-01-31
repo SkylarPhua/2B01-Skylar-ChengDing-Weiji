@@ -33,14 +33,29 @@ function getLast4() {
         eighth.innerHTML = `${data[0].username}`;
         datas4.push(data);
     }).catch(function (error) {
-        window.alert("This is the error: " + error);
-        console.log("This is the error: " + error.message);
+        if (error.response.status == 404) {
+            new Noty({
+                type: 'error',
+                text: JSON.stringify(error.response.data),
+                timeout: '6000',
+                killer: true
+            }).show();
+
+        } else {
+            new Noty({
+                type: 'error',
+                text: error.response.data + ' Please try again later',
+                timeout: '6000',
+                killer: true
+            }).show();
+        }
+        n.close();
     });
 }
 function getNext2() {
     axios({
         method: 'GET',
-        url:  '/competition/tournamentLeaderboardNextTwo/',
+        url: '/competition/tournamentLeaderboardNextTwo/',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
     })
@@ -51,14 +66,29 @@ function getNext2() {
             datas3.push(data);
         })
         .catch(function (error) {
-            window.alert("This is the error: " + error);
-            console.log("This is the error: " + error.message);
+            if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+
+            } else {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data + ' Please try again later',
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            }
+            n.close();
         });
 }
 function getTop2() {
     axios({
         method: 'GET',
-        url:  '/competition/tournamentLeaderboardTopTwo/',
+        url: '/competition/tournamentLeaderboardTopTwo/',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
     })
@@ -71,8 +101,23 @@ function getTop2() {
             datas2.push(data);
         })
         .catch(function (error) {
-            window.alert("This is the error: " + error);
-            console.log("This is the error: " + error.message);
+            if (error.response.status == 404) {
+                new Noty({
+                    type: 'error',
+                    text: JSON.stringify(error.response.data),
+                    timeout: '6000',
+                    killer: true
+                }).show();
+
+            } else {
+                new Noty({
+                    type: 'error',
+                    text: error.response.data + " Please try again later",
+                    timeout: '6000',
+                    killer: true
+                }).show();
+            }
+            n.close();
         });
 }
 
@@ -129,6 +174,7 @@ var btn = document.querySelectorAll('#myBtn')
 btn.forEach(function (button) {
     button.addEventListener('click', function (e) {
         var target = e.target.parentNode.id;
+        console.log(target);
         display(target);
         modal.style.display = "block";
     })
